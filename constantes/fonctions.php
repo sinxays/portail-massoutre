@@ -367,7 +367,7 @@ function create_table_agences($header, $liste_agence)
 
     //contenu
     foreach ($liste_agence as $agence) {
-        -$table_agences .= "<tr>";
+        $table_agences .= "<tr>";
         $table_agences .= "<td class='td_n' style='width: 150px;'>" . $agence['nom_agence'] . " </td>";
         $table_agences .= "<td class='td_n' style='width: 150px;'>" . $agence['num_tel_agence'] . "</td>";
         $table_agences .= "<td class='td_n' style='width: 250px;'>" . $agence['adresse'] . "</td>";
