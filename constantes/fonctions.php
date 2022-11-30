@@ -1406,3 +1406,14 @@ function vider_vp_vu_cumul()
     //Execute the statement.
     $statement->execute();
 }
+
+function get_all_collaborateurs_cvo()
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT c.nom,c.prenom,c.identifiant_payplan,f.fonction,cvo.nom_cvo FROM collaborateurs_payplan as c
+                            LEFT JOIN fonction_collaborateur as f ON c.id_fonction = f.ID 
+                            LEFT JOIN cvo ON c.id_site = cvo.ID 
+                            ORDER BY c.nom ASC");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}

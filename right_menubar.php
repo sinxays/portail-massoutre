@@ -75,6 +75,11 @@
                         <span class="nav__name">Marges</span>
                     </a>
 
+                    <a href="/payplan/payplan.php" class="nav__link">
+                        <i class='bx bx-money-withdraw'></i>
+                        <span class="nav__name">Payplan</span>
+                    </a>
+
                     <div class="nav__dropdown">
                         <a href="#" class="nav__link" id="bouton_planning">
                             <i class='bx bxs-calendar'></i>
