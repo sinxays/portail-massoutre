@@ -69,9 +69,7 @@
                 <?php
 
                 $all_collaborateurs_cvo = get_all_collaborateurs_cvo();
-
                 // var_dump($all_collaborateurs_cvo);
-
                 // die();
 
                 echo "<select class='form-select' style='width : 200px;' id='select_collaborateur' data-id='id_collaborateur'>";
@@ -85,16 +83,19 @@
                 }
                 echo "</select>";
                 ?>
+
             </div>
 
             <div class="my_div_form">
-                <label for="afficherSecteurs_select">Secteur</label>
-                <select id="afficherSecteurs_select" class="form-select"></select>
-            </div>
-
-            <div class="my_div_form">
-                <label for="afficherDistrict_select">District</label>
-                <select id="afficherDistrict_select" class="form-select"></select>
+                <label for="afficher_site_cvo">Site</label>
+                <select id="afficher_site_cvo" class="form-select">
+                    <?php
+                    echo "<option value='0'> Tout </option>";
+                    foreach ($all_collaborateurs_cvo as $site) {
+                        echo "<option value='" . $site['ID'] . "'>" . $site['nom_cvo'] . "</option>";
+                    }
+                    ?>
+                </select>
             </div>
 
             <div class="my_div_form">
@@ -107,10 +108,8 @@
             </div>
 
             <div class="my-last-div-form">
-                <button type="button" class="btn btn-success">Success</button>
+                <button type="button" class="btn btn-success">reinitialiser</button>
             </div>
-
-
         </form>
 
         <?php

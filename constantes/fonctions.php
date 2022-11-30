@@ -1429,11 +1429,5 @@ function get_all_collaborateurs_cvo()
         $liste_collaborateur = $request->fetchAll(PDO::FETCH_ASSOC);
         $liste_site_cvo[$key_site_cvo]['collaborateurs'] = $liste_collaborateur;
     }
-
-
-
-
-
-
     return $liste_site_cvo;
 }
