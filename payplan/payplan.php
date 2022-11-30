@@ -68,6 +68,10 @@
 
                 $all_collaborateurs_cvo = get_all_collaborateurs_cvo();
 
+                var_dump($all_collaborateurs_cvo);
+
+                die();
+
 
                 echo "<select class='form-select' style='width : 200px;' id='afficher_agence' data-id='id_agence'>";
                 echo "<option value='0'> Tout </option>";

@@ -1409,11 +1409,31 @@ function vider_vp_vu_cumul()
 
 function get_all_collaborateurs_cvo()
 {
+    // $pdo = Connection::getPDO();
+    // $request = $pdo->query("SELECT c.nom,c.prenom,c.identifiant_payplan,f.fonction,cvo.nom_cvo FROM collaborateurs_payplan as c
+    //                         LEFT JOIN fonction_collaborateur as f ON c.id_fonction = f.ID 
+    //                         LEFT JOIN cvo ON c.id_site = cvo.ID 
+    //                         ORDER BY c.nom ASC");
+    // $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    // return $result;
+
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT c.nom,c.prenom,c.identifiant_payplan,f.fonction,cvo.nom_cvo FROM collaborateurs_payplan as c
-                            LEFT JOIN fonction_collaborateur as f ON c.id_fonction = f.ID 
-                            LEFT JOIN cvo ON c.id_site = cvo.ID 
-                            ORDER BY c.nom ASC");
-    $result = $request->fetchAll(PDO::FETCH_ASSOC);
-    return $result;
+    $request = $pdo->query("SELECT ID,nom_cvo FROM cvo
+                            ORDER BY nom_cvo ASC");
+    $liste_site_cvo = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($liste_site_cvo as $key_site_cvo => $site_cvo) {
+        $request = $pdo->query("SELECT ID,nom,prenom,identifiant_payplan FROM collaborateurs_payplan
+        WHERE id_site = " . $site_cvo['ID'] . " 
+        ORDER BY nom ASC");
+        $liste_collaborateur = $request->fetchAll(PDO::FETCH_ASSOC);
+        $liste_site_cvo[$key_site_cvo]['collaborateurs'] = $liste_collaborateur;
+    }
+
+
+
+
+
+
+    return $liste_site_cvo;
 }
