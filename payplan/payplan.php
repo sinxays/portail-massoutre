@@ -58,58 +58,28 @@
 
         <form class="my_form_marge">
 
+
+            <?php
+            ini_set('xdebug.var_display_max_depth', 99);
+
+            ?>
+
             <div class="my_div_form">
-                <label for="afficher_agence">Agences</label>
-
+                <label for="select_collaborateur">Collaborateur</label>
                 <?php
-                ini_set('xdebug.var_display_max_depth', 99);
-
-                $allDistrictSecteursAgencesGroup = getAllAgencesGroupSecteurDistrict();
 
                 $all_collaborateurs_cvo = get_all_collaborateurs_cvo();
 
-                var_dump($all_collaborateurs_cvo);
+                // var_dump($all_collaborateurs_cvo);
 
-                die();
-
-
-                echo "<select class='form-select' style='width : 200px;' id='afficher_agence' data-id='id_agence'>";
-                echo "<option value='0'> Tout </option>";
-                foreach ($allDistrictSecteursAgencesGroup as $district) {
-                    echo "<optgroup class='opt1' label='District " . $district['nom_district'] . "' >";
-                    foreach ($district['agences'] as $agenceOrSecteur) {
-                        echo "<option value='" . $agenceOrSecteur['ID'] . "'>" . $agenceOrSecteur['nom_agence'] . "</option>";
-                    }
-                    foreach ($district['secteurs'] as $secteur) {
-                        echo "<optgroup class='opt2' label='Secteur " . $secteur['nom_secteur'] . "' >";
-                        foreach ($secteur['agences'] as $agence) {
-                            echo "<option value='" . $agence['ID'] . "'>" . $agence['nom_agence'] . "</option>";
-                        }
-                        echo "</optgroup>";
-                    }
-                    echo "</optgroup>";
-                }
-                echo "</select>";
-                ?>
-            </div>
-
-            <div class="my_div_form">
-            <label for="select_collaborateur">Collaborateur</label>
-                <?php
+                // die();
 
                 echo "<select class='form-select' style='width : 200px;' id='select_collaborateur' data-id='id_collaborateur'>";
                 echo "<option value='0'> Tout </option>";
-                foreach ($allDistrictSecteursAgencesGroup as $district) {
-                    echo "<optgroup class='opt1' label='District " . $district['nom_district'] . "' >";
-                    foreach ($district['agences'] as $agenceOrSecteur) {
-                        echo "<option value='" . $agenceOrSecteur['ID'] . "'>" . $agenceOrSecteur['nom_agence'] . "</option>";
-                    }
-                    foreach ($district['secteurs'] as $secteur) {
-                        echo "<optgroup class='opt2' label='Secteur " . $secteur['nom_secteur'] . "' >";
-                        foreach ($secteur['agences'] as $agence) {
-                            echo "<option value='" . $agence['ID'] . "'>" . $agence['nom_agence'] . "</option>";
-                        }
-                        echo "</optgroup>";
+                foreach ($all_collaborateurs_cvo as $site_cvo) {
+                    echo "<optgroup class='opt1' label='" . $site_cvo['nom_cvo'] . "' >";
+                    foreach ($site_cvo['collaborateurs'] as $collaborateur) {
+                        echo "<option value='" . $collaborateur['ID'] . "'>" . $collaborateur['nom'] . " " . $collaborateur['prenom'] . "</option>";
                     }
                     echo "</optgroup>";
                 }
