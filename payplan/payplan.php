@@ -124,6 +124,11 @@
 
         <?php
         saut_de_ligne();
+
+
+        $test = get_payplan();
+
+        var_dump($test);
         ?>
 
 

@@ -1431,3 +1431,67 @@ function get_all_collaborateurs_cvo()
     }
     return $liste_site_cvo;
 }
+
+function get_payplan()
+{
+
+    $pdo = Connection::getPDO_2();
+    $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
+    destinations.libelle AS Destination,
+    typeachats.libelle AS Type_Achat,
+    typevehicules.libelle AS Type_Vehicule,
+    categoriesvu.libelle AS Categorie_VU,
+    modelescommerciaux.libelle AS Modele,
+    vehicules.reference_lot AS Reference_lot,
+    finitions.libelle AS Finition,
+    vehicules.parc_achat AS Parc_Achat,
+    vehicules.nom_acheteur_massoutre AS Nom_Acheteur,
+    vehicules.date_vente AS Date_Vente,
+    vehicules.prix_achat_net_remise AS Prix_achat_net_remise,
+    vehicules.duree_stock AS Duree_stock,
+    vehicules.date_premiere_location AS Date_premiere_location,
+    vehicules.date_derniere_location AS Date_derniere_location,
+    vehicules.date_stock AS Date_stock,
+    vehicules.prix_carte_grise AS Prix_carte_grise,
+    vehicules.prix_transport AS Prix_transport,
+    vehicules.montant_bonus_malus AS Montant_Bonus_Malus,
+    vehicules.commission_gca AS Commission_GCA,
+    vehicules.commission_achat AS Commission_Achat,
+    factureventes.marge_nette AS Marge_nette,
+    CONCAT(utilisateurs.prenom,' ',utilisateurs.nom) AS Vendeur,
+    factureventes.destination_sortie AS Destination_sortie,
+    factureventes.prix_reserve AS Prix_reserve,
+    factureventes.montant AS Montant,
+    factureventes.nom_client AS Client,
+    factureventes.marge_financement AS Marge_Financement,
+    factureventes.montant_garantie AS Montant_Garantie,
+    factureventes.marge_pack AS Marge_Pack,
+    factureventes.montant_pack_livraison AS Montant_Pack_Livraison,
+    factureventes.marges_diverses AS Marges_diverses,
+    factureventes.commission_massoutre AS Commissions_Massoutre,
+    factureventes.montant_publicite AS Montant_Publicite,
+    factureventes.montant_revision AS Montant_Revision, 
+    factureventes.montant_carrosserie AS Montant_Carrosserie,
+    factureventes.montant_preparation AS Montant_Preparation,
+    factureventes.montant_ct AS Montant_Ct,
+    factureventes.prix_transport_CVO AS Prix_Transport_CVO,
+    factureventes.date_facturation AS Date_facturation,
+    vehicules.options as Options
+    
+    FROM vehicules
+    LEFT JOIN destinations ON vehicules.destination_id = destinations.id
+    LEFT JOIN typeachats ON vehicules.typeachat_id = typeachats.id
+    LEFT JOIN typevehicules ON vehicules.typevehicule_id = typevehicules.id
+    LEFT JOIN categoriesvu ON vehicules.categorievu_id = categoriesvu.id
+    LEFT JOIN modelescommerciaux ON vehicules.modelecommercial_id = modelescommerciaux.id
+    LEFT JOIN finitions ON vehicules.finition_id = finitions.id
+    LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
+    LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
+    
+    WHERE factureventes.date_facturation>='2022-11-01'");
+
+    $payplan = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    
+    return $payplan;
+}
