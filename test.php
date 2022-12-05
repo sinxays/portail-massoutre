@@ -47,15 +47,13 @@
     include "include.php";
 
 
-    $typ_acht = 'Neuf';
-    $typ_vh = 'VU';
-    $cat_vu = 8;
+    $prix_acht_net_rmisé = 6000;
+    $duree_stock =  34.65;
+    $commisionable = 1;
 
-    $test = define_type_com($typ_acht, $typ_vh, $cat_vu);
+    $test = define_frais_financier($prix_acht_net_rmisé, $duree_stock, $commisionable);
 
     var_dump($test);
-
-
 
 
     ?>

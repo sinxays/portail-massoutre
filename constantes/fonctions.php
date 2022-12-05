@@ -1511,3 +1511,16 @@ function define_type_com($type_achat, $type_vh, $cat_vu)
     }
     return $return;
 }
+
+
+function define_frais_financier($prix_acht_net_rmisé, $duree_stock, $commisionable)
+{
+    $return = ($prix_acht_net_rmisé * 0.025) * ($duree_stock / 12) * $commisionable;
+    //arrondir au centimes
+    return round($return,2);
+}
+
+
+function define_marge(){
+    
+}
