@@ -1,6 +1,6 @@
 # User specific & automatically generated files #
 #################################################
-/constantes/connectionDB_pdo.php
+constantes/connectionDB_pdo.php
 
 
 # IDE and editor specific files #
