@@ -1492,6 +1492,22 @@ function get_payplan()
 
     $payplan = $request->fetchAll(PDO::FETCH_ASSOC);
 
-    
+
     return $payplan;
+}
+
+function define_type_com($type_achat, $type_vh, $cat_vu)
+{
+    if ($type_achat == 'Reprise') {
+        $return = 'Com. Reprise';
+    } else if ($type_vh == 'VP') {
+        $return = 'Com. VP';
+    } else if ($cat_vu == 1) {
+        $return = 'Com. VP';
+    } elseif ($cat_vu == 20) {
+        $return = 'Com. VP';
+    } else {
+        $return = 'Com. VU';
+    }
+    return $return;
 }

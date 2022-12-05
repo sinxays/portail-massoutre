@@ -19,7 +19,7 @@ class Connection
         ]);
     }
 
-    static function getPDO_2(): PDO
+    public static function getPDO_2(): PDO
     {
         $user = 'root';
         $password = 'root';

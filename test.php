@@ -47,10 +47,13 @@
     include "include.php";
 
 
-    $test =  get_liste_telephonique_2(3);
+    $typ_acht = 'Neuf';
+    $typ_vh = 'VU';
+    $cat_vu = 8;
+
+    $test = define_type_com($typ_acht, $typ_vh, $cat_vu);
 
     var_dump($test);
-
 
 
 
