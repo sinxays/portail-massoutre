@@ -12,9 +12,9 @@ class Connection
     {
 
         $user = 'root';
-        $password = 'rootee';
+        $password = 'root';
 
-        return new PDO('mysql:host=localhost;dbname=portail_massoutre', $user, $password, [
+        return new PDO('mysql:host=localhost;dbname=portail-massoutre', $user, $password, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ]);
     }
@@ -22,7 +22,7 @@ class Connection
     public static function getPDO_2(): PDO
     {
         $user = 'root';
-        $password = 'root';
+        $password = 'M@ssoutre2013';
 
         return new PDO('mysql:host=localhost;dbname=massoutre', $user, $password, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
