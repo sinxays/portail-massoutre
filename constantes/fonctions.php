@@ -1517,10 +1517,10 @@ function define_frais_financier($prix_acht_net_rmisé, $duree_stock, $commisiona
 {
     $return = ($prix_acht_net_rmisé * 0.025) * ($duree_stock / 12) * $commisionable;
     //arrondir au centimes
-    return round($return,2);
+    return round($return, 2);
 }
 
 
-function define_marge(){
-    
+function define_marge($destination, $montant, $prix_cg, $prix_transport, $montant_bonus_malus)
+{
 }
