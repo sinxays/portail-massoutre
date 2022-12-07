@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="#">
 
@@ -42,6 +41,8 @@
     <!--========== NAV ==========-->
     <?php include "../right_menubar.php";
     include "../include.php"; ?>
+
+
 
 
 
@@ -112,23 +113,16 @@
             </div>
         </form>
 
-        <?php
+        </br>
 
-        saut_de_ligne();
-
-        $agences = get_all_agences();
-
-        ?>
-
-        <table class="my_tab_perso" id="table_marge"> </table>
+        <table class="my_tab_perso" id="table_payplan"> </table>
 
         <?php
         saut_de_ligne();
 
+        // $payplan = get_payplan();
+        // var_dump($payplan);
 
-        $test = get_payplan();
-
-        var_dump($test);
         ?>
 
 
@@ -143,7 +137,7 @@
 
     <script src="/assets/js/jquery-3.6.0.min.js"></script>
     <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/marge.js"></script>
+    <script src="/assets/js/payplan.js"></script>
 </body>
 
 </html>

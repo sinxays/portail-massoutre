@@ -475,12 +475,6 @@ img {
     padding: 8px;
   }
 
-  .my_tab_perso td,
-  .my_tab_perso th {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-
   /* pour une ligne sur deux en grisé , even pour les lignes paires */
   .my_tab_perso tr:nth-child(even) {
     background-color: #f2f2f2;

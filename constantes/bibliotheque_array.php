@@ -25,6 +25,14 @@ $marges_table_header_row  = array(
     "-72H 2021",    "-72H 2022",    "Résultat",    "Montant primable 2021",    "Montant primable 2022",    "Résultat",    "Indexation"
 );
 
+$payplan_table_header_row = array(
+    "Immatriculation", "Destination", "Type véhicule", "Type achat", "Categorie VU", "Modele", "Reference lot", "Finition", "Parc achat", "Nom acheteur", "Date de vente", "Prix achat net remisé",
+    "Durée de stock", "Date premiere location", "Date derniere location", "Date stock", "Prix CG", "Prix Transport", "Montant Bonus Malus", "Commission CGA", "Commission achat", "Marge nette", "Vendeur", "Destination sortie",
+    "Prix reservé", "Montant", "Client", "Marge financement", "Montant garantie", "Marge Pack", "Montant pack livraison", "Marges diverses", "Commission massoutre", "Montant publicité", "Montant revision", "Montant carrosserie",
+    "Montant preparation", "Montant CT", "Prix transport CVO", "Date Facturation", "Options", "Type de com", "Frais Financier", "Marge", "Commission", "Taux com reprise", "Com reprise", "Contrôle marge negoce",
+    "Contrôle date", "Frais remise en état", "Pdt complémentaire total", "Mois Vente"
+);
+
 
 $imprimantes_table_header_row = array(
     "N° Série", "Agence", "Emplacement", "Prestataire", "Marque", "Modèle", "IP VPN", "IP locale"

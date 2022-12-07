@@ -2,8 +2,6 @@
 
 use App\Connection;
 
-use function PHPSTORM_META\type;
-
 function saut_de_ligne()
 {
     echo "<br/><br/>";
@@ -376,7 +374,11 @@ function create_table_agences($header, $liste_agence)
         $table_agences .= "<td class='td_n' style='width: 100px;'>" . $agence['code_district'] . "</td>";
         $table_agences .= "<td class='td_n' style='width: 100px;'>" . $agence['code_vp'] . " (" . $agence['code_vp_alpha'] . ")</td>";
         $table_agences .= "<td class='td_n' style='width: 100px;'>" . $agence['code_vu'] . " (" . $agence['code_vu_alpha'] . ")</td>";
-        $table_agences .= "<td class='td_n' style='width: 70px;'>" . $agence['code_gare'] . "</td>";
+        if ($agence['code_gare_alpha']) {
+            $table_agences .= "<td class='td_n' style='width: 100px;'>" . $agence['code_gare'] . " (" . $agence['code_gare_alpha'] . ")</td>";
+        } else {
+            $table_agences .= "<td class='td_n' style='width: 100px;'>" . $agence['code_gare'] . "</td>";
+        }
         $table_agences .= "<td class='td_n' style='width: 100px;'>
         <button class='btn btn-success' onclick='modifier_agence(" . $agence["ID"] . ")'>Modifier</button> </td>";
         $table_agences .= "</tr>";
@@ -1488,13 +1490,113 @@ function get_payplan()
     LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
     LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
     
-    WHERE factureventes.date_facturation>='2022-11-01'");
+    WHERE factureventes.date_facturation>='2022-11-10'");
 
     $payplan = $request->fetchAll(PDO::FETCH_ASSOC);
 
 
     return $payplan;
 }
+
+
+
+function create_table_payplan($array, $header)
+{
+    $table_payplan = "";
+
+    $commisionable = 1;
+
+    //header
+    $table_payplan .= "<tr>";
+    foreach ($header as $title_header) {
+        $table_payplan .= "<th class='th1'> $title_header </th>";
+    }
+    $table_payplan .= "</tr>";
+    //fin header
+
+    //contenu
+    foreach ($array as $payplan) {
+
+        $type_de_com = define_type_com($payplan['Type_Achat'], $payplan['Type_Vehicule'], $payplan['Categorie_VU']);
+        $frais_financier = define_frais_financier($payplan['Prix_achat_net_remise'], $payplan['Duree_stock'], $commisionable);
+        $marge = define_marge($payplan, $commisionable);
+        $commission = define_commission($type_de_com);
+        $taux_com_reprise = define_taux_com_reprise($type_de_com, $payplan['Nom_Acheteur'], $payplan['Vendeur']);
+        $com_reprise = define_com_reprise($type_de_com, $taux_com_reprise, $marge, $commisionable);
+        $controle_marge_negoce = define_controle_marge_negoce($marge, $payplan['Marge_nette']);
+        $controle_date = define_controle_date($payplan['Date_facturation'], $payplan['Date_Vente']);
+        $frais_remise_etat = define_frais_remise_etat($payplan['Montant_Revision'], $payplan['Montant_Carrosserie'], $payplan['Montant_Preparation'], $payplan['Montant_Ct']);
+        $pdtcomplementaire = define_pdt_complementaire_total($payplan['Marge_Financement'], $payplan['Montant_Garantie'], $payplan['Marge_Pack'], $payplan['Montant_Pack_Livraison'], $payplan['Marges_diverses']);
+        $date_facturation = strtotime($payplan['Date_facturation']);
+        $mois_vente = date("m", $date_facturation);
+
+       
+
+
+        $table_payplan .= "<tr>";
+        $table_payplan .= "<td class='td_n' style='width: 850px;'>" . $payplan['Immatriculation'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . utf8_encode($payplan['Destination']) . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Type_Vehicule'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . utf8_encode($payplan['Type_Achat']) . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Categorie_VU'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Modele'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Reference_lot'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . utf8_encode($payplan['Finition']) . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Parc_Achat'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Nom_Acheteur'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Date_Vente'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Prix_achat_net_remise'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Duree_stock'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Date_premiere_location'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Date_derniere_location'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Date_stock'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Prix_carte_grise'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Prix_transport'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant_Bonus_Malus'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Commission_GCA'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Commission_Achat'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Marge_nette'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Vendeur'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Destination_sortie'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Prix_reserve'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Client'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Marge_Financement'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant_Garantie'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Marge_Pack'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant_Pack_Livraison'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Marges_diverses'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Commissions_Massoutre'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant_Publicite'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant_Revision'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant_Carrosserie'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant_Preparation'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant_Ct'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Prix_Transport_CVO'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Date_facturation'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . utf8_encode($payplan['Options']) . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $type_de_com . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $frais_financier  . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $marge . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $commission . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $taux_com_reprise . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $com_reprise . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $controle_marge_negoce . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $controle_date . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $frais_remise_etat . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $pdtcomplementaire . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $mois_vente . " </td>";
+        $table_payplan .= "</tr>";
+
+    }
+    //fin contenu
+
+    return $table_payplan;
+}
+
+
+
+
 
 function define_type_com($type_achat, $type_vh, $cat_vu)
 {
@@ -1520,7 +1622,119 @@ function define_frais_financier($prix_acht_net_rmisé, $duree_stock, $commisiona
     return round($return, 2);
 }
 
-
-function define_marge($destination, $montant, $prix_cg, $prix_transport, $montant_bonus_malus)
+function define_prix_reserve2($destination, $montant)
 {
+    ($destination == 'Location') ? $return = $montant : $return = 0;
+    return $return;
+}
+
+
+
+function define_marge($array, $commisionable)
+{
+
+
+    $destination = $array['Destination'];
+    $montant = $array['Montant'];
+    $prix_reserve2 = define_prix_reserve2($array['Destination'], $array['Montant']);
+    $prix_cg = $array['Prix_carte_grise'];
+    $prix_transport = $array['Prix_transport'];
+    $montant_bonus_malus = $array['Montant_Bonus_Malus'];
+    $commission_GCA = $array['Commission_GCA'];
+    $commission_achat = $array['Commission_Achat'];
+    $marge_financement = $array['Marge_Financement'];
+    $montant_garanti = $array['Montant_Garantie'];
+    $marge_pack = $array['Marge_Pack'];
+    $montant_pack_livraison = $array['Montant_Pack_Livraison'];
+    $marges_diverses = $array['Marges_diverses'];
+    $commision_massoutre = $array['Commissions_Massoutre'];
+    $montant_publicite = $array['Montant_Publicite'];
+    $montant_revision = $array['Montant_Revision'];
+    $montant_carrosserie = $array['Montant_Carrosserie'];
+    $montant_preparation = $array['Montant_Preparation'];
+    $montant_ct = $array['Montant_Ct'];
+    $prix_transport_cvo = $array['Prix_Transport_CVO'];
+    $frais_financier = define_frais_financier($array['Prix_achat_net_remise'], $array['Duree_stock'], $commisionable);
+    $prix_achat_net_remise = $array['Prix_achat_net_remise'];
+    $commissionnables = 1;
+
+    // possibilité plus tard de mettre un switch case
+    if ($destination == 'Location') {
+        $marge = ($montant - $prix_reserve2 - $prix_cg - $prix_transport - $montant_bonus_malus - $commission_GCA - $commission_achat + $marge_financement + $montant_garanti + $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier);
+    } else {
+        $marge = (($montant - $prix_achat_net_remise - $prix_cg - $prix_transport - $montant_bonus_malus - $commission_GCA - $commission_achat - $marge_financement - $montant_garanti - $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier) * $commissionnables);
+    }
+
+    return $marge;
+}
+
+
+
+
+
+function define_commission($type_com)
+{
+    switch ($type_com) {
+        case "Com. Reprise":
+            $commission = 0;
+            break;
+
+        case "Com. VP":
+            $commission = 15;
+            break;
+    }
+    return $commission;
+}
+
+function define_taux_com_reprise($type_com, $nom_acheteur, $nom_vendeur)
+{
+    if ($type_com == 'Com. Reprise') {
+        ($nom_acheteur == $nom_vendeur) ? $taux_com_reprise = 10 : $taux_com_reprise = 5;
+    } else {
+        $taux_com_reprise = 0;
+    }
+    return $taux_com_reprise;
+}
+
+function define_com_reprise($type_com, $taux_com_reprise, $marge, $commisionable)
+{
+    if ($type_com == 'Com. Reprise') {
+        if ($taux_com_reprise * $marge > 10000) {
+            $com_reprise = 10000;
+        } else {
+            $com_reprise =  $taux_com_reprise * $marge;
+        }
+    } else {
+        $com_reprise = 0;
+    }
+    $com_reprise = $com_reprise * 1;
+    return  $com_reprise;
+}
+
+function define_controle_marge_negoce($marge, $marge_nette)
+{
+    $marge_negoce = $marge - $marge_nette;
+    return $marge_negoce;
+}
+
+// return booleen
+function define_controle_date($date_facturation, $date_vente)
+{
+    if ($date_facturation == $date_vente) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+function define_frais_remise_etat($montant_revision, $montant_carrosserie, $montant_preparation, $montant_ct)
+{
+    $return = $montant_revision + $montant_carrosserie + $montant_preparation + $montant_ct;
+    return $return;
+}
+
+function define_pdt_complementaire_total($marge_financement, $montant_garanti, $marge_pack, $montant_pack_livraison, $marge_diverses)
+{
+    $return = $marge_financement + $montant_garanti + $marge_pack + $montant_pack_livraison + $marge_diverses;
+    return $return;
 }
