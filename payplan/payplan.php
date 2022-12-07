@@ -16,7 +16,7 @@
 
 
 
-    <title>Portail Massoutre - Marge </title>
+    <title>Portail Massoutre - Payplan </title>
 </head>
 
 <body>
@@ -55,11 +55,11 @@
     <main>
 
         <H2> PAYPLAN </H2>
+        <button type="button" class="btn btn-success" style="vertical-align: auto;">Update <i class='bx bx-refresh bx-sm bx-tada'></i></button>
+        <?php
 
-
+        ?>
         <form class="my_form_marge">
-
-
             <?php
             ini_set('xdebug.var_display_max_depth', 99);
 
@@ -69,7 +69,7 @@
                 <label for="select_collaborateur">Collaborateur</label>
                 <?php
 
-                $all_collaborateurs_cvo = get_all_collaborateurs_cvo();
+                $all_collaborateurs_cvo = get_all_collaborateurs_cvo_for_select();
                 // var_dump($all_collaborateurs_cvo);
                 // die();
 

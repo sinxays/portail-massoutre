@@ -1409,16 +1409,18 @@ function vider_vp_vu_cumul()
     $statement->execute();
 }
 
-function get_all_collaborateurs_cvo()
+function get_all_collaborateurs_payplan()
 {
-    // $pdo = Connection::getPDO();
-    // $request = $pdo->query("SELECT c.nom,c.prenom,c.identifiant_payplan,f.fonction,cvo.nom_cvo FROM collaborateurs_payplan as c
-    //                         LEFT JOIN fonction_collaborateur as f ON c.id_fonction = f.ID 
-    //                         LEFT JOIN cvo ON c.id_site = cvo.ID 
-    //                         ORDER BY c.nom ASC");
-    // $result = $request->fetchAll(PDO::FETCH_ASSOC);
-    // return $result;
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet,ID,identifiant_payplan 
+                            FROM collaborateurs_payplan
+                            ORDER BY nom ASC");
+    $liste_collaborateurs_payplan = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $liste_collaborateurs_payplan;
+}
 
+function get_all_collaborateurs_cvo_for_select()
+{
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT ID,nom_cvo FROM cvo
                             ORDER BY nom_cvo ASC");
@@ -1436,7 +1438,6 @@ function get_all_collaborateurs_cvo()
 
 function get_payplan()
 {
-
     $pdo = Connection::getPDO_2();
     $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
     destinations.libelle AS Destination,
@@ -1493,8 +1494,7 @@ function get_payplan()
     WHERE factureventes.date_facturation>='2022-11-10'");
 
     $payplan = $request->fetchAll(PDO::FETCH_ASSOC);
-
-
+    
     return $payplan;
 }
 
@@ -1502,9 +1502,17 @@ function get_payplan()
 
 function create_table_payplan($array, $header)
 {
+
+    $toto = "pas trouvé";
+    $commisionable = 1;
     $table_payplan = "";
 
-    $commisionable = 1;
+    $array_collaborateurs_payplan = get_all_collaborateurs_payplan();
+
+    var_dump($array_collaborateurs_payplan);
+
+
+
 
     //header
     $table_payplan .= "<tr>";
@@ -1530,11 +1538,15 @@ function create_table_payplan($array, $header)
         $date_facturation = strtotime($payplan['Date_facturation']);
         $mois_vente = date("m", $date_facturation);
 
-       
+
+        if ($payplan['Nom_Acheteur'] == "SACHA DESFOSSES") {
+            $toto = "trouvé";
+        }
+
 
 
         $table_payplan .= "<tr>";
-        $table_payplan .= "<td class='td_n' style='width: 850px;'>" . $payplan['Immatriculation'] . " </td>";
+        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Immatriculation'] . " </td>";
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . utf8_encode($payplan['Destination']) . " </td>";
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Type_Vehicule'] . " </td>";
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . utf8_encode($payplan['Type_Achat']) . " </td>";
@@ -1587,9 +1599,10 @@ function create_table_payplan($array, $header)
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $pdtcomplementaire . " </td>";
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $mois_vente . " </td>";
         $table_payplan .= "</tr>";
-
     }
     //fin contenu
+
+    var_dump($toto);
 
     return $table_payplan;
 }
