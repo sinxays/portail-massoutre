@@ -1494,7 +1494,7 @@ function get_payplan()
     WHERE factureventes.date_facturation>='2022-11-10'");
 
     $payplan = $request->fetchAll(PDO::FETCH_ASSOC);
-    
+
     return $payplan;
 }
 
@@ -1503,13 +1503,12 @@ function get_payplan()
 function create_table_payplan($array, $header)
 {
 
-    $toto = "pas trouvé";
     $commisionable = 1;
     $table_payplan = "";
 
     $array_collaborateurs_payplan = get_all_collaborateurs_payplan();
 
-    var_dump($array_collaborateurs_payplan);
+    // var_dump($array_collaborateurs_payplan);
 
 
 
@@ -1537,12 +1536,6 @@ function create_table_payplan($array, $header)
         $pdtcomplementaire = define_pdt_complementaire_total($payplan['Marge_Financement'], $payplan['Montant_Garantie'], $payplan['Marge_Pack'], $payplan['Montant_Pack_Livraison'], $payplan['Marges_diverses']);
         $date_facturation = strtotime($payplan['Date_facturation']);
         $mois_vente = date("m", $date_facturation);
-
-
-        if ($payplan['Nom_Acheteur'] == "SACHA DESFOSSES") {
-            $toto = "trouvé";
-        }
-
 
 
         $table_payplan .= "<tr>";
@@ -1586,7 +1579,12 @@ function create_table_payplan($array, $header)
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Montant_Ct'] . " </td>";
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Prix_Transport_CVO'] . " </td>";
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $payplan['Date_facturation'] . " </td>";
-        $table_payplan .= "<td class='td_n' style='width: 150px;'>" . utf8_encode($payplan['Options']) . " </td>";
+        if ($payplan['Type_Achat'] == 'Reprise') {
+            $table_payplan .= "<td class='td_n' style='width: 150px;'><strong style='font-size: 12px;'>" . utf8_encode($payplan['Options']) . " </strong></td>";
+        } else {
+            $table_payplan .= "<td class='td_n' style='width: 150px;'></td>";
+        }
+
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $type_de_com . " </td>";
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $frais_financier  . " </td>";
         $table_payplan .= "<td class='td_n' style='width: 150px;'>" . $marge . " </td>";
@@ -1601,9 +1599,6 @@ function create_table_payplan($array, $header)
         $table_payplan .= "</tr>";
     }
     //fin contenu
-
-    var_dump($toto);
-
     return $table_payplan;
 }
 
