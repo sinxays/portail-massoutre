@@ -74,7 +74,7 @@
 
             ?>
 
-            <div class="my_div_form">
+            <div class="my_div_form" id="collaborateur_div">
                 <label for="select_collaborateur">Collaborateur</label>
                 <?php
 

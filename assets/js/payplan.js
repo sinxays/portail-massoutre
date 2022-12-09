@@ -46,27 +46,33 @@ $(document).ready(function () {
 
     // au select du tableau collaborateurs
     $("#bouton_tableau_collaborateurs").click(function (e) {
-        console.log("toto");
+        $("#table_payplan").fadeOut(0);
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
             type: "POST",
             data: { choix_tableau_payplan: $(this).val() },
             success: function (data) {
                 $("#table_payplan").html(data);
+                $("#table_payplan").fadeIn(300);
                 $("#select_site_payplan").val(0);
+                $("#collaborateur_div").fadeIn(300);
             }
         });
     });
 
     // au select du tableau collaborateurs
     $("#bouton_tableau_commision").click(function (e) {
+        $("#table_payplan").fadeOut(0);
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
             type: "POST",
             data: { choix_tableau_payplan: $(this).val() },
             success: function (data) {
                 $("#table_payplan").html(data);
+                $("#table_payplan").fadeIn(300);
                 $("#select_site_payplan").val(0);
+                $("#collaborateur_div").fadeOut(300);
+
             }
         });
     });

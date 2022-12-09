@@ -344,12 +344,9 @@ function create_table_marges($header, $liste_agence)
         $table_marges .= "<td class='td_n'>0</td>";
         $table_marges .= "<td class='td_n'>0</td>";
         $table_marges .= "<td class='td_n'>0</td>";
-
         $table_marges .= "</tr>";
     }
-
     $table_marges .= "</table> ";
-
     return $table_marges;
 }
 
