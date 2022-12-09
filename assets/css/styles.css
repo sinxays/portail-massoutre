@@ -466,7 +466,7 @@ img {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     margin: 0px 10px 0px 10px;
-    font-size: 60%;
+    font-size: 70%;
   }
 
   .my_tab_perso td,
@@ -474,6 +474,8 @@ img {
     border: 1px solid #ddd;
     padding: 8px;
   }
+
+
 
   /* pour une ligne sur deux en grisé , even pour les lignes paires */
   .my_tab_perso tr:nth-child(even) {
@@ -493,12 +495,11 @@ img {
   }
 
   .my_tab_perso .th1 {
-    /* padding-top: 12px;
-    padding-bottom: 12px; */
+    padding-top: 12px;
+    padding-bottom: 12px;
     text-align: left;
     background-color: #ff6e6e;
     color: white;
-    max-width: 100px;
   }
 
   .my_tab_perso .th2 {
@@ -524,6 +525,36 @@ img {
   .my_tab_perso .td_n {
     font-weight: bold;
   }
+
+  /* PAYPLAN */
+  .my_tab_payplan {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    margin: 0px 10px 0px 10px;
+    font-size: 60%;
+  }
+
+  .my_tab_payplan td,
+  .my_tab_payplan th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  .my_tab_payplan .th1 {
+    text-align: left;
+    background-color: #ff6e6e;
+    color: white;
+  }
+
+  .payplan_collaborateurs_option{
+    background-color: #ffffff;
+    color: rgb(15, 15, 15);
+  }
+
+
+
+ /* FIN PAYPLAN */
+
 
 
   /**********************************************************/

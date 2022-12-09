@@ -78,7 +78,7 @@
                 foreach ($all_collaborateurs_cvo as $site_cvo) {
                     echo "<optgroup class='opt1' label='" . $site_cvo['nom_cvo'] . "' >";
                     foreach ($site_cvo['collaborateurs'] as $collaborateur) {
-                        echo "<option value='" . $collaborateur['ID'] . "'>" . $collaborateur['nom'] . " " . $collaborateur['prenom'] . "</option>";
+                        echo "<option class='payplan_collaborateurs_option' value='" . $collaborateur['ID'] . "'>" . $collaborateur['nom'] . " " . $collaborateur['prenom'] . "</option>";
                     }
                     echo "</optgroup>";
                 }
@@ -115,7 +115,12 @@
 
         </br>
 
-        <table class="my_tab_perso" id="table_payplan"> </table>
+        <table class="my_tab_payplan" id="table_payplan"> </table>
+
+        </br> </br>
+
+
+       
 
         <?php
         saut_de_ligne();
