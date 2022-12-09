@@ -55,11 +55,20 @@
     <main>
 
         <H2> PAYPLAN </H2>
-        <button type="button" class="btn btn-success" style="vertical-align: auto;">Update <i class='bx bx-refresh bx-sm bx-tada'></i></button>
-        <?php
 
-        ?>
-        <form class="my_form_marge">
+        <div class="div_payplan_update">
+            <div class="div_payplan_update1">
+                <button type="button" class="btn btn-success" style="text-align: center;"><span>Update</span> <i class='bx bx-refresh bx-sm bx-tada'></i></button>
+            </div>
+            <div class="div_payplan_update2">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-primary" id="bouton_tableau_collaborateurs" value="collaborateurs">Tableau collaborateurs Payplan</button>
+                    <button type="button" class="btn btn-warning" id="bouton_tableau_commision" value="commission">Tableau Commission Total</button>
+                </div>
+            </div>
+        </div>
+
+        <form class="my_form_payplan">
             <?php
             ini_set('xdebug.var_display_max_depth', 99);
 
@@ -88,8 +97,8 @@
             </div>
 
             <div class="my_div_form">
-                <label for="afficher_site_cvo">Site</label>
-                <select id="afficher_site_cvo" class="form-select">
+                <label for="select_site_payplan">Site</label>
+                <select id="select_site_payplan" class="form-select">
                     <?php
                     echo "<option value='0'> Tout </option>";
                     foreach ($all_collaborateurs_cvo as $site) {
@@ -101,15 +110,15 @@
 
             <div class="my_div_form">
                 <label for="date_locations_stats_debut">Date Début</label>
-                <input type="date" id="date_locations_stats_debut" placeholder="Date de début locations stats" />
+                <input type="date" id="date_locations_stats_debut" style="border-radius: 5px;" placeholder="Date de début locations stats" />
             </div>
             <div class="my_div_form">
                 <label for="date_locations_stats_fin">Date Fin</label>
-                <input type="date" id="date_locations_stats_fin" placeholder="Date de fin locations stats" />
+                <input type="date" id="date_locations_stats_fin" style="border-radius: 5px;" placeholder="Date de fin locations stats" />
             </div>
 
             <div class="my-last-div-form">
-                <button type="button" class="btn btn-success">reinitialiser</button>
+                <button type="button" class="btn btn-success"> réinitialiser filtre </button>
             </div>
         </form>
 
@@ -120,7 +129,7 @@
         </br> </br>
 
 
-       
+
 
         <?php
         saut_de_ligne();

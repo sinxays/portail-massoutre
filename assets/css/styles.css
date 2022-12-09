@@ -527,6 +527,38 @@ img {
   }
 
   /* PAYPLAN */
+
+  .div_payplan_update {
+    width: 100%;
+    height: auto;
+    margin: 20px;
+    border: #c537a4 0px solid;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .div_payplan_update1 {
+    width: 30%;
+    height: auto;
+    margin: 20px;
+    border: #c537a4 0px solid;
+    display: flex;
+    flex-direction: row;
+
+  }
+
+  .div_payplan_update2 {
+    width: 70%;
+    height: auto;
+    margin: 20px;
+    border: #c537a4 0px solid;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: flex-start;
+
+  }
+
   .my_tab_payplan {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
@@ -546,14 +578,14 @@ img {
     color: white;
   }
 
-  .payplan_collaborateurs_option{
+  .payplan_collaborateurs_option {
     background-color: #ffffff;
     color: rgb(15, 15, 15);
   }
 
 
 
- /* FIN PAYPLAN */
+  /* FIN PAYPLAN */
 
 
 
@@ -572,6 +604,15 @@ img {
     height: 120px;
     border: #19181B 1px solid;
     margin-top: 20px;
+  }
+
+  .my_form_payplan {
+    width: 100%;
+    height: auto;
+    border: #19181B 0px solid;
+    border-radius: 20px;
+    margin: 10px;
+    background-color: #F5F5DC;
   }
 
   .my_select_stats {
@@ -600,7 +641,7 @@ img {
   .my-last-div-form {
     width: auto;
     height: auto;
-    border: #c537a4 1px solid;
+    border: #c537a4 0px solid;
     margin: 30px;
     right: 200px;
     display: inline-block;

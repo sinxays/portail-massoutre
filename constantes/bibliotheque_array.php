@@ -33,6 +33,8 @@ $payplan_table_header_row = array(
     "Contrôle date", "Frais remise en état", "Pdt complémentaire total", "Mois Vente"
 );
 
+$collaborateurs_payplan_header_row = array("Collaborateur", "Reprise cash", "Reprise sur vente");
+
 
 $imprimantes_table_header_row = array(
     "N° Série", "Agence", "Emplacement", "Prestataire", "Marque", "Modèle", "IP VPN", "IP locale"
