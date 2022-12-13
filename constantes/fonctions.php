@@ -1136,8 +1136,18 @@ function get_payplan()
 
     $payplan = $request->fetchAll(PDO::FETCH_ASSOC);
 
+
+
     return $payplan;
 }
+
+function define_payplan($payplan)
+{
+
+}
+
+
+
 
 function define_type_com($type_achat, $type_vh, $cat_vu)
 {

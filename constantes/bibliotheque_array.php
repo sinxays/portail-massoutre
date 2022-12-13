@@ -33,7 +33,7 @@ $payplan_table_header_row = array(
     "Contrôle date", "Frais remise en état", "Pdt complémentaire total", "Mois Vente"
 );
 
-$collaborateurs_payplan_header_row = array("Collaborateur", "Reprise cash", "Reprise sur vente");
+$collaborateurs_payplan_header_row = array("Collaborateur", "Reprise");
 
 
 $imprimantes_table_header_row = array(

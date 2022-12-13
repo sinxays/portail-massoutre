@@ -17,7 +17,6 @@ function create_table_collaborateurs_payplan($header, $array_collaborateurs)
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet"] . " </td>";
         $table_collaborateurs_payplan .= "<td>0</td>";
-        $table_collaborateurs_payplan .= "<td>0</td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
 
