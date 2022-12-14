@@ -389,7 +389,7 @@ function create_table_payplan($header, $array)
 
         $table_payplan .= "<tr>";
         $table_payplan .= "<td  style='width: 50px;'>" . $payplan['Immatriculation'] . " </td>";
-        $table_payplan .= "<td>" . utf8_encode($payplan['Destination']) . " </td>";
+        $table_payplan .= "<td>" . $payplan['Destination'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Type_Vehicule'] . " </td>";
         $table_payplan .= "<td>" . utf8_encode($payplan['Type_Achat']) . " </td>";
         $table_payplan .= "<td>" . $payplan['Categorie_VU'] . " </td>";
