@@ -1,5 +1,9 @@
 $(document).ready(function () {
 
+    // réglages au chargement de la page
+    $("#collaborateur_div").hide();
+    $("#bouton_tableau_commision").focus();
+
 
 
     // load le tableau payplan 
@@ -44,6 +48,7 @@ $(document).ready(function () {
         });
     });
 
+
     // au select du tableau collaborateurs
     $("#bouton_tableau_collaborateurs").click(function (e) {
         $("#table_payplan").fadeOut(0);
@@ -60,7 +65,7 @@ $(document).ready(function () {
         });
     });
 
-    // au select du tableau collaborateurs
+    // au select du tableau comission total
     $("#bouton_tableau_commision").click(function (e) {
         $("#table_payplan").fadeOut(0);
         $.ajax({
@@ -76,6 +81,21 @@ $(document).ready(function () {
             }
         });
     });
+
+    // au select du tableau collaborateurs
+    $("#bouton_update_payplan").click(function (e) {
+        $("#table_payplan").fadeOut(0);
+        $.ajax({
+            url: "/payplan/req/req_tableau_payplan.php",
+            data: {},
+            success: function (data) {
+                $("#table_payplan").html(data);
+                $("#table_payplan").fadeIn(300);
+            }
+        });
+    });
+
+
 
 
 });

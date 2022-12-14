@@ -58,7 +58,7 @@
 
         <div class="div_payplan_update">
             <div class="div_payplan_update1">
-                <button type="button" class="btn btn-success" style="text-align: center;"><span>Update</span> <i class='bx bx-refresh bx-sm bx-tada'></i></button>
+                <button type="button" class="btn btn-success" style="text-align: center;" id="bouton_update_payplan"><span>Update</span> <i class='bx bx-refresh bx-sm bx-tada'></i></button>
             </div>
             <div class="div_payplan_update2">
                 <div class="btn-group" role="group" aria-label="Basic example">
@@ -96,7 +96,7 @@
 
             </div>
 
-            <div class="my_div_form">
+            <!-- <div class="my_div_form">
                 <label for="select_site_payplan">Site</label>
                 <select id="select_site_payplan" class="form-select">
                     <?php
@@ -104,6 +104,30 @@
                     foreach ($all_collaborateurs_cvo as $site) {
                         echo "<option value='" . $site['ID'] . "'>" . $site['nom_cvo'] . "</option>";
                     }
+                    ?>
+                </select>
+            </div> -->
+
+            <div class="my_div_form">
+                <label for="select_destination_payplan">Destination</label>
+                <select id="select_destination_payplan" class="form-select">
+                    <?php
+                    echo "<option value=0> Tout </option>";
+                    echo "<option value=1> Location </option>";
+                    echo "<option value=2> Négoce </option>";
+                    ?>
+                </select>
+            </div>
+
+            <div class="my_div_form">
+                <label for="select_type_achat_payplan">Type Achat</label>
+                <select id="select_type_achat_payplan" class="form-select">
+                    <?php
+                    echo "<option value=0> Tout </option>";
+                    echo "<option value=1> Occasion </option>";
+                    echo "<option value=2> Neuf </option>";
+                    echo "<option value=3> Reprise </option>";
+
                     ?>
                 </select>
             </div>
