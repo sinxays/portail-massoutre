@@ -108,7 +108,7 @@
                 </select>
             </div> -->
 
-            <div class="my_div_form">
+            <div class="my_div_form" id="div_form_destination">
                 <label for="select_destination_payplan">Destination</label>
                 <select id="select_destination_payplan" class="form-select">
                     <?php
@@ -119,7 +119,7 @@
                 </select>
             </div>
 
-            <div class="my_div_form">
+            <div class="my_div_form" id="div_form_type_achat" > 
                 <label for="select_type_achat_payplan">Type Achat</label>
                 <select id="select_type_achat_payplan" class="form-select">
                     <?php

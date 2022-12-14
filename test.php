@@ -47,13 +47,8 @@
     include "include.php";
 
 
-    // $test = get_all_identifiants_collaborateurs_payplan();
-    // var_dump($test);
-
-
-
-    $nb = get_reprise_by_collaborateur(17);
-    var_dump($nb);
+    $test = get_payplan();
+    define_payplan($test);
 
 
 

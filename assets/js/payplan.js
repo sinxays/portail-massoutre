@@ -21,9 +21,9 @@ $(document).ready(function () {
         $.ajax({
             url: "/payplan/req/onSelect_collaborateur.php",
             type: "POST",
-            data: { id_agence: $(this).val() },
+            data: { id_collaborateur: $(this).val() },
             success: function (data) {
-                $("#table_marge").html(data);
+                $("#table_payplan").html(data);
                 $("#afficherResultats_select").val("tous");
                 $("#afficherSecteurs_select").val(0);
                 $("#afficherDistrict_select").val(0);
@@ -36,15 +36,7 @@ $(document).ready(function () {
     // au select du site
     $("#afficherSecteurs_select").change(function (e) {
         $.ajax({
-            url: "/marge/req/onSelect_secteur.php",
-            type: "POST",
-            data: { id_secteur: $(this).val() },
-            success: function (data) {
-                $("#table_marge").html(data);
-                $("#afficherResultats_select").val("tous");
-                $("#afficher_agence").val(0);
-                $("#afficherDistrict_select").val(0);
-            }
+          
         });
     });
 
@@ -61,6 +53,8 @@ $(document).ready(function () {
                 $("#table_payplan").fadeIn(300);
                 $("#select_site_payplan").val(0);
                 $("#collaborateur_div").fadeIn(300);
+                $("#div_form_destination").fadeOut(300);
+                $("#div_form_type_achat").fadeOut(300);
             }
         });
     });
@@ -77,12 +71,13 @@ $(document).ready(function () {
                 $("#table_payplan").fadeIn(300);
                 $("#select_site_payplan").val(0);
                 $("#collaborateur_div").fadeOut(300);
-
+                $("#div_form_destination").fadeIn(300);
+                $("#div_form_type_achat").fadeIn(300);
             }
         });
     });
 
-    // au select du tableau collaborateurs
+    // update tableau payplan
     $("#bouton_update_payplan").click(function (e) {
         $("#table_payplan").fadeOut(0);
         $.ajax({

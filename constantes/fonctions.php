@@ -1152,27 +1152,32 @@ function define_payplan($payplan)
             if ($vehicule_transaction['Options'] !== '') {
                 //on cherche quel est le repreneur final
                 if (in_array($vehicule_transaction['Options'], $identifiants_collaborateurs_payplan)) {
+                    //on va chercher son ID
                     $repreneur_final_id = get_id_collaborateur_payplan_by_identification($vehicule_transaction['Options']);
-                    echo "c'est lui zeh (" . $repreneur_final_id . ")";
-
-                    /**** on alimente la table payplan *****/
-                    $data = [
-                        'collaborateur_id' =>  $repreneur_final_id,
-                        'immatriculation' => $vehicule_transaction['Immatriculation'],
-                        'date_vente' => $vehicule_transaction['Date_Vente']
-                    ];
-
-                    $sql = "INSERT INTO payplan (collaborateur_payplan_ID, immatriculation, date_vente) 
-                    VALUES (:collaborateur_id, :immatriculation,:date_vente)";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute($data);
+                    $immatriculation = $vehicule_transaction['Immatriculation'];
+                    /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
+                    $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE immatriculation = '$immatriculation'");
+                    $result = $request->fetchColumn();
+                    if (!$result) {
+                        /**** on alimente la table payplan *****/
+                        $data = [
+                            'collaborateur_id' =>  $repreneur_final_id,
+                            'immatriculation' => $vehicule_transaction['Immatriculation'],
+                            'date_vente' => $vehicule_transaction['Date_Vente']
+                        ];
+                        $sql = "INSERT INTO payplan (collaborateur_payplan_ID, immatriculation, date_vente) 
+                                        VALUES (:collaborateur_id, :immatriculation,:date_vente)";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute($data);
+                    }
                 }
             }
         }
     }
 }
 
-function get_reprise_by_collaborateur($id_collaborateur){
+function get_reprise_by_collaborateur($id_collaborateur)
+{
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE collaborateur_payplan_ID = $id_collaborateur");
     $result = $request->fetchColumn();
