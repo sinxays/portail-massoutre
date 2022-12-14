@@ -47,13 +47,14 @@
     include "include.php";
 
 
-    $prix_acht_net_rmisé = 6000;
-    $duree_stock =  34.65;
-    $commisionable = 1;
+    // $test = get_all_identifiants_collaborateurs_payplan();
+    // var_dump($test);
 
-    $test = define_frais_financier($prix_acht_net_rmisé, $duree_stock, $commisionable);
 
-    var_dump($test);
+
+    $nb = get_reprise_by_collaborateur(17);
+    var_dump($nb);
+
 
 
     ?>

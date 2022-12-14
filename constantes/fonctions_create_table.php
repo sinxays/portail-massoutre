@@ -14,9 +14,12 @@ function create_table_collaborateurs_payplan($header, $array_collaborateurs)
     $table_collaborateurs_payplan .= "</tr>";
 
     foreach ($array_collaborateurs as $collaborateur) {
+
+        $nb_reprise = get_reprise_by_collaborateur($collaborateur['ID']);
+
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet"] . " </td>";
-        $table_collaborateurs_payplan .= "<td>0</td>";
+        $table_collaborateurs_payplan .= "<td> $nb_reprise </td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
 
@@ -391,11 +394,11 @@ function create_table_payplan($header, $array)
         $table_payplan .= "<td  style='width: 50px;'>" . $payplan['Immatriculation'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Destination'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Type_Vehicule'] . " </td>";
-        $table_payplan .= "<td>" . utf8_encode($payplan['Type_Achat']) . " </td>";
+        $table_payplan .= "<td>" . $payplan['Type_Achat'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Categorie_VU'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Modele'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Reference_lot'] . " </td>";
-        $table_payplan .= "<td>" . utf8_encode($payplan['Finition']) . " </td>";
+        $table_payplan .= "<td>" . $payplan['Finition'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Parc_Achat'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Nom_Acheteur'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Date_Vente'] . " </td>";
