@@ -115,7 +115,7 @@
                     $select_destinations = get_destination_for_select();
                     echo "<option value=0> Tout </option>";
                     foreach ($select_destinations as $destination) {
-                        echo "<option value=" . $destination['id'] . "> " . $destination['libelle'] . " </option>";
+                        echo "<option value=" . $destination['id'] . "> " . mb_detect_encoding($destination['libelle']) . " </option>";
                     }
                     ?>
                 </select>
