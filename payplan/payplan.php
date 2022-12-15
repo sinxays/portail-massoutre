@@ -75,19 +75,19 @@
             ?>
 
             <div class="my_div_form" id="collaborateur_div">
-                <label for="select_collaborateur">Collaborateur</label>
+                <label for="select_collaborateur_payplan">Collaborateur</label>
                 <?php
 
                 $all_collaborateurs_cvo = get_all_collaborateurs_cvo_for_select();
                 // var_dump($all_collaborateurs_cvo);
                 // die();
 
-                echo "<select class='form-select' style='width : 200px;' id='select_collaborateur' data-id='id_collaborateur'>";
-                echo "<option value='0'> Tout </option>";
+                echo "<select class='form-select' style='width : 200px;' id='select_collaborateur_payplan' data-id='id_collaborateur'>";
+                echo "<option value=0> Tout </option>";
                 foreach ($all_collaborateurs_cvo as $site_cvo) {
                     echo "<optgroup class='opt1' label='" . $site_cvo['nom_cvo'] . "' >";
                     foreach ($site_cvo['collaborateurs'] as $collaborateur) {
-                        echo "<option class='payplan_collaborateurs_option' value='" . $collaborateur['ID'] . "'>" . $collaborateur['nom'] . " " . $collaborateur['prenom'] . "</option>";
+                        echo "<option class='payplan_collaborateurs_option' value=" . $collaborateur['ID'] . ">" . $collaborateur['nom'] . " " . $collaborateur['prenom'] . "</option>";
                     }
                     echo "</optgroup>";
                 }
@@ -112,14 +112,14 @@
                 <label for="select_destination_payplan">Destination</label>
                 <select id="select_destination_payplan" class="form-select">
                     <?php
-                    echo "<option value=0> Tout </option>";
-                    echo "<option value=1> Location </option>";
-                    echo "<option value=2> Négoce </option>";
+                    echo "<option value='tout'> Tout </option>";
+                    echo "<option value='Location'> Location </option>";
+                    echo "<option value='Negoce'> Négoce </option>";
                     ?>
                 </select>
             </div>
 
-            <div class="my_div_form" id="div_form_type_achat" > 
+            <div class="my_div_form" id="div_form_type_achat">
                 <label for="select_type_achat_payplan">Type Achat</label>
                 <select id="select_type_achat_payplan" class="form-select">
                     <?php
@@ -141,9 +141,9 @@
                 <input type="date" id="date_locations_stats_fin" style="border-radius: 5px;" placeholder="Date de fin locations stats" />
             </div>
 
-            <div class="my-last-div-form">
+            <!-- <div class="my-last-div-form">
                 <button type="button" class="btn btn-success"> réinitialiser filtre </button>
-            </div>
+            </div> -->
         </form>
 
         </br>

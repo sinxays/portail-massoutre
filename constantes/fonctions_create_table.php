@@ -358,7 +358,7 @@ function create_table_payplan($header, $array)
     $commisionable = 1;
     $table_payplan = "";
 
-    $array_collaborateurs_payplan = get_all_collaborateurs_payplan();
+    $array_collaborateurs_payplan = get_payplan_all_collaborateur();
 
     // var_dump($array_collaborateurs_payplan);
 
@@ -488,4 +488,23 @@ function create_table_reseaux($header, $liste_reseaux)
     // $return["requete"] = $tableau_stats["requete"];
 
     return $return;
+}
+
+function create_table_payplan_by_collaborateur($header, $array_collaborateur)
+{
+    $table_collaborateur_payplan = "";
+
+    $table_collaborateur_payplan .= "<tr>";
+    foreach ($header as $title_header) {
+        $table_collaborateur_payplan .= "<th class='th1'> $title_header </th>";
+    }
+    $table_collaborateur_payplan .= "</tr>";
+
+    $table_collaborateur_payplan .= "<tr>";
+    $table_collaborateur_payplan .= "<td>" . $array_collaborateur["nom_collaborateur"] . " </td>";
+    $table_collaborateur_payplan .= "<td> " . $array_collaborateur['nb_reprise'] . " </td>";
+    $table_collaborateur_payplan .= "</tr>";
+
+
+    return $table_collaborateur_payplan;
 }

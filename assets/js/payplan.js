@@ -17,26 +17,39 @@ $(document).ready(function () {
 
 
     // au select du collaborateur
-    $("#select_collaborateur").change(function (e) {
+    $("#select_collaborateur_payplan").change(function (e) {
         $.ajax({
             url: "/payplan/req/onSelect_collaborateur.php",
             type: "POST",
             data: { id_collaborateur: $(this).val() },
             success: function (data) {
-                $("#table_payplan").html(data);
-                $("#afficherResultats_select").val("tous");
-                $("#afficherSecteurs_select").val(0);
-                $("#afficherDistrict_select").val(0);
+                var parsed = JSON.parse(data);
+                $("#table_payplan").html(parsed["table_payplan"]);
+                $("#select_collaborateur_payplan").val(parsed["id_collaborateur"]);
+            }
+        });
+    });
 
+    // au select de la destination
+    $("#select_destination_payplan").change(function (e) {
+        // $destination = this.val();
+        $.ajax({
+            url: "/payplan/req/onSelect_payplan_filtre.php",
+            type: "POST",
+            data: { destination: $(this).val() },
+            success: function (data) {
+                $("#table_payplan").html(data);
+                $("#select_collaborateur_payplan").val($destination);
             }
         });
     });
 
 
+
     // au select du site
     $("#afficherSecteurs_select").change(function (e) {
         $.ajax({
-          
+
         });
     });
 

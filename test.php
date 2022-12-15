@@ -16,7 +16,7 @@
 
 
 
-    <title>Portail Massoutre - Agences</title>
+    <title>Portail Massoutre - test</title>
 </head>
 
 <body>
@@ -47,8 +47,13 @@
     include "include.php";
 
 
-    $test = get_payplan();
-    define_payplan($test);
+    // $test = get_payplan();
+    // define_payplan($test);
+
+
+    $time = date("m");
+    var_dump($time);
+
 
 
 

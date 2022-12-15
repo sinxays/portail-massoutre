@@ -1050,7 +1050,7 @@ function vider_vp_vu_cumul()
     $statement->execute();
 }
 
-function get_all_collaborateurs_payplan()
+function get_payplan_all_collaborateur()
 {
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet,ID,identifiant_payplan 
@@ -1058,6 +1058,27 @@ function get_all_collaborateurs_payplan()
                             ORDER BY nom ASC");
     $liste_collaborateurs_payplan = $request->fetchAll(PDO::FETCH_ASSOC);
     return $liste_collaborateurs_payplan;
+}
+
+
+function get_payplan_by_collaborateur($id)
+{
+
+    $return = array();
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT COUNT(*) FROM payplan 
+    LEFT JOIN collaborateurs_payplan ON collaborateurs_payplan.ID = payplan.collaborateur_payplan_ID 
+    WHERE payplan.collaborateur_payplan_ID = $id");
+    $nb_reprise = $request->fetchColumn();
+    $return['nb_reprise'] = $nb_reprise;
+
+    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet,ID,identifiant_payplan 
+    FROM collaborateurs_payplan
+    WHERE ID = $id");
+    $nom_collaborateur = $request->fetch(PDO::FETCH_ASSOC);
+    $return['nom_collaborateur'] = $nom_collaborateur['nom_complet'];
+
+    return $return;
 }
 
 function get_all_collaborateurs_cvo_for_select()
@@ -1077,9 +1098,45 @@ function get_all_collaborateurs_cvo_for_select()
     return $liste_site_cvo;
 }
 
-function get_payplan()
+function get_payplan($filtre = '')
 {
     $pdo = Connection::getPDO_2();
+
+    //choper le mois en cours avec m pour la version numerique
+    // $mois_en_cours = date("m");
+    $mois_en_cours = 11;
+    $annee_en_cours = date("Y");
+
+    $where_initial = "WHERE factureventes.date_facturation>='$annee_en_cours-$mois_en_cours-01'";
+
+    if (isset($filtre) && $filtre !== '') {
+
+        if (isset($filtre['destination']) && $filtre['destination'] !== '') {
+            $destination = $filtre['destination'];
+            $destination = "AND destinations.libelle = '$destination'";
+            $where_filtre = $where_initial . " " . $destination;
+        }
+        if (isset($filtre['type']) && $filtre['type'] !== '') {
+            $type = $filtre['type'];
+            $type = "AND typeachats.libelle = '$type'";
+            $where_filtre = $where_initial . " " . $type;
+        }
+        if (isset($filtre['date_debut_payplan']) && $filtre['date_debut_payplan'] !== '') {
+            $date_debut_payplan = $filtre['date_debut_payplan'];
+            $date_debut = "WHERE factureventes.date_facturation>='$date_debut_payplan'";
+            $where_filtre = $date_debut;
+        }
+        if (isset($filtre['date_fin_payplan']) && $filtre['date_fin_payplan'] !== '') {
+            $date_fin_payplan = $filtre['date_fin_payplan'];
+            $date_fin = "WHERE factureventes.date_facturation<='$date_fin_payplan'";
+            $where_filtre = $date_fin;
+        }
+    }
+
+
+
+    $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
+
     $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
     destinations.libelle AS Destination,
     typeachats.libelle AS Type_Achat,
@@ -1132,7 +1189,7 @@ function get_payplan()
     LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
     LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
     
-    WHERE factureventes.date_facturation>='2022-11-10'");
+    $where");
 
     $payplan = $request->fetchAll(PDO::FETCH_ASSOC);
 
@@ -1187,16 +1244,20 @@ function get_reprise_by_collaborateur($id_collaborateur)
 function test()
 {
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan WHERE collaborateur_payplan_ID = 17");
-    $result = $request->fetchAll(PDO::FETCH_ASSOC);
-    var_dump($result);
+
+    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet,ID,identifiant_payplan 
+    FROM collaborateurs_payplan
+    WHERE ID = 17");
+    $nom_collaborateur = $request->fetch(PDO::FETCH_ASSOC);
+    $return['nom_collaborateur'] = $nom_collaborateur['nom_complet'];
+    return $return;
 }
 
 
 function get_all_identifiants_collaborateurs_payplan()
 {
     $array_identifiants_collaborateurs = array();
-    $array_collaborateurs = get_all_collaborateurs_payplan();
+    $array_collaborateurs = get_payplan_all_collaborateur();
     foreach ($array_collaborateurs as $collaborateur) {
         array_push($array_identifiants_collaborateurs, $collaborateur['identifiant_payplan']);
     }
@@ -1297,6 +1358,14 @@ function define_commission($type_com)
         case "Com. VP":
             $commission = 15;
             break;
+
+        case "Com. VP":
+            $commission = 0;
+            break;
+
+        default:
+            $commission = 0;
+            break;
     }
     return $commission;
 }
@@ -1352,4 +1421,8 @@ function define_pdt_complementaire_total($marge_financement, $montant_garanti, $
 {
     $return = $marge_financement + $montant_garanti + $marge_pack + $montant_pack_livraison + $marge_diverses;
     return $return;
+}
+
+function get_payplan_destination($destination)
+{
 }
