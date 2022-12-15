@@ -113,9 +113,10 @@
                 <select id="select_destination_payplan" class="form-select">
                     <?php
                     $select_destinations = get_destination_for_select();
-                    echo "<option value='tout'> Tout </option>";
-                    echo "<option value='Location'> Location </option>";
-                    echo "<option value='Negoce'> Ngoce </option>";
+                    echo "<option value=0> Tout </option>";
+                    foreach ($select_destinations as $destination) {
+                        echo "<option value=" . $destination['id'] . "> " . utf8_encode($destination['libelle']) . " </option>";
+                    }
                     ?>
                 </select>
             </div>
