@@ -112,9 +112,10 @@
                 <label for="select_destination_payplan">Destination</label>
                 <select id="select_destination_payplan" class="form-select">
                     <?php
+                    $select_destinations = get_destination_for_select();
                     echo "<option value='tout'> Tout </option>";
                     echo "<option value='Location'> Location </option>";
-                    echo "<option value='Negoce'> Négoce </option>";
+                    echo "<option value='Negoce'> Ngoce </option>";
                     ?>
                 </select>
             </div>

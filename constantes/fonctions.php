@@ -1423,6 +1423,10 @@ function define_pdt_complementaire_total($marge_financement, $montant_garanti, $
     return $return;
 }
 
-function get_payplan_destination($destination)
+function get_destination_for_select()
 {
+    $pdo = Connection::getPDO_2();
+    $request = $pdo->query("SELECT id,libelle FROM destinations");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
 }

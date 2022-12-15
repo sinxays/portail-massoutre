@@ -51,7 +51,7 @@
     // define_payplan($test);
 
 
-    $time = date("m");
+    $time = get_destination_for_select();
     var_dump($time);
 
 
