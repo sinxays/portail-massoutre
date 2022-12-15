@@ -2,17 +2,18 @@
 
 include  "../../include.php";
 
-//filtre destination
-if ($_POST["destination"] && $_POST["destination"] !== "") {
-    $destination = $_POST["destination"];
-    if ($destination !== 'tout') {
-        $filtre['destination'] = $_POST["destination"];
-    } else {
-        $filtre = '';
-    }
+/*** filtre destination ***/
 
-    $payplan = get_payplan($filtre);
-    $table = create_table_payplan($payplan_table_header_row, $payplan);
-
-    echo $table;
+// si on choisit negoce ou locations
+if ($_POST["destination"]) {
+    $destination_id = intval($_POST["destination"]);
+    $filtre['destination'] = $destination_id;
 }
+// si on choisit tout
+else {
+    $filtre = '';
+}
+
+$payplan = get_payplan($filtre);
+$table = create_table_payplan($payplan_table_header_row, $payplan);
+echo $table;

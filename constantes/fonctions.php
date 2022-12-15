@@ -1112,8 +1112,9 @@ function get_payplan($filtre = '')
     if (isset($filtre) && $filtre !== '') {
 
         if (isset($filtre['destination']) && $filtre['destination'] !== '') {
-            $destination = $filtre['destination'];
-            $destination = "AND destinations.libelle = '$destination'";
+            $destination_id = $filtre['destination'];
+            $libelle_destination = get_libelle_destinations_from_id($destination_id);
+            $destination = "AND destinations.libelle = '$libelle_destination'";
             $where_filtre = $where_initial . " " . $destination;
         }
         if (isset($filtre['type']) && $filtre['type'] !== '') {
@@ -1427,6 +1428,22 @@ function get_destination_for_select()
 {
     $pdo = Connection::getPDO_2();
     $request = $pdo->query("SELECT id,libelle FROM destinations");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
+
+function get_libelle_destinations_from_id($destination_id)
+{
+    $pdo = Connection::getPDO_2();
+    $request = $pdo->query("SELECT libelle FROM destinations WHERE id = $destination_id");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return $result;
+}
+
+function get_payplan_detail_collaborateur($collaborateur_id)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT * FROM payplan WHERE collaborateur_payplan_ID = $collaborateur_id");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }

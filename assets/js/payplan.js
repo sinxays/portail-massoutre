@@ -32,14 +32,12 @@ $(document).ready(function () {
 
     // au select de la destination
     $("#select_destination_payplan").change(function (e) {
-        // $destination = this.val();
         $.ajax({
             url: "/payplan/req/onSelect_payplan_filtre.php",
             type: "POST",
             data: { destination: $(this).val() },
             success: function (data) {
                 $("#table_payplan").html(data);
-                $("#select_collaborateur_payplan").val($destination);
             }
         });
     });

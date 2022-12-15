@@ -15,11 +15,13 @@ function create_table_collaborateurs_payplan($header, $array_collaborateurs)
 
     foreach ($array_collaborateurs as $collaborateur) {
 
+        $id_collaborateur = $collaborateur['ID'];
+
         $nb_reprise = get_reprise_by_collaborateur($collaborateur['ID']);
 
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet"] . " </td>";
-        $table_collaborateurs_payplan .= "<td> $nb_reprise </td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=$id_collaborateur'> $nb_reprise </a></td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
 
@@ -390,9 +392,10 @@ function create_table_payplan($header, $array)
         $mois_vente = date("m", $date_facturation);
 
 
+
         $table_payplan .= "<tr>";
         $table_payplan .= "<td  style='width: 50px;'>" . $payplan['Immatriculation'] . " </td>";
-        $table_payplan .= "<td>" . $payplan['Destination'] . " </td>";
+        $table_payplan .= "<td>" . $payplan['Destination'] . "</td>";
         $table_payplan .= "<td>" . $payplan['Type_Vehicule'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Type_Achat'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Categorie_VU'] . " </td>";
@@ -507,4 +510,25 @@ function create_table_payplan_by_collaborateur($header, $array_collaborateur)
 
 
     return $table_collaborateur_payplan;
+}
+
+function create_table_payplan_detail_collaborateur($header, $array_detail_payplan)
+{
+    $table_collaborateur_payplan_detail = "";
+
+    $table_collaborateur_payplan_detail .= "<tr>";
+    foreach ($header as $title_header) {
+        $table_collaborateur_payplan_detail .= "<th class='th1'> $title_header </th>";
+    }
+    $table_collaborateur_payplan_detail .= "</tr>";
+
+    //contenu
+    foreach ($array_detail_payplan as $detail_payplan) {
+        $table_collaborateur_payplan_detail .= "<tr>";
+        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['immatriculation'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['date_vente'] . " </td>";
+        $table_collaborateur_payplan_detail .= "</tr>";
+    }
+    //fin contenu
+    return $table_collaborateur_payplan_detail;
 }

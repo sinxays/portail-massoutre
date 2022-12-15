@@ -33,6 +33,8 @@ $payplan_table_header_row = array(
     "Contrôle date", "Frais remise en état", "Pdt complémentaire total", "Mois Vente"
 );
 
+$payplan_detail_collaborateur_table_header_row = array("Immatriculation", "Date de vente");
+
 $collaborateurs_payplan_header_row = array("Collaborateur", "Reprise");
 
 

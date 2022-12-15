@@ -47,12 +47,11 @@
     include "include.php";
 
 
-    // $test = get_payplan();
-    // define_payplan($test);
+    $test = get_payplan();
+    define_payplan($test);
 
 
-    $time = get_destination_for_select();
-    var_dump($time);
+   
 
 
 
