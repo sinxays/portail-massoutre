@@ -50,6 +50,8 @@
     $test = get_payplan();
     define_payplan($test);
 
+    echo "hello";
+
 
    
 
