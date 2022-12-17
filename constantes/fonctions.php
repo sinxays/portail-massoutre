@@ -1077,6 +1077,7 @@ function get_payplan_by_collaborateur($id)
     WHERE ID = $id");
     $nom_collaborateur = $request->fetch(PDO::FETCH_ASSOC);
     $return['nom_collaborateur'] = $nom_collaborateur['nom_complet'];
+    $return['id_collaborateur'] = $nom_collaborateur['ID'];
 
     return $return;
 }
@@ -1117,9 +1118,10 @@ function get_payplan($filtre = '')
             $destination = "AND destinations.libelle = '$libelle_destination'";
             $where_filtre = $where_initial . " " . $destination;
         }
-        if (isset($filtre['type']) && $filtre['type'] !== '') {
-            $type = $filtre['type'];
-            $type = "AND typeachats.libelle = '$type'";
+        if (isset($filtre['type_achat']) && $filtre['type_achat'] !== '') {
+            $type_id = $filtre['type_achat'];
+            $libelle_type_achat = get_libelle_type_achat_from_id($type_id);
+            $type = "AND typeachats.libelle = '$libelle_type_achat'";
             $where_filtre = $where_initial . " " . $type;
         }
         if (isset($filtre['date_debut_payplan']) && $filtre['date_debut_payplan'] !== '') {
@@ -1432,10 +1434,25 @@ function get_destination_for_select()
     return $result;
 }
 
+function get_type_achat_for_select()
+{
+    $pdo = Connection::getPDO_2();
+    $request = $pdo->query("SELECT id,libelle FROM typeachats");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
+
 function get_libelle_destinations_from_id($destination_id)
 {
     $pdo = Connection::getPDO_2();
     $request = $pdo->query("SELECT libelle FROM destinations WHERE id = $destination_id");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return $result;
+}
+
+function get_libelle_type_achat_from_id($type_achat_id){
+    $pdo = Connection::getPDO_2();
+    $request = $pdo->query("SELECT libelle FROM typeachats WHERE id = $type_achat_id");
     $result = $request->fetch(PDO::FETCH_COLUMN);
     return $result;
 }

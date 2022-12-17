@@ -125,11 +125,11 @@
                 <label for="select_type_achat_payplan">Type Achat</label>
                 <select id="select_type_achat_payplan" class="form-select">
                     <?php
+                    $select_type_achat = get_type_achat_for_select();
                     echo "<option value=0> Tout </option>";
-                    echo "<option value=1> Occasion </option>";
-                    echo "<option value=2> Neuf </option>";
-                    echo "<option value=3> Reprise </option>";
-
+                    foreach ($select_type_achat as $type_achat) {
+                        echo "<option value=" . $type_achat['id'] . "> " . $type_achat['libelle'] . " </option>";
+                    }
                     ?>
                 </select>
             </div>

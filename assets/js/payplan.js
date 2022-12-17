@@ -43,6 +43,18 @@ $(document).ready(function () {
     });
 
 
+    $("#select_type_achat_payplan").change(function (e) {
+        $.ajax({
+            url: "/payplan/req/onSelect_payplan_filtre.php",
+            type: "POST",
+            data: { type_achat: $(this).val() },
+            success: function (data) {
+                $("#table_payplan").html(data);
+            }
+        });
+    });
+
+
 
     // au select du site
     $("#afficherSecteurs_select").change(function (e) {

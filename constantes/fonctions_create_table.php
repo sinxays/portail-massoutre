@@ -505,9 +505,8 @@ function create_table_payplan_by_collaborateur($header, $array_collaborateur)
 
     $table_collaborateur_payplan .= "<tr>";
     $table_collaborateur_payplan .= "<td>" . $array_collaborateur["nom_collaborateur"] . " </td>";
-    $table_collaborateur_payplan .= "<td> " . $array_collaborateur['nb_reprise'] . " </td>";
+    $table_collaborateur_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $array_collaborateur['id_collaborateur'] . "'>" . $array_collaborateur['nb_reprise'] . " </a> </td>";
     $table_collaborateur_payplan .= "</tr>";
-
 
     return $table_collaborateur_payplan;
 }
