@@ -29,10 +29,6 @@ if (isset($_POST['type_achat'])) {
     }
 }
 
-var_dump($filtre);
-
-
-
 $payplan = get_payplan($filtre);
 $table = create_table_payplan($payplan_table_header_row, $payplan);
 echo $table;
