@@ -6,6 +6,7 @@ $(document).ready(function () {
 
 
 
+
     // load le tableau payplan 
     $.ajax({
         url: "/payplan/req/req_tableau_payplan.php",
@@ -38,11 +39,12 @@ $(document).ready(function () {
             data: { destination: $(this).val() },
             success: function (data) {
                 $("#table_payplan").html(data);
+                $("#select_type_achat_payplan").val(0);
             }
         });
     });
 
-
+    // au select du type achat
     $("#select_type_achat_payplan").change(function (e) {
         $.ajax({
             url: "/payplan/req/onSelect_payplan_filtre.php",
@@ -50,17 +52,43 @@ $(document).ready(function () {
             data: { type_achat: $(this).val() },
             success: function (data) {
                 $("#table_payplan").html(data);
+                $("#select_destination_payplan").val(0);
             }
         });
     });
 
+    // au select de date
+    $("#select_date_payplan").change(function (e) {
+        date_select = this.value;
+        tableau_selected = $("#tableau_selected").text();
+        switch (date_select) {
+            //afficher tout 
+            case '0':
+                $("#date_personnalisees_div").fadeOut(200);
+                break;
+            //si on choisit mois précédent
+            case '1':
+                $("#date_personnalisees_div").fadeOut(200);
+                $.ajax({
+                    url: "/payplan/req/onSelect_payplan_filtre.php",
+                    type: "POST",
+                    data: { mois_precedent_payplan: date_select, tableau_selected: tableau_selected },
+                    success: function (data) {
+                        $("#table_payplan").html(data);
+                        $("#select_destination_payplan").val(0);
+                        $("#select_type_achat_payplan").val(0);
+                    }
+                });
+                break;
+            //date personnalisée
+            case '2':
+                $("#date_personnalisees_div").fadeIn(200);
+                break;
 
+            default:
 
-    // au select du site
-    $("#afficherSecteurs_select").change(function (e) {
-        $.ajax({
+        }
 
-        });
     });
 
 
@@ -78,6 +106,9 @@ $(document).ready(function () {
                 $("#collaborateur_div").fadeIn(300);
                 $("#div_form_destination").fadeOut(300);
                 $("#div_form_type_achat").fadeOut(300);
+                $("#tableau_selected").text("colalborateur");
+
+
             }
         });
     });
@@ -96,6 +127,7 @@ $(document).ready(function () {
                 $("#collaborateur_div").fadeOut(300);
                 $("#div_form_destination").fadeIn(300);
                 $("#div_form_type_achat").fadeIn(300);
+                $("#tableau_selected").text("commission");
             }
         });
     });

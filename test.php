@@ -47,13 +47,17 @@
     include "include.php";
 
 
-    $test = get_payplan();
-    define_payplan($test);
-
-    echo "hello";
+    // $test = get_payplan();
+    // define_payplan($test);
 
 
-   
+
+    echo date('Y-m-d', strtotime('first day of last month'));
+
+    echo "<br/>";
+
+    echo date('Y-m-d', strtotime('last day of last month'));
+
 
 
 

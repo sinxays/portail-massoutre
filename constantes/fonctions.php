@@ -1124,6 +1124,21 @@ function get_payplan($filtre = '')
             $type = "AND typeachats.libelle = '$libelle_type_achat'";
             $where_filtre = $where_initial . " " . $type;
         }
+        //mois précédent
+        if (isset($filtre['mois_precedent_payplan']) && $filtre['mois_precedent_payplan'] !== '') {
+            $date_now = date('Y-m-d');
+            $mois_precedent = get_previous_month_and_his_last_day($date_now);
+            $first = $mois_precedent['first'];
+            $last = $mois_precedent['last'];
+            $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
+            $where_filtre = $date;
+        }
+
+
+
+
+
+
         if (isset($filtre['date_debut_payplan']) && $filtre['date_debut_payplan'] !== '') {
             $date_debut_payplan = $filtre['date_debut_payplan'];
             $date_debut = "WHERE factureventes.date_facturation>='$date_debut_payplan'";
@@ -1139,6 +1154,7 @@ function get_payplan($filtre = '')
 
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
+
 
     $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
     destinations.libelle AS Destination,
@@ -1193,6 +1209,11 @@ function get_payplan($filtre = '')
     LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
     
     $where");
+
+
+    print_r($request);
+
+    // die();
 
     $payplan = $request->fetchAll(PDO::FETCH_ASSOC);
 
@@ -1450,7 +1471,8 @@ function get_libelle_destinations_from_id($destination_id)
     return $result;
 }
 
-function get_libelle_type_achat_from_id($type_achat_id){
+function get_libelle_type_achat_from_id($type_achat_id)
+{
     $pdo = Connection::getPDO_2();
     $request = $pdo->query("SELECT libelle FROM typeachats WHERE id = $type_achat_id");
     $result = $request->fetch(PDO::FETCH_COLUMN);
@@ -1463,4 +1485,15 @@ function get_payplan_detail_collaborateur($collaborateur_id)
     $request = $pdo->query("SELECT * FROM payplan WHERE collaborateur_payplan_ID = $collaborateur_id");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
     return $result;
+}
+
+
+function get_previous_month_and_his_last_day($date)
+{
+    $previous_month_first_day = date('Y-m-d', strtotime('first day of last month'));
+    $previous_month_last_day = date('Y-m-d', strtotime('last day of last month'));
+
+    $value['first'] = $previous_month_first_day;
+    $value['last'] = $previous_month_last_day;
+    return $value;
 }

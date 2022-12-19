@@ -68,6 +68,8 @@
             </div>
         </div>
 
+        <span id="tableau_selected" style="visibility: hidden;"></span>
+
         <form class="my_form_payplan">
             <?php
             ini_set('xdebug.var_display_max_depth', 99);
@@ -95,6 +97,8 @@
                 ?>
 
             </div>
+
+
 
             <!-- <div class="my_div_form">
                 <label for="select_site_payplan">Site</label>
@@ -134,13 +138,30 @@
                 </select>
             </div>
 
-            <div class="my_div_form">
-                <label for="date_locations_stats_debut">Date Début</label>
-                <input type="date" id="date_locations_stats_debut" style="border-radius: 5px;" placeholder="Date de début locations stats" />
+            <div class="my_div_form" id="collaborateur_div">
+                <label for="select_date_payplan">Date</label>
+                <?php
+
+                echo "<select class='form-select' style='width : 200px;' id='select_date_payplan'>";
+                echo "<option value=0> Mois en cours </option>";
+                echo "<option value=1> Mois précédent</option>";
+                echo "<option value=2>personnalisée</option>";
+                echo "</select>";
+                ?>
+
             </div>
-            <div class="my_div_form">
-                <label for="date_locations_stats_fin">Date Fin</label>
-                <input type="date" id="date_locations_stats_fin" style="border-radius: 5px;" placeholder="Date de fin locations stats" />
+
+            <div class="my_div_form" id="date_personnalisees_div" style="display:none">
+
+                <div class="my_div_form">
+                    <label for="date_locations_stats_debut">Date Début</label>
+                    <input type="date" id="date_locations_stats_debut" style="border-radius: 5px;" placeholder="Date de début locations stats" />
+                </div>
+                <div class="my_div_form">
+                    <label for="date_locations_stats_fin">Date Fin</label>
+                    <input type="date" id="date_locations_stats_fin" style="border-radius: 5px;" placeholder="Date de fin locations stats" />
+                </div>
+
             </div>
 
             <!-- <div class="my-last-div-form">
