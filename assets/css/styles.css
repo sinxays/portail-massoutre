@@ -589,6 +589,15 @@ img {
     color: rgb(15, 15, 15);
   }
 
+  .button_select_tableau_collaborateur{
+    background-color: #ffffff;
+    color: rgb(15, 15, 15);
+  }  
+
+  .button_select_tableau_comission{
+    background-color: #ffffff;
+    color: rgb(15, 15, 15);
+  }  
 
 
   /* FIN PAYPLAN */

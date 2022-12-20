@@ -95,6 +95,9 @@ $(document).ready(function () {
     // au select du tableau collaborateurs
     $("#bouton_tableau_collaborateurs").click(function (e) {
         $("#table_payplan").fadeOut(0);
+        $("#bouton_tableau_collaborateurs").blur();
+        $("#bouton_tableau_collaborateurs").addClass("button_select_tableau_collaborateur");
+        $("#bouton_tableau_commision").removeClass("button_select_tableau_comission");
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
             type: "POST",
@@ -116,6 +119,9 @@ $(document).ready(function () {
     // au select du tableau comission total
     $("#bouton_tableau_commision").click(function (e) {
         $("#table_payplan").fadeOut(0);
+        $("#bouton_tableau_commision").blur();
+        $("#bouton_tableau_commision").addClass("button_select_tableau_comission");
+        $("#bouton_tableau_collaborateurs").removeClass("button_select_tableau_collaborateur");
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
             type: "POST",
@@ -128,6 +134,8 @@ $(document).ready(function () {
                 $("#div_form_destination").fadeIn(300);
                 $("#div_form_type_achat").fadeIn(300);
                 $("#tableau_selected").text("commission");
+
+
             }
         });
     });
