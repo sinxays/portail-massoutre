@@ -169,6 +169,9 @@
             </div> -->
         </form>
 
+        <span id="intitule_tableau_payplan"></span>
+
+        </br>
         </br>
 
         <table class="my_tab_payplan" id="table_payplan"> </table>

@@ -111,7 +111,6 @@ $(document).ready(function () {
                 $("#div_form_type_achat").fadeOut(300);
                 $("#tableau_selected").text("colalborateur");
 
-
             }
         });
     });
