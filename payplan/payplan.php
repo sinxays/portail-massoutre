@@ -169,7 +169,6 @@
             </div> -->
         </form>
 
-        <span id="intitule_tableau_payplan"></span>
 
         </br>
         </br>

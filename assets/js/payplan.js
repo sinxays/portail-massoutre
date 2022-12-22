@@ -69,16 +69,27 @@ $(document).ready(function () {
             //si on choisit mois précédent
             case '1':
                 $("#date_personnalisees_div").fadeOut(200);
-                $.ajax({
-                    url: "/payplan/req/onSelect_payplan_filtre.php",
-                    type: "POST",
-                    data: { mois_precedent_payplan: date_select, tableau_selected: tableau_selected },
-                    success: function (data) {
-                        $("#table_payplan").html(data);
-                        $("#select_destination_payplan").val(0);
-                        $("#select_type_achat_payplan").val(0);
-                    }
-                });
+                if (tableau_selected == "comission") {
+                    $.ajax({
+                        url: "/payplan/req/onSelect_payplan_filtre.php",
+                        type: "POST",
+                        data: { mois_precedent_payplan: date_select },
+                        success: function (data) {
+                            $("#table_payplan").html(data);
+                            $("#select_destination_payplan").val(0);
+                            $("#select_type_achat_payplan").val(0);
+                        }
+                    });
+                } else if (tableau_selected == "collaborateur") {
+                    $.ajax({
+                        url: "/payplan/req/onSelect_payplan_collaborateur_filtre.php",
+                        type: "POST",
+                        data: { mois_precedent_payplan: date_select },
+                        success: function (data) {
+                            $("#table_payplan").html(data);
+                        }
+                    });
+                }
                 break;
             //date personnalisée
             case '2':
@@ -109,8 +120,7 @@ $(document).ready(function () {
                 $("#collaborateur_div").fadeIn(300);
                 $("#div_form_destination").fadeOut(300);
                 $("#div_form_type_achat").fadeOut(300);
-                $("#tableau_selected").text("colalborateur");
-
+                $("#tableau_selected").text("collaborateur");
             }
         });
     });
@@ -133,8 +143,6 @@ $(document).ready(function () {
                 $("#div_form_destination").fadeIn(300);
                 $("#div_form_type_achat").fadeIn(300);
                 $("#tableau_selected").text("commission");
-
-
             }
         });
     });
