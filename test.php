@@ -47,12 +47,12 @@
     include "include.php";
 
 
-    // $test = get_payplan();
-    // define_payplan($test);
+    $test = get_payplan();
+    define_payplan($test);
 
 
 
-    get_payplan_all_collaborateur();
+    // get_payplan_all_collaborateur();
 
 
 
