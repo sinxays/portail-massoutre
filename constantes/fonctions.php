@@ -1231,7 +1231,7 @@ function get_payplan($filtre = '')
     $where");
 
 
-    print_r($request);
+    // print_r($request);
 
     // die();
 

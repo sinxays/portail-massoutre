@@ -47,6 +47,7 @@
                                 <a href="/Informatique/imprimantes.php" class="nav__dropdown-item">Imprimantes</a>
                                 <a href="/Informatique/reseau.php" class="nav__dropdown-item">Réseau</a>
                                 <a href="#" class="nav__dropdown-item">Inventaire</a>
+                                <a href="/Informatique/interessement_test.php" class="nav__dropdown-item">interessement_test</a>
                             </div>
                         </div>
                     </div>
