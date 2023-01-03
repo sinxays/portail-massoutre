@@ -15,13 +15,10 @@ function create_table_collaborateurs_payplan($header, $array_collaborateurs)
 
     foreach ($array_collaborateurs as $collaborateur) {
 
-        $id_collaborateur = $collaborateur['ID'];
-
-        $nb_reprise = get_reprise_by_collaborateur($collaborateur['ID']);
 
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet"] . " </td>";
-        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=$id_collaborateur'> $nb_reprise </a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $collaborateur['ID'] . "'>". $collaborateur['reprise']."</a></td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
 

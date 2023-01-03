@@ -1050,14 +1050,40 @@ function vider_vp_vu_cumul()
     $statement->execute();
 }
 
-function get_payplan_all_collaborateur()
+function get_payplan_all_collaborateur($filtre = '')
 {
     $pdo = Connection::getPDO();
+
+    if (isset($filtre) && $filtre !== '') {
+
+        //mois précédent
+        if (isset($filtre['mois_precedent_payplan']) && $filtre['mois_precedent_payplan'] !== '') {
+            // $date_now = date('Y-m-d');
+            $date_now = date('2022-12-22');
+            $mois_precedent = get_previous_month_and_his_last_day($date_now);
+            $first = $mois_precedent['first'];
+            $last = $mois_precedent['last'];
+            $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
+            $where_filtre = $date;
+        }
+    }
+
+
+
     $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet,ID,identifiant_payplan 
                             FROM collaborateurs_payplan
                             ORDER BY nom ASC");
     $liste_collaborateurs_payplan = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach($liste_collaborateurs_payplan as $index => $collaborateur){
+        $id_collaborateur = $collaborateur['ID'];
+        $nb_reprise = get_reprise_by_collaborateur($id_collaborateur);
+        $liste_collaborateurs_payplan[$index]['reprise'] = $nb_reprise;
+    }
+
+    // var_dump($liste_collaborateurs_payplan);
     return $liste_collaborateurs_payplan;
+
 }
 
 
@@ -1106,7 +1132,7 @@ function get_payplan($filtre = '')
     //choper le mois en cours avec m pour la version numerique
     // $mois_en_cours = date("m");
     $mois_en_cours = 11;
-    $annee_en_cours = date("Y");
+    $annee_en_cours = date("Y", strtotime("last year"));
 
     $where_initial = "WHERE factureventes.date_facturation>='$annee_en_cours-$mois_en_cours-01'";
 
@@ -1133,12 +1159,6 @@ function get_payplan($filtre = '')
             $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
             $where_filtre = $date;
         }
-
-
-
-
-
-
         if (isset($filtre['date_debut_payplan']) && $filtre['date_debut_payplan'] !== '') {
             $date_debut_payplan = $filtre['date_debut_payplan'];
             $date_debut = "WHERE factureventes.date_facturation>='$date_debut_payplan'";

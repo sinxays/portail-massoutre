@@ -52,11 +52,7 @@
 
 
 
-    echo date('Y-m-d', strtotime('first day of last month'));
-
-    echo "<br/>";
-
-    echo date('Y-m-d', strtotime('last day of last month'));
+    get_payplan_all_collaborateur();
 
 
 
