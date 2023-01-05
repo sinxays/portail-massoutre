@@ -1130,9 +1130,10 @@ function get_payplan($filtre = '')
     $pdo = Connection::getPDO_2();
 
     //choper le mois en cours avec m pour la version numerique
-    // $mois_en_cours = date("m");
-    $mois_en_cours = 11;
-    $annee_en_cours = date("Y", strtotime("last year"));
+     // $mois_en_cours = 11;
+    // $annee_en_cours = date("Y", strtotime("last year"));
+    $mois_en_cours = date("m");
+    $annee_en_cours = date("Y");
 
     $where_initial = "WHERE factureventes.date_facturation>='$annee_en_cours-$mois_en_cours-01'";
 
