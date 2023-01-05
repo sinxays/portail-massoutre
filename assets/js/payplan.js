@@ -65,6 +65,25 @@ $(document).ready(function () {
             //afficher tout 
             case '0':
                 $("#date_personnalisees_div").fadeOut(200);
+                if (tableau_selected == "commission") {
+                    $.ajax({
+                        url: "/payplan/req/req_tableau_payplan.php",
+                        data: {},
+                        success: function (data) {
+                            $("#table_payplan").html(data);
+                        }
+                    });
+                    // si tableau collaborateur
+                } else if (tableau_selected == "collaborateur") {
+                    $.ajax({
+                        url: "/payplan/req/onSelect_payplan_collaborateur_filtre.php",
+                        type: "POST",
+                        data: { mois_precedent_payplan: date_select },
+                        success: function (data) {
+                            $("#table_payplan").html(data);
+                        }
+                    });
+                }
                 break;
             //si on choisit mois précédent
             case '1':
