@@ -1075,7 +1075,7 @@ function get_payplan_all_collaborateur($filtre = '')
                             ORDER BY nom ASC");
     $liste_collaborateurs_payplan = $request->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach($liste_collaborateurs_payplan as $index => $collaborateur){
+    foreach ($liste_collaborateurs_payplan as $index => $collaborateur) {
         $id_collaborateur = $collaborateur['ID'];
         $nb_reprise = get_reprise_by_collaborateur($id_collaborateur);
         $liste_collaborateurs_payplan[$index]['reprise'] = $nb_reprise;
@@ -1083,7 +1083,6 @@ function get_payplan_all_collaborateur($filtre = '')
 
     // var_dump($liste_collaborateurs_payplan);
     return $liste_collaborateurs_payplan;
-
 }
 
 
@@ -1130,7 +1129,7 @@ function get_payplan($filtre = '')
     $pdo = Connection::getPDO_2();
 
     //choper le mois en cours avec m pour la version numerique
-     // $mois_en_cours = 11;
+    // $mois_en_cours = 11;
     // $annee_en_cours = date("Y", strtotime("last year"));
     $mois_en_cours = date("m");
     $annee_en_cours = date("Y");
@@ -1175,6 +1174,8 @@ function get_payplan($filtre = '')
 
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
+
+    var_dump($where);
 
 
     $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
@@ -1231,9 +1232,7 @@ function get_payplan($filtre = '')
     
     $where");
 
-
     // print_r($request);
-
     // die();
 
     $payplan = $request->fetchAll(PDO::FETCH_ASSOC);

@@ -69,7 +69,8 @@ $(document).ready(function () {
             //si on choisit mois précédent
             case '1':
                 $("#date_personnalisees_div").fadeOut(200);
-                if (tableau_selected == "comission") {
+                // si tableau comission                
+                if (tableau_selected == "commission") {
                     $.ajax({
                         url: "/payplan/req/onSelect_payplan_filtre.php",
                         type: "POST",
@@ -80,6 +81,7 @@ $(document).ready(function () {
                             $("#select_type_achat_payplan").val(0);
                         }
                     });
+                    // si tableau collaborateur
                 } else if (tableau_selected == "collaborateur") {
                     $.ajax({
                         url: "/payplan/req/onSelect_payplan_collaborateur_filtre.php",

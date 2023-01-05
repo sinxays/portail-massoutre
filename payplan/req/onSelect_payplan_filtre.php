@@ -33,7 +33,6 @@ if (isset($_POST['type_achat'])) {
 if (isset($_POST['mois_precedent_payplan'])) {
         $filtre['mois_precedent_payplan'] = $_POST['mois_precedent_payplan'];
 }
-
 $payplan = get_payplan($filtre);
 $table = create_table_payplan($payplan_table_header_row, $payplan);
 echo $table;

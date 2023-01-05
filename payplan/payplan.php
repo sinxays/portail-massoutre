@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <span id="tableau_selected" style="visibility: hidden;"></span>
+        <span id="tableau_selected" style="visibility: hidden;">commission</span>
 
         <form class="my_form_payplan">
             <?php
