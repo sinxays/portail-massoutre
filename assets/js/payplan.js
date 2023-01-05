@@ -172,7 +172,7 @@ $(document).ready(function () {
     $("#bouton_update_payplan").click(function (e) {
         $("#table_payplan").fadeOut(0);
         $.ajax({
-            url: "/payplan/req/req_tableau_payplan.php",
+            url: "/payplan/req/update_payplan.php",
             data: {},
             success: function (data) {
                 $("#table_payplan").html(data);

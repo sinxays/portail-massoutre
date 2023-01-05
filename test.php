@@ -47,16 +47,9 @@
     include "include.php";
 
 
-    // $test = get_payplan();
+    $test = get_payplan();
     // define_payplan($test);
 
-
-    $previous_month_first_day = date('Y-m-d', strtotime('first day of last month'));
-    $previous_month_last_day = date('Y-m-d', strtotime('last day of last month'));
-
-    echo $previous_month_first_day;
-    saut_de_ligne();
-    echo $previous_month_last_day;
 
 
 
