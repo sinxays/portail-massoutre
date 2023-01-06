@@ -1058,8 +1058,8 @@ function get_payplan_all_collaborateur($filtre = '')
 
         //mois précédent
         if (isset($filtre['mois_precedent_payplan']) && $filtre['mois_precedent_payplan'] !== '') {
-            // $date_now = date('Y-m-d');
-            $date_now = date('2022-12-22');
+            $date_now = date('Y-m-d');
+            // $date_now = date('2022-12-22');
             $mois_precedent = get_previous_month_and_his_last_day($date_now);
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
@@ -1159,15 +1159,11 @@ function get_payplan($filtre = '')
             $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
             $where_filtre = $date;
         }
-        if (isset($filtre['date_debut_payplan']) && $filtre['date_debut_payplan'] !== '') {
-            $date_debut_payplan = $filtre['date_debut_payplan'];
-            $date_debut = "WHERE factureventes.date_facturation>='$date_debut_payplan'";
-            $where_filtre = $date_debut;
-        }
-        if (isset($filtre['date_fin_payplan']) && $filtre['date_fin_payplan'] !== '') {
-            $date_fin_payplan = $filtre['date_fin_payplan'];
-            $date_fin = "WHERE factureventes.date_facturation<='$date_fin_payplan'";
-            $where_filtre = $date_fin;
+        if (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== '') {
+            $date_debut = $filtre['date_personnalisee']['debut'];
+            $date_fin = $filtre['date_personnalisee']['fin'];
+            $date = "WHERE factureventes.date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+            $where_filtre = $date;
         }
     }
 

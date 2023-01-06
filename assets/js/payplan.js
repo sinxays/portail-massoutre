@@ -123,6 +123,51 @@ $(document).ready(function () {
 
     });
 
+    //affichage ou non de date fin selon la valeur de la date début 
+    $("#date_payplan_debut").change(function (e) {
+        date_debut = $("#date_payplan_debut").val();
+        if (date_debut !== '') {
+            $("#div_date_fin").fadeIn(200);
+        } else {
+            $("#div_date_fin").fadeOut(200);
+        }
+    });
+
+
+    $("#date_payplan_fin").change(function (e) {
+        date_debut = $("#date_payplan_debut").val();
+        date_fin = this.value;
+        tableau_selected = $("#tableau_selected").text();
+
+        console.log(date_debut);
+        console.log(date_fin);
+
+        if (tableau_selected == "commission") {
+            $.ajax({
+                url: "/payplan/req/onSelect_payplan_filtre.php",
+                type: "POST",
+                data: { date_debut: date_debut, date_fin: date_fin },
+                success: function (data) {
+                    $("#table_payplan").html(data);
+                    $("#select_destination_payplan").val(0);
+                    $("#select_type_achat_payplan").val(0);
+                }
+            });
+            // si tableau collaborateur
+        } else if (tableau_selected == "collaborateur") {
+            $.ajax({
+                url: "/payplan/req/onSelect_payplan_collaborateur_filtre.php",
+                type: "POST",
+                data: { mois_precedent_payplan: date_select },
+                success: function (data) {
+                    $("#table_payplan").html(data);
+                }
+            });
+        }
+
+    });
+
+
 
     // au select du tableau collaborateurs
     $("#bouton_tableau_collaborateurs").click(function (e) {

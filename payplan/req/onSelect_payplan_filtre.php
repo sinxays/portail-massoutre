@@ -31,7 +31,13 @@ if (isset($_POST['type_achat'])) {
 
 /*** filtre date mois précédent ***/
 if (isset($_POST['mois_precedent_payplan'])) {
-        $filtre['mois_precedent_payplan'] = $_POST['mois_precedent_payplan'];
+    $filtre['mois_precedent_payplan'] = $_POST['mois_precedent_payplan'];
+}
+
+/*** filtre date personnalisées ***/
+if (isset($_POST['date_debut']) && isset($_POST['date_fin'])) {
+    $filtre['date_personnalisee']['debut'] = $_POST['date_debut'];
+    $filtre['date_personnalisee']['fin'] = $_POST['date_fin'];
 }
 $payplan = get_payplan($filtre);
 $table = create_table_payplan($payplan_table_header_row, $payplan);

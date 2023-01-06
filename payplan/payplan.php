@@ -152,16 +152,14 @@
             </div>
 
             <div class="my_div_form" id="date_personnalisees_div" style="display:none">
-
-                <div class="my_div_form">
-                    <label for="date_locations_stats_debut">Date Début</label>
-                    <input type="date" id="date_locations_stats_debut" style="border-radius: 5px;" placeholder="Date de début locations stats" />
+                <div class="my_div_form" id="div_date_debut">
+                    <label for="date_payplan_debut">Date Début</label>
+                    <input type="date" id="date_payplan_debut" style="border-radius: 5px;" placeholder="Date de début payplan" />
                 </div>
-                <div class="my_div_form">
-                    <label for="date_locations_stats_fin">Date Fin</label>
-                    <input type="date" id="date_locations_stats_fin" style="border-radius: 5px;" placeholder="Date de fin locations stats" />
+                <div class="my_div_form" id="div_date_fin" style="display:none">
+                    <label for="date_payplan_fin">Date Fin</label>
+                    <input type="date" id="date_payplan_fin" style="border-radius: 5px;" placeholder="Date de fin payplan" />
                 </div>
-
             </div>
 
             <!-- <div class="my-last-div-form">
