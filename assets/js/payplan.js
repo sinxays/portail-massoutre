@@ -65,6 +65,10 @@ $(document).ready(function () {
             //afficher tout 
             case '0':
                 $("#date_personnalisees_div").fadeOut(200);
+                $("#date_payplan_debut").val("");
+                $("#date_payplan_fin").val("");
+
+
                 if (tableau_selected == "commission") {
                     $.ajax({
                         url: "/payplan/req/req_tableau_payplan.php",
@@ -88,6 +92,8 @@ $(document).ready(function () {
             //si on choisit mois précédent
             case '1':
                 $("#date_personnalisees_div").fadeOut(200);
+                $("#date_payplan_debut").val("");
+                $("#date_payplan_fin").val("");
                 // si tableau comission                
                 if (tableau_selected == "commission") {
                     $.ajax({
