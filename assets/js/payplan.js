@@ -2,7 +2,9 @@ $(document).ready(function () {
 
     // réglages au chargement de la page
     $("#collaborateur_div").hide();
-    $("#bouton_tableau_commision").focus();
+    // $("#bouton_tableau_commision").focus();
+    // $("#bouton_tableau_commision").blur();
+    $("#bouton_tableau_commision").addClass("button_select_tableau_comission");
 
 
 
