@@ -171,7 +171,13 @@
         </br>
         </br>
 
-        <table class="my_tab_payplan" id="table_payplan"> </table>
+
+        <div class="div_tableau_payplan">
+            <table class="my_tab_payplan" id="table_payplan"> </table>
+            <table class="my_tab_payplan" id="table_collaborateurs_nbre_achat"> </table>
+        <div>test</div>
+        </div>
+
 
         </br> </br>
 

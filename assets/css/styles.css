@@ -600,6 +600,18 @@ img {
   }  
 
 
+  .div_tableau_payplan{
+    width: auto;
+    height: auto;
+    margin: 20px;
+    border: #c537a4 1px solid;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: flex-start;
+  }
+
+
   /* FIN PAYPLAN */
 
 

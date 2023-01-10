@@ -190,10 +190,13 @@ $(document).ready(function () {
             success: function (data) {
                 $("#table_payplan").html(data);
                 $("#table_payplan").fadeIn(300);
-                $("#select_site_payplan").val(0);
                 $("#collaborateur_div").fadeIn(300);
+
+                //mise a 0 des filtres ou disparition
+                $("#select_site_payplan").val(0);
                 $("#div_form_destination").fadeOut(300);
                 $("#div_form_type_achat").fadeOut(300);
+                
                 $("#tableau_selected").text("collaborateur");
             }
         });
