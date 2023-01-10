@@ -84,8 +84,6 @@
 
         if (isset($_GET['id_collaborateur_payplan']) && $_GET['id_collaborateur_payplan'] !== '') {
             $id_collaborateur_detail = $_GET['id_collaborateur_payplan'];
-            var_dump($id_collaborateur_detail);
-
             echo "<span id='span_id_collaborateur' style='visibility:hidden;'>$id_collaborateur_detail</span>";
         }
 
