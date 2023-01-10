@@ -1247,8 +1247,9 @@ function define_payplan($payplan)
         if ($vehicule_transaction['Type_Achat'] == 'Reprise') {
             // si il y a un repreneur final
             if ($vehicule_transaction['Options'] !== '') {
+                $repreneur_final_options = strtolower($vehicule_transaction['Options']);
                 //on cherche quel est le repreneur final
-                if (in_array($vehicule_transaction['Options'], $identifiants_collaborateurs_payplan)) {
+                if (in_array($repreneur_final_options, $identifiants_collaborateurs_payplan)) {
                     //on va chercher son ID
                     $repreneur_final_id = get_id_collaborateur_payplan_by_identification($vehicule_transaction['Options']);
                     $immatriculation = $vehicule_transaction['Immatriculation'];

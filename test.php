@@ -47,8 +47,16 @@
     include "include.php";
 
 
-    $test = get_payplan();
+    // $test = get_payplan();
     // define_payplan($test);
+
+    $text1 = "ase";
+    $text2 = "ASE";
+
+    if ($text1 == strtolower($text2)) {
+        echo "toto";
+    }
+
 
 
 
