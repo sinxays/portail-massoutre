@@ -7,18 +7,25 @@ if ($_POST["choix_tableau_payplan"] && $_POST["choix_tableau_payplan"] !== "") {
 
 
     $choix_tableau_payplan = $_POST["choix_tableau_payplan"];
+    $table_reprise = "";
+    $table_achat = "";
+    $table_commission_total = "";
+
 
     switch ($choix_tableau_payplan) {
         case "collaborateurs":
             //récupérer les collaborateurs
             $collaborateurs = get_payplan_all_collaborateur();
-            $table = create_table_collaborateurs_payplan($collaborateurs_payplan_header_row, $collaborateurs);
+            $table_reprise = create_table_collaborateurs_payplan($collaborateurs_payplan_header_row, $collaborateurs);
+            $table_achat = create_table_collaborateurs_payplan($collaborateurs_payplan_header_row, $collaborateurs);
+            echo json_encode(array("table_reprise" => $table_reprise, "table_achat" => $table_achat));
             break;
 
         case "commission":
-            $table_commission_total = get_payplan();
-            $table = create_table_payplan($payplan_table_header_row, $table_commission_total);
+            $datas_payplan = get_payplan();
+            $table_commission_total = create_table_payplan($payplan_table_header_row, $datas_payplan);
+            // echo json_encode(array("table_commission_total" => $table_commission_total));
+            echo $table_commission_total;
             break;
     }
-    echo $table;
 }

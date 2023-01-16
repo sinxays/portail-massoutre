@@ -188,15 +188,18 @@ $(document).ready(function () {
             type: "POST",
             data: { choix_tableau_payplan: $(this).val() },
             success: function (data) {
-                $("#table_payplan").html(data);
-                $("#table_payplan").fadeIn(300);
+                var parsed = JSON.parse(data);
+                $("#table_collaborateurs_reprise").html(parsed["table_reprise"]);
+                $("#table_collaborateurs_achat").html(parsed["table_achat"]);
+                $("#table_collaborateurs_reprise").fadeIn(300);
+                $("#table_collaborateurs_achat").fadeIn(300);
                 $("#collaborateur_div").fadeIn(300);
 
                 //mise a 0 des filtres ou disparition
                 $("#select_site_payplan").val(0);
                 $("#div_form_destination").fadeOut(300);
                 $("#div_form_type_achat").fadeOut(300);
-                
+
                 $("#tableau_selected").text("collaborateur");
             }
         });
@@ -204,7 +207,8 @@ $(document).ready(function () {
 
     // au select du tableau comission total
     $("#bouton_tableau_commision").click(function (e) {
-        $("#table_payplan").fadeOut(0);
+        $("#table_collaborateurs_reprise").fadeOut(200);
+        $("#table_collaborateurs_achat").fadeOut(200);
         $("#bouton_tableau_commision").blur();
         $("#bouton_tableau_commision").addClass("button_select_tableau_comission");
         $("#bouton_tableau_collaborateurs").removeClass("button_select_tableau_collaborateur");
@@ -213,6 +217,8 @@ $(document).ready(function () {
             type: "POST",
             data: { choix_tableau_payplan: $(this).val() },
             success: function (data) {
+                // var parsed = JSON.parse(data);
+                // $("#table_payplan").html(parsed["table_commission_total"]);
                 $("#table_payplan").html(data);
                 $("#table_payplan").fadeIn(300);
                 $("#select_site_payplan").val(0);
