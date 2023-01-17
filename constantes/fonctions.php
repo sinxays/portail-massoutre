@@ -1091,9 +1091,9 @@ function get_payplan_by_collaborateur($id)
 
     $return = array();
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT COUNT(*) FROM payplan 
-    LEFT JOIN collaborateurs_payplan ON collaborateurs_payplan.ID = payplan.collaborateur_payplan_ID 
-    WHERE payplan.collaborateur_payplan_ID = $id");
+    $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise
+    LEFT JOIN collaborateurs_payplan ON collaborateurs_payplan.ID = payplan_reprise.collaborateur_payplan_ID 
+    WHERE payplan_reprise.collaborateur_payplan_ID = $id");
     $nb_reprise = $request->fetchColumn();
     $return['nb_reprise'] = $nb_reprise;
 
@@ -1254,7 +1254,7 @@ function define_payplan($payplan)
                     $repreneur_final_id = get_id_collaborateur_payplan_by_identification($vehicule_transaction['Options']);
                     $immatriculation = $vehicule_transaction['Immatriculation'];
                     /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
-                    $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE immatriculation = '$immatriculation'");
+                    $request = $pdo->query("SELECT COUNT(*) FROM payplan_rerise WHERE immatriculation = '$immatriculation'");
                     $result = $request->fetchColumn();
                     if (!$result) {
                         /**** on alimente la table payplan *****/
@@ -1270,6 +1270,31 @@ function define_payplan($payplan)
                     }
                 }
             }
+
+            if ($vehicule_transaction['Nom acheteur'] !== '') {
+                $acheteur = strtolower($vehicule_transaction['Nom acheteur']);
+                //on cherche quel est l'acheteur 
+                // if (in_array($acheteur, $identifiants_collaborateurs_payplan)) {
+                //     //on va chercher son ID
+                //     $repreneur_final_id = get_id_collaborateur_payplan_by_identification($vehicule_transaction['Options']);
+                //     $immatriculation = $vehicule_transaction['Immatriculation'];
+                //     /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
+                //     $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise WHERE immatriculation = '$immatriculation'");
+                //     $result = $request->fetchColumn();
+                //     if (!$result) {
+                //         /**** on alimente la table payplan *****/
+                //         $data = [
+                //             'collaborateur_id' =>  $repreneur_final_id,
+                //             'immatriculation' => $vehicule_transaction['Immatriculation'],
+                //             'date_vente' => $vehicule_transaction['Date_Vente']
+                //         ];
+                //         $sql = "INSERT INTO payplan (collaborateur_payplan_ID, immatriculation, date_vente) 
+                //                         VALUES (:collaborateur_id, :immatriculation,:date_vente)";
+                //         $stmt = $pdo->prepare($sql);
+                //         $stmt->execute($data);
+                //     }
+                // }
+            }
         }
     }
 }
@@ -1277,7 +1302,7 @@ function define_payplan($payplan)
 function get_reprise_by_collaborateur($id_collaborateur)
 {
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE collaborateur_payplan_ID = $id_collaborateur");
+    $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise WHERE collaborateur_payplan_ID = $id_collaborateur");
     $result = $request->fetchColumn();
     return $result;
 }
@@ -1499,7 +1524,7 @@ function get_libelle_type_achat_from_id($type_achat_id)
 function get_payplan_detail_collaborateur($collaborateur_id)
 {
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan WHERE collaborateur_payplan_ID = $collaborateur_id");
+    $request = $pdo->query("SELECT * FROM payplan_reprise WHERE collaborateur_payplan_ID = $collaborateur_id");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }

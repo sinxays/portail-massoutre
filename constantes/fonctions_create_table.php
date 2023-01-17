@@ -490,7 +490,25 @@ function create_table_reseaux($header, $liste_reseaux)
     return $return;
 }
 
-function create_table_payplan_by_collaborateur($header, $array_collaborateur)
+function create_table_payplan_reprise_by_collaborateur($header, $array_collaborateur)
+{
+    $table_collaborateur_payplan = "";
+
+    $table_collaborateur_payplan .= "<tr>";
+    foreach ($header as $title_header) {
+        $table_collaborateur_payplan .= "<th class='th1'> $title_header </th>";
+    }
+    $table_collaborateur_payplan .= "</tr>";
+
+    $table_collaborateur_payplan .= "<tr>";
+    $table_collaborateur_payplan .= "<td>" . $array_collaborateur["nom_collaborateur"] . " </td>";
+    $table_collaborateur_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $array_collaborateur['id_collaborateur'] . "'>" . $array_collaborateur['nb_reprise'] . " </a> </td>";
+    $table_collaborateur_payplan .= "</tr>";
+
+    return $table_collaborateur_payplan;
+}
+
+function create_table_payplan_achat_by_collaborateur($header, $array_collaborateur)
 {
     $table_collaborateur_payplan = "";
 

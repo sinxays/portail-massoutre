@@ -21,14 +21,25 @@ $(document).ready(function () {
 
     // au select du collaborateur
     $("#select_collaborateur_payplan").change(function (e) {
+        id_collaborateur_selected = $("#select_collaborateur_payplan").val()
         $.ajax({
             url: "/payplan/req/onSelect_collaborateur.php",
             type: "POST",
-            data: { id_collaborateur: $(this).val() },
+            data: { id_collaborateur: id_collaborateur_selected },
             success: function (data) {
+                console.log(data)
+
                 var parsed = JSON.parse(data);
-                $("#table_payplan").html(parsed["table_payplan"]);
+                console.log("test");
+                $("#result_test").html(parsed);
+
+                $("#table_collaborateurs_reprise").html(parsed["table_reprise"]);
+                $("#table_collaborateurs_achat").html(parsed["table_achat"]);
                 $("#select_collaborateur_payplan").val(parsed["id_collaborateur"]);
+
+                // $("#table_collaborateurs_achat").html(data);
+                // $("#table_collaborateurs_reprise").html(data);
+                // $("#select_collaborateur_payplan").val(id_collaborateur_selected);
             }
         });
     });
