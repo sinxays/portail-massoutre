@@ -1239,12 +1239,12 @@ function get_payplan($filtre = '')
     return $payplan;
 }
 
-function test2(){
+function test2()
+{
 
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan_achat WHERE immatriculation = 'FQ865DY'");
+    $request = $pdo->query("SELECT * FROM payplan_achat WHERE immatriculation = 'FL597XB'");
     $result = $request->fetch(PDO::FETCH_ASSOC);
-    var_dump($result);
 }
 
 function define_payplan($payplan)
@@ -1298,8 +1298,7 @@ function define_payplan($payplan)
                     $immatriculation = $vehicule_transaction['Immatriculation'];
                     /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
                     $request = $pdo->query("SELECT * FROM payplan_achat WHERE immatriculation = '$immatriculation'");
-                    $result = $request->fetchColumn();
-                    var_dump($result);
+                    $result = $request->fetch(PDO::FETCH_ASSOC);
                     // si pas de resultat on ajout une ligne 
                     if (!$result) {
                         /**** on alimente la table payplan *****/
@@ -1315,7 +1314,11 @@ function define_payplan($payplan)
                     }
                     //si ya un résultat on update la ligne
                     else {
-                        $sql = "UPDATE payplan_achat SET date_achat = ".$vehicule_transaction['Date_Achat']." WHERE ID = ".$result['ID'];
+                        $data = [
+                            'id' =>  $result['ID'],
+                            'date_achat' => $vehicule_transaction['Date_Achat']
+                        ];
+                        $sql = "UPDATE payplan_achat SET date_achat = :date_achat WHERE ID = :id";
                         $stmt = $pdo->prepare($sql);
                         $stmt->execute($data);
                     }
