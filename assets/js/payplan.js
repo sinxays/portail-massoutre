@@ -194,6 +194,12 @@ $(document).ready(function () {
         $("#bouton_tableau_collaborateurs").blur();
         $("#bouton_tableau_collaborateurs").addClass("button_select_tableau_collaborateur");
         $("#bouton_tableau_commision").removeClass("button_select_tableau_comission");
+        //mise a 0 des filtres ou disparition
+        $("#div_form_destination").fadeOut(300);
+        $("#div_form_type_achat").fadeOut(300);
+        $("#collaborateur_div").fadeIn(300);
+        $("#tableau_selected").text("collaborateur");
+        $("#select_site_payplan").val(0);
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
             type: "POST",
@@ -202,24 +208,24 @@ $(document).ready(function () {
                 // var parsed = JSON.parse(data);
                 $("#table_payplan_achat_reprise").html(data);
                 $("#table_payplan_achat_reprise").fadeIn(300);
-                $("#collaborateur_div").fadeIn(300);
-
-                //mise a 0 des filtres ou disparition
-                $("#select_site_payplan").val(0);
-                $("#div_form_destination").fadeOut(300);
-                $("#div_form_type_achat").fadeOut(300);
-                $("#tableau_selected").text("collaborateur");
             }
         });
     });
 
     // au select du tableau comission total
     $("#bouton_tableau_commision").click(function (e) {
+        $("#table_payplan_achat_reprise").fadeOut(0);
         $("#table_collaborateurs_reprise").fadeOut(200);
         $("#table_collaborateurs_achat").fadeOut(200);
         $("#bouton_tableau_commision").blur();
         $("#bouton_tableau_commision").addClass("button_select_tableau_comission");
         $("#bouton_tableau_collaborateurs").removeClass("button_select_tableau_collaborateur");
+        $("#collaborateur_div").fadeOut(300);
+        $("#div_form_destination").fadeIn(300);
+        $("#div_form_type_achat").fadeIn(300);
+        $("#select_site_payplan").val(0);
+        $("#tableau_selected").text("commission");
+
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
             type: "POST",
@@ -229,11 +235,6 @@ $(document).ready(function () {
                 // $("#table_payplan").html(parsed["table_commission_total"]);
                 $("#table_payplan").html(data);
                 $("#table_payplan").fadeIn(300);
-                $("#select_site_payplan").val(0);
-                $("#collaborateur_div").fadeOut(300);
-                $("#div_form_destination").fadeIn(300);
-                $("#div_form_type_achat").fadeIn(300);
-                $("#tableau_selected").text("commission");
             }
         });
     });

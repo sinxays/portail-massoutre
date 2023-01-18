@@ -7,18 +7,14 @@ function create_table_collaborateurs_payplan($header, $array_collaborateurs)
 
     $table_collaborateurs_payplan = "";
 
-    $table_collaborateurs_payplan .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_collaborateurs_payplan .= "<th class='th1'> $title_header </th>";
-    }
-    $table_collaborateurs_payplan .= "</tr>";
+    $table_collaborateurs_payplan .= create_header_row($header);
 
     foreach ($array_collaborateurs as $collaborateur) {
 
 
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet"] . " </td>";
-        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $collaborateur['ID'] . "'>" . $collaborateur['reprise'] . "</a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $collaborateur['ID'] . "'>" . $collaborateur['nb_reprise'] . "</a></td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
 
@@ -34,11 +30,7 @@ function create_table_stats_loc_agence_type($header, $liste_agence, $type, $date
     $table_stats_loc .= "<table class='my_tab_perso'>";
 
     //header
-    $table_stats_loc .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_stats_loc .= "<th class='th1'> $title_header </th>";
-    }
-    $table_stats_loc .= "</tr>";
+    $table_stats_loc .= create_header_row($header);
     //fin header
 
     $tableau_stats = get_stats_journalieres($liste_agence, $type, $date);
@@ -95,11 +87,7 @@ function create_table_stats_loc_date($header, $requete, $date)
     $table_stats_loc .= "<table class='my_tab_perso'>";
 
     //header
-    $table_stats_loc .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_stats_loc .= "<th class='th1'> $title_header </th>";
-    }
-    $table_stats_loc .= "</tr>";
+    $table_stats_loc .= create_header_row($header);
     //fin header
 
 
@@ -146,11 +134,7 @@ function create_table_agences($header, $liste_agence)
     $table_agences = "";
 
     //header
-    $table_agences .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_agences .= "<th class='th1'> $title_header </th>";
-    }
-    $table_agences .= "</tr>";
+    $table_agences .= create_header_row($header);
     //fin header
 
     //contenu
@@ -191,11 +175,7 @@ function create_table_liste_telephonique($header, $liste_telephonique, $type)
         case "agence":
             //contenu 
             //header
-            $table_liste_tel .= "<tr>";
-            foreach ($header as $title_header) {
-                $table_liste_tel .= "<th class='th3'> $title_header </th>";
-            }
-            $table_liste_tel .= "</tr>";
+            $table_liste_tel .= create_header_row($header);
             //fin header
             foreach ($liste_telephonique as $collaborateur) {
                 $table_liste_tel .= "<tr>";
@@ -252,11 +232,7 @@ function create_table_imprimantes($header, $liste_imprimantes)
     $table_imprimantes = "";
 
     //header
-    $table_imprimantes .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_imprimantes .= "<th class='th3'> $title_header </th>";
-    }
-    $table_imprimantes .= "</tr>";
+    $table_imprimantes .= create_header_row($header);
     //fin header
 
     //contenu
@@ -290,11 +266,7 @@ function create_table_cvo($header, $liste_cvos)
     $table_cvo = "";
 
     //header
-    $table_cvo .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_cvo .= "<th class='th1'> $title_header </th>";
-    }
-    $table_cvo .= "</tr>";
+    $table_cvo .= create_header_row($header);
     //fin header
 
     //contenu
@@ -319,12 +291,7 @@ function create_table_marges($header, $liste_agence)
 {
     $table_marges = "";
 
-    $table_marges .= "<table class='my_tab_perso'>";
-    $table_marges .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_marges .= "<th class='th2'> $title_header </th>";
-    }
-    $table_marges .= "</tr>";
+    $table_marges .= create_header_row($header);
 
     foreach ($liste_agence as $agence) {
         $table_marges .= "<tr>";
@@ -359,17 +326,8 @@ function create_table_payplan($header, $array)
 
     $array_collaborateurs_payplan = get_payplan_all_collaborateur();
 
-    // var_dump($array_collaborateurs_payplan);
-
-
-
-
     //header
-    $table_payplan .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_payplan .= "<th class='th1'> $title_header </th>";
-    }
-    $table_payplan .= "</tr>";
+    $table_payplan .= create_header_row($header);
     //fin header
 
     //contenu
@@ -462,18 +420,13 @@ function create_table_reseaux($header, $liste_reseaux)
     $table_reseau = "";
 
     //header
-    $table_reseau .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_reseau .= "<th class='th3'> $title_header </th>";
-    }
-    $table_reseau .= "</tr>";
-    //fin header
+    $table_reseau .= create_header_row($header);
 
 
     //contenu
     foreach ($liste_reseaux as $reseau) {
         $table_reseau .= "<tr>";
-        $table_reseau .= "<td class='td_n' style='width: 150px;'>" . utf8_encode($reseau['nom_infrastructure']) . " </td>";
+        $table_reseau .= "<td class='td_n' style='width: 150px;'>" . $reseau['nom_infrastructure'] . " </td>";
         $table_reseau .= "<td class='td_n' style='width: 300px;'>" . $reseau['ip_lan_local'] . "</td>";
         $table_reseau .= "<td class='td_n' style='width: 100px;'>" . $reseau['passerelle'] . "</td>";
         $table_reseau .= "<td class='td_n' style='width: 100px;'>" . $reseau['ip_vpn'] . "</td>";
@@ -494,11 +447,7 @@ function create_table_payplan_reprise_by_collaborateur($header, $array_collabora
 {
     $table_collaborateur_payplan = "";
 
-    $table_collaborateur_payplan .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_collaborateur_payplan .= "<th class='th1'> $title_header </th>";
-    }
-    $table_collaborateur_payplan .= "</tr>";
+    $table_collaborateur_payplan .= create_header_row($header);
 
     $table_collaborateur_payplan .= "<tr>";
     $table_collaborateur_payplan .= "<td>" . $array_collaborateur["nom_collaborateur"] . " </td>";
@@ -512,11 +461,7 @@ function create_table_payplan_achat_by_collaborateur($header, $array_collaborate
 {
     $table_collaborateur_payplan = "";
 
-    $table_collaborateur_payplan .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_collaborateur_payplan .= "<th class='th1'> $title_header </th>";
-    }
-    $table_collaborateur_payplan .= "</tr>";
+    $table_collaborateur_payplan .= create_header_row($header);
 
     $table_collaborateur_payplan .= "<tr>";
     $table_collaborateur_payplan .= "<td>" . $array_collaborateur["nom_collaborateur"] . " </td>";
@@ -530,11 +475,7 @@ function create_table_payplan_detail_collaborateur($header, $array_detail_paypla
 {
     $table_collaborateur_payplan_detail = "";
 
-    $table_collaborateur_payplan_detail .= "<tr>";
-    foreach ($header as $title_header) {
-        $table_collaborateur_payplan_detail .= "<th class='th1'> $title_header </th>";
-    }
-    $table_collaborateur_payplan_detail .= "</tr>";
+    $table_collaborateur_payplan_detail .= create_header_row($header);
 
     //contenu
     foreach ($array_detail_payplan as $detail_payplan) {
@@ -556,8 +497,8 @@ function create_table_payplan_reprise_achat($header, $array_collaborateurs)
     foreach ($array_collaborateurs as $collaborateur) {
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet"] . " </td>";
-        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $collaborateur['ID'] . "'>" . $collaborateur['reprise'] . "</a></td>";
-        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $collaborateur['ID'] . "'>" . $collaborateur['achat'] . "</a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_reprise=" . $collaborateur['ID'] . "'>" . $collaborateur['nb_reprise'] . "</a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_achat=" . $collaborateur['ID'] . "'>" . $collaborateur['nb_achat'] . "</a></td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
 

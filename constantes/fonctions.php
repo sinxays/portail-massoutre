@@ -1079,8 +1079,8 @@ function get_payplan_all_collaborateur($filtre = '')
         $id_collaborateur = $collaborateur['ID'];
         $nb_reprise = get_reprise_by_collaborateur($id_collaborateur);
         $nb_achat = get_achat_by_collaborateur($id_collaborateur);
-        $liste_collaborateurs_payplan[$index]['reprise'] = $nb_reprise;
-        $liste_collaborateurs_payplan[$index]['achat'] = $nb_achat;
+        $liste_collaborateurs_payplan[$index]['nb_reprise'] = $nb_reprise;
+        $liste_collaborateurs_payplan[$index]['nb_achat'] = $nb_achat;
     }
 
     // var_dump($liste_collaborateurs_payplan);
@@ -1173,7 +1173,7 @@ function get_payplan($filtre = '')
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
 
-    var_dump($where);
+    // var_dump($where);
 
 
     $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
