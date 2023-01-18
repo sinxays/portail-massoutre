@@ -9,7 +9,7 @@ if ($_POST["id_collaborateur"] !== "") {
     if ($id_collaborateur_selected !== 0) {
         $id_collaborateur = $id_collaborateur_selected;
         //récupérer un seul collaborateur
-        $payplan_collaborateur = get_payplan_by_collaborateur($id_collaborateur);
+        $payplan_collaborateur = get_payplan_reprise_achat_by_collaborateur($id_collaborateur);
         $table_reprise = create_table_payplan_reprise_by_collaborateur($collaborateurs_payplan_header_row, $payplan_collaborateur);
         $table_achat = create_table_payplan_achat_by_collaborateur($collaborateurs_payplan_header_row, $payplan_collaborateur);
         // die();

@@ -1068,9 +1068,7 @@ function get_payplan_all_collaborateur($filtre = '')
         }
     }
 
-
-
-    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet,ID,identifiant_payplan 
+    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet_collaborateur,ID,identifiant_payplan 
                             FROM collaborateurs_payplan
                             ORDER BY nom ASC");
     $liste_collaborateurs_payplan = $request->fetchAll(PDO::FETCH_ASSOC);
@@ -1081,6 +1079,8 @@ function get_payplan_all_collaborateur($filtre = '')
         $nb_achat = get_achat_by_collaborateur($id_collaborateur);
         $liste_collaborateurs_payplan[$index]['nb_reprise'] = $nb_reprise;
         $liste_collaborateurs_payplan[$index]['nb_achat'] = $nb_achat;
+        $liste_collaborateurs_payplan[$index]['nom_complet_collaborateur'] = $nb_reprise;
+        $liste_collaborateurs_payplan[$index]['id_collaborateur'] = $id_collaborateur;
     }
 
     // var_dump($liste_collaborateurs_payplan);
@@ -1088,7 +1088,7 @@ function get_payplan_all_collaborateur($filtre = '')
 }
 
 
-function get_payplan_by_collaborateur($id)
+function get_payplan_reprise_achat_by_collaborateur($id)
 {
 
     $return = array();
@@ -1099,11 +1099,17 @@ function get_payplan_by_collaborateur($id)
     $nb_reprise = $request->fetchColumn();
     $return['nb_reprise'] = $nb_reprise;
 
-    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet,ID,identifiant_payplan 
+    $request = $pdo->query("SELECT COUNT(*) FROM payplan_achat
+    LEFT JOIN collaborateurs_payplan ON collaborateurs_payplan.ID = payplan_achat.collaborateur_payplan_ID 
+    WHERE payplan_achat.collaborateur_payplan_ID = $id");
+    $nb_achat = $request->fetchColumn();
+    $return['nb_achat'] = $nb_achat;
+
+    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet_collaborateur,ID,identifiant_payplan 
     FROM collaborateurs_payplan
     WHERE ID = $id");
     $nom_collaborateur = $request->fetch(PDO::FETCH_ASSOC);
-    $return['nom_collaborateur'] = $nom_collaborateur['nom_complet'];
+    $return['nom_complet_collaborateur'] = $nom_collaborateur['nom_complet_collaborateur'];
     $return['id_collaborateur'] = $nom_collaborateur['ID'];
 
     return $return;
@@ -1348,11 +1354,11 @@ function test()
 {
     $pdo = Connection::getPDO();
 
-    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet,ID,identifiant_payplan 
+    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet_collaborateur,ID,identifiant_payplan 
     FROM collaborateurs_payplan
     WHERE ID = 17");
     $nom_collaborateur = $request->fetch(PDO::FETCH_ASSOC);
-    $return['nom_collaborateur'] = $nom_collaborateur['nom_complet'];
+    $return['nom_collaborateur'] = $nom_collaborateur['nom_complet_collaborateur'];
     return $return;
 }
 

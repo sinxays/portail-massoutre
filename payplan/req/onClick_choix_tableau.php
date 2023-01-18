@@ -16,7 +16,7 @@ if ($_POST["choix_tableau_payplan"] && $_POST["choix_tableau_payplan"] !== "") {
         case "collaborateurs":
             //récupérer les collaborateurs
             $collaborateurs = get_payplan_all_collaborateur();
-            $table_reprise_achat = create_table_payplan_reprise_achat($table_payplan_reprise_achat_header_row, $collaborateurs);
+            $table_reprise_achat = create_table_payplan_reprise_achat($table_payplan_reprise_achat_header_row, $collaborateurs,true);
             // echo json_encode(array("table_reprise" => $table_reprise, "table_achat" => $table_achat));
             echo $table_reprise_achat;
             break;
