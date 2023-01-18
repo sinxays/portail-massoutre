@@ -37,6 +37,8 @@ $payplan_detail_collaborateur_table_header_row = array("Immatriculation", "Date 
 
 $collaborateurs_payplan_header_row = array("Collaborateur", "Reprise");
 
+$table_payplan_reprise_achat_header_row = array("Collaborateur", "Reprise","Achat");
+
 
 $imprimantes_table_header_row = array(
     "N° Série", "Agence", "Emplacement", "Prestataire", "Marque", "Modèle", "IP VPN", "IP locale"

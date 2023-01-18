@@ -199,18 +199,15 @@ $(document).ready(function () {
             type: "POST",
             data: { choix_tableau_payplan: $(this).val() },
             success: function (data) {
-                var parsed = JSON.parse(data);
-                $("#table_collaborateurs_reprise").html(parsed["table_reprise"]);
-                $("#table_collaborateurs_achat").html(parsed["table_achat"]);
-                $("#table_collaborateurs_reprise").fadeIn(300);
-                $("#table_collaborateurs_achat").fadeIn(300);
+                // var parsed = JSON.parse(data);
+                $("#table_payplan_achat_reprise").html(data);
+                $("#table_payplan_achat_reprise").fadeIn(300);
                 $("#collaborateur_div").fadeIn(300);
 
                 //mise a 0 des filtres ou disparition
                 $("#select_site_payplan").val(0);
                 $("#div_form_destination").fadeOut(300);
                 $("#div_form_type_achat").fadeOut(300);
-
                 $("#tableau_selected").text("collaborateur");
             }
         });

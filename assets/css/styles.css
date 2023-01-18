@@ -604,7 +604,7 @@ img {
     width: auto;
     height: auto;
     margin: 20px;
-    border: #c537a4 1px solid;
+    border: #c537a4 0px solid;
     display: flex;
     flex-direction: row;
     justify-content: start;

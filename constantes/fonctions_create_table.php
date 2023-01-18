@@ -18,7 +18,7 @@ function create_table_collaborateurs_payplan($header, $array_collaborateurs)
 
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet"] . " </td>";
-        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $collaborateur['ID'] . "'>". $collaborateur['reprise']."</a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $collaborateur['ID'] . "'>" . $collaborateur['reprise'] . "</a></td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
 
@@ -545,4 +545,32 @@ function create_table_payplan_detail_collaborateur($header, $array_detail_paypla
     }
     //fin contenu
     return $table_collaborateur_payplan_detail;
+}
+
+function create_table_payplan_reprise_achat($header, $array_collaborateurs)
+{
+    $table_collaborateurs_payplan = "";
+
+    $table_collaborateurs_payplan .= create_header_row($header);
+
+    foreach ($array_collaborateurs as $collaborateur) {
+        $table_collaborateurs_payplan .= "<tr>";
+        $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet"] . " </td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $collaborateur['ID'] . "'>" . $collaborateur['reprise'] . "</a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $collaborateur['ID'] . "'>" . $collaborateur['achat'] . "</a></td>";
+        $table_collaborateurs_payplan .= "</tr>";
+    }
+
+    return $table_collaborateurs_payplan;
+}
+
+function create_header_row($header)
+{
+    $return = "";
+    $return .= "<tr>";
+    foreach ($header as $title_header) {
+        $return .= "<th class='th1'> $title_header </th>";
+    }
+    $return .= "</tr>";
+    return $return;
 }
