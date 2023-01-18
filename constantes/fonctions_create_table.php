@@ -494,21 +494,19 @@ function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all
 
     $table_collaborateurs_payplan .= create_header_row($header);
 
-    if ($all && $all == true) {
+    if (isset($all) && $all == true) {
         foreach ($array_collaborateurs as $collaborateur) {
             $table_collaborateurs_payplan .= "<tr>";
             $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet_collaborateur"] . " </td>";
-            $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_reprise=" . $collaborateur['ID'] . "'>" . $collaborateur['nb_reprise'] . "</a></td>";
-            $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_achat=" . $collaborateur['ID'] . "'>" . $collaborateur['nb_achat'] . "</a></td>";
+            $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_reprise=" . $collaborateur['id_collaborateur'] . "&type=reprise'>" . $collaborateur['nb_reprise'] . "</a></td>";
+            $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_achat=" . $collaborateur['id_collaborateur'] . "&type=achat'>" . $collaborateur['nb_achat'] . "</a></td>";
             $table_collaborateurs_payplan .= "</tr>";
         }
     } else {
-        var_dump("toto2");
-        die();
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $array_collaborateurs["nom_complet_collaborateur"] . " </td>";
-        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_reprise=" . $array_collaborateurs['ID'] . "'>" . $array_collaborateurs['nb_reprise'] . "</a></td>";
-        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_achat=" . $array_collaborateurs['ID'] . "'>" . $array_collaborateurs['nb_achat'] . "</a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $array_collaborateurs['id_collaborateur'] . "&type=reprise'>" . $array_collaborateurs['nb_reprise'] . "</a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $array_collaborateurs['id_collaborateur'] . "&type=achat'>" . $array_collaborateurs['nb_achat'] . "</a></td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
 

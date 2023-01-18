@@ -1079,7 +1079,7 @@ function get_payplan_all_collaborateur($filtre = '')
         $nb_achat = get_achat_by_collaborateur($id_collaborateur);
         $liste_collaborateurs_payplan[$index]['nb_reprise'] = $nb_reprise;
         $liste_collaborateurs_payplan[$index]['nb_achat'] = $nb_achat;
-        $liste_collaborateurs_payplan[$index]['nom_complet_collaborateur'] = $nb_reprise;
+        $liste_collaborateurs_payplan[$index]['nom_complet_collaborateur'] = $collaborateur['nom_complet_collaborateur'];
         $liste_collaborateurs_payplan[$index]['id_collaborateur'] = $id_collaborateur;
     }
 

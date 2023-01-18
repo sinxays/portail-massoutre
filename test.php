@@ -46,7 +46,10 @@
     include "right_menubar.php";
     include "include.php";
 
-    test2();
+    // test2();
+
+    $payplan_collaborateur = get_payplan_reprise_achat_by_collaborateur(2);
+    var_dump($payplan_collaborateur);
 
 
 

@@ -18,7 +18,6 @@ if (isset($_POST["id_collaborateur"])) {
         $table_reprise_achat = create_table_payplan_reprise_achat($table_payplan_reprise_achat_header_row, $payplan_collaborateur, true);
     }
     //echo json_encode(array("table_reprise" => $table_reprise, "table_achat" => $table_achat, "id_collaborateur" => $id_collaborateur));
-    echo $table_reprise_achat;
 }
 
 /*** filtre date mois précédent ***/
@@ -26,6 +25,5 @@ if (isset($_POST['mois_precedent_payplan'])) {
     $filtre['mois_precedent_payplan'] = $_POST['mois_precedent_payplan'];
 }
 
-$collaborateurs = get_payplan_all_collaborateur();
-$table = create_table_collaborateurs_payplan($collaborateurs_payplan_header_row, $collaborateurs);
-echo $table_payplan;
+//returner la table
+echo $table_reprise_achat;
