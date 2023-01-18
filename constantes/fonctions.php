@@ -1254,7 +1254,7 @@ function define_payplan($payplan)
                     $repreneur_final_id = get_id_collaborateur_payplan_by_identification($vehicule_transaction['Options']);
                     $immatriculation = $vehicule_transaction['Immatriculation'];
                     /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
-                    $request = $pdo->query("SELECT COUNT(*) FROM payplan_rerise WHERE immatriculation = '$immatriculation'");
+                    $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise WHERE immatriculation = '$immatriculation'");
                     $result = $request->fetchColumn();
                     if (!$result) {
                         /**** on alimente la table payplan *****/
@@ -1263,7 +1263,7 @@ function define_payplan($payplan)
                             'immatriculation' => $vehicule_transaction['Immatriculation'],
                             'date_vente' => $vehicule_transaction['Date_Vente']
                         ];
-                        $sql = "INSERT INTO payplan (collaborateur_payplan_ID, immatriculation, date_vente) 
+                        $sql = "INSERT INTO payplan_reprise (collaborateur_payplan_ID, immatriculation, date_vente) 
                                         VALUES (:collaborateur_id, :immatriculation,:date_vente)";
                         $stmt = $pdo->prepare($sql);
                         $stmt->execute($data);
@@ -1271,8 +1271,8 @@ function define_payplan($payplan)
                 }
             }
 
-            if ($vehicule_transaction['Nom acheteur'] !== '') {
-                $acheteur = strtolower($vehicule_transaction['Nom acheteur']);
+            // if ($vehicule_transaction['Nom acheteur'] !== '') {
+            //     $acheteur = strtolower($vehicule_transaction['Nom acheteur']);
                 //on cherche quel est l'acheteur 
                 // if (in_array($acheteur, $identifiants_collaborateurs_payplan)) {
                 //     //on va chercher son ID
@@ -1294,7 +1294,7 @@ function define_payplan($payplan)
                 //         $stmt->execute($data);
                 //     }
                 // }
-            }
+            // }
         }
     }
 }
