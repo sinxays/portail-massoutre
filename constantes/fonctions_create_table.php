@@ -391,11 +391,10 @@ function create_table_payplan($header, $array)
         $table_payplan .= "<td>" . $payplan['Prix_Transport_CVO'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Date_facturation'] . " </td>";
         if ($payplan['Type_Achat'] == 'Reprise') {
-            $table_payplan .= "<td class='td_options'><strong style='font-size: 12px;'>" . utf8_encode($payplan['Options']) . " </strong></td>";
+            $table_payplan .= "<td class='td_options'><strong style='font-size: 12px;'>" . $payplan['Options'] . " </strong></td>";
         } else {
             $table_payplan .= "<td></td>";
         }
-
         $table_payplan .= "<td>" . $type_de_com . " </td>";
         $table_payplan .= "<td>" . $frais_financier  . " </td>";
         $table_payplan .= "<td>" . $marge . " </td>";
