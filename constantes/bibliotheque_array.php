@@ -33,7 +33,7 @@ $payplan_table_header_row = array(
     "Contrôle date", "Frais remise en état", "Pdt complémentaire total", "Mois Vente"
 );
 
-$payplan_table_header_row_test_achat = array(
+$payplan_table_header_row = array(
     "Immatriculation", "Destination", "Type véhicule", "Type achat", "Categorie VU", "Modele", "Reference lot", "Finition", "Parc achat", "Nom acheteur", "Date de vente","Date d'achat", "Prix achat net remisé",
     "Durée de stock", "Date premiere location", "Date derniere location", "Date stock", "Prix CG", "Prix Transport", "Montant Bonus Malus", "Commission CGA", "Commission achat", "Marge nette", "Vendeur", "Destination sortie",
     "Prix reservé", "Montant", "Client", "Marge financement", "Montant garantie", "Marge Pack", "Montant pack livraison", "Marges diverses", "Commission massoutre", "Montant publicité", "Montant revision", "Montant carrosserie",
