@@ -1179,7 +1179,7 @@ function get_payplan($filtre = '')
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
 
-    // var_dump($where);
+    var_dump($where);
 
 
     $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
