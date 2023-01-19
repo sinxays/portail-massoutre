@@ -358,7 +358,7 @@ function create_table_payplan($header, $array)
         $table_payplan .= "<td>" . $payplan['Parc_Achat'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Nom_Acheteur'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Date_Vente'] . " </td>";
-        // $table_payplan .= "<td>" . $payplan['Date_Achat'] . " </td>";
+        $table_payplan .= "<td>" . $payplan['Date_Achat'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Prix_achat_net_remise'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Duree_stock'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Date_premiere_location'] . " </td>";
