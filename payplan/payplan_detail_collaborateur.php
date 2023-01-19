@@ -56,7 +56,7 @@
 
         <H2> PAYPLAN DETAIL </H2>
 
-        <form class="my_form_payplan">
+        <form class="my_form_payplan" style="display:none">
             <?php
             ini_set('xdebug.var_display_max_depth', 99);
             ?>
@@ -76,7 +76,10 @@
 
         </br>
 
-        <table class="my_tab_payplan" id="table_payplan_detail_collaborateur"> </table>
+
+        <span id="titre_table"></span>
+
+        <table class="my_tab_payplan" id="table_payplan_detail_collaborateur">  </table>
 
 
         <?php

@@ -360,6 +360,7 @@ function create_table_payplan($header, $array)
         $table_payplan .= "<td>" . $payplan['Parc_Achat'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Nom_Acheteur'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Date_Vente'] . " </td>";
+        // $table_payplan .= "<td>" . $payplan['Date_Achat'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Prix_achat_net_remise'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Duree_stock'] . " </td>";
         $table_payplan .= "<td>" . $payplan['Date_premiere_location'] . " </td>";
@@ -471,7 +472,7 @@ function create_table_payplan_achat_by_collaborateur($header, $array_collaborate
     return $table_collaborateur_payplan;
 }
 
-function create_table_payplan_detail_collaborateur($header, $array_detail_payplan)
+function create_table_payplan_detail_reprise_collaborateur($header, $array_detail_payplan)
 {
     $table_collaborateur_payplan_detail = "";
 
@@ -487,6 +488,25 @@ function create_table_payplan_detail_collaborateur($header, $array_detail_paypla
     //fin contenu
     return $table_collaborateur_payplan_detail;
 }
+
+function create_table_payplan_detail_achat_collaborateur($header, $array_detail_payplan)
+{
+    $table_collaborateur_payplan_detail = "";
+
+    $table_collaborateur_payplan_detail .= create_header_row($header);
+
+    //contenu
+    foreach ($array_detail_payplan as $detail_payplan) {
+        $table_collaborateur_payplan_detail .= "<tr>";
+        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['immatriculation'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['date_achat'] . " </td>";
+        $table_collaborateur_payplan_detail .= "</tr>";
+    }
+    //fin contenu
+    return $table_collaborateur_payplan_detail;
+}
+
+
 
 function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all = '')
 {

@@ -1193,7 +1193,7 @@ function get_payplan($filtre = '')
     vehicules.parc_achat AS Parc_Achat,
     vehicules.nom_acheteur_massoutre AS Nom_Acheteur,
     vehicules.date_vente AS Date_Vente,
-    vehicules.date_achat AS Date_Achat,
+    -- vehicules.date_achat AS Date_Achat,
     vehicules.prix_achat_net_remise AS Prix_achat_net_remise,
     vehicules.duree_stock AS Duree_stock,
     vehicules.date_premiere_location AS Date_premiere_location,
@@ -1572,10 +1572,18 @@ function get_libelle_type_achat_from_id($type_achat_id)
     return $result;
 }
 
-function get_payplan_detail_collaborateur($collaborateur_id)
+function get_payplan_detail_reprise_collaborateur($collaborateur_id)
 {
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT * FROM payplan_reprise WHERE collaborateur_payplan_ID = $collaborateur_id");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
+
+function get_payplan_detail_achat_collaborateur($collaborateur_id)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT * FROM payplan_achat WHERE collaborateur_payplan_ID = $collaborateur_id");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }

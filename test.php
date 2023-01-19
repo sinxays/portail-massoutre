@@ -48,8 +48,9 @@
 
     // test2();
 
-    $payplan_collaborateur = get_payplan_reprise_achat_by_collaborateur(2);
-    var_dump($payplan_collaborateur);
+    $payplan_detail_collaborateur = get_payplan_detail_achat_collaborateur(20);
+
+    var_dump($payplan_detail_collaborateur);
 
 
 
