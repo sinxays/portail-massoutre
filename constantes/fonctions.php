@@ -1193,7 +1193,6 @@ function get_payplan($filtre = '')
     vehicules.parc_achat AS Parc_Achat,
     vehicules.nom_acheteur_massoutre AS Nom_Acheteur,
     vehicules.date_vente AS Date_Vente,
-    vehicules.date_achat AS Date_Achat,
     vehicules.prix_achat_net_remise AS Prix_achat_net_remise,
     vehicules.duree_stock AS Duree_stock,
     vehicules.date_premiere_location AS Date_premiere_location,
