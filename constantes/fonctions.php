@@ -1271,8 +1271,9 @@ function define_payplan($payplan)
                     //on va chercher son ID
                     $repreneur_final_id = get_id_collaborateur_payplan_by_identification($vehicule_transaction['Options']);
                     $immatriculation = $vehicule_transaction['Immatriculation'];
+                  
                     /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
-                    $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise WHERE immatriculation = '$immatriculation'");
+                    $request = $pdo->query("SELECT * FROM payplan_reprise WHERE immatriculation = '$immatriculation'");
                     $result = $request->fetch(PDO::FETCH_ASSOC);
                     if (!$result) {
                         /**** on alimente la table payplan *****/
@@ -1298,52 +1299,53 @@ function define_payplan($payplan)
                     }
                 }
             }
+        }
 
-            /*** GET ACHETEUR ***/
-            if ($vehicule_transaction['Nom_Acheteur'] !== '') {
-                $nom_complet_acheteur = $vehicule_transaction['Nom_Acheteur'];
-                $acheteur = explode(" ", strtolower($nom_complet_acheteur));
-                // si jamais on a un point à la plce de l'espace
-                if (empty($acheteur[1])) {
-                    $acheteur = explode(".", strtolower($nom_complet_acheteur));
-                }
-                $prenom_acheteur = $acheteur[0];
-                $nom_acheteur = $acheteur[1];
-                // on cherche quel est l'acheteur par le nom
-                $array_nom_collaborateur = get_array_nom_collaborateurs();
-                if (in_array($nom_acheteur, $array_nom_collaborateur)) {
-                    //on va chercher son ID
-                    $acheteur_id = get_id_collaborateur_payplan_by_name($nom_acheteur);
-                    $immatriculation = $vehicule_transaction['Immatriculation'];
-                    /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
-                    $request = $pdo->query("SELECT * FROM payplan_achat WHERE immatriculation = '$immatriculation'");
-                    $result = $request->fetch(PDO::FETCH_ASSOC);
-                    // si pas de resultat on ajout une ligne 
-                    if (!$result) {
-                        /**** on alimente la table payplan *****/
-                        //avant on vérifie si c'est une reprise en type d'achat car dans ce cas on prend la date_stock
-                        $date_achat = define_value_date_achat_by_type_achat($vehicule_transaction);
-                        $data = [
-                            'collaborateur_id' =>  $acheteur_id,
-                            'immatriculation' => $vehicule_transaction['Immatriculation'],
-                            'date_achat' => $date_achat
-                        ];
-                        $sql = "INSERT INTO payplan_achat (collaborateur_payplan_ID, immatriculation, date_achat) 
+        /*** GET ACHETEUR ***/
+        if ($vehicule_transaction['Nom_Acheteur'] !== '' && !is_null($vehicule_transaction['Nom_Acheteur'])) {
+           
+            $nom_complet_acheteur = $vehicule_transaction['Nom_Acheteur'];
+            $acheteur = explode(" ", strtolower($nom_complet_acheteur));
+            // si jamais on a un point à la plce de l'espace
+            if (empty($acheteur[1])) {
+                $acheteur = explode(".", strtolower($nom_complet_acheteur));
+            }
+            // $prenom_acheteur = $acheteur[0];
+            $nom_acheteur = $acheteur[1];
+            // on cherche quel est l'acheteur par le nom
+            $array_nom_collaborateur = get_array_nom_collaborateurs();
+            if (in_array($nom_acheteur, $array_nom_collaborateur)) {
+                //on va chercher son ID
+                $acheteur_id = get_id_collaborateur_payplan_by_name($nom_acheteur);
+                $immatriculation = $vehicule_transaction['Immatriculation'];
+                /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
+                $request = $pdo->query("SELECT * FROM payplan_achat WHERE immatriculation = '$immatriculation'");
+                $result = $request->fetch(PDO::FETCH_ASSOC);
+                // si pas de resultat on ajout une ligne 
+                if (!$result) {
+                    /**** on alimente la table payplan *****/
+                    //avant on vérifie si c'est une reprise en type d'achat car dans ce cas on prend la date_stock
+                    $date_achat = define_value_date_achat_by_type_achat($vehicule_transaction);
+                    $data = [
+                        'collaborateur_id' =>  $acheteur_id,
+                        'immatriculation' => $vehicule_transaction['Immatriculation'],
+                        'date_achat' => $date_achat
+                    ];
+                    $sql = "INSERT INTO payplan_achat (collaborateur_payplan_ID, immatriculation, date_achat) 
                                         VALUES (:collaborateur_id, :immatriculation,:date_achat)";
-                        $stmt = $pdo->prepare($sql);
-                        $stmt->execute($data);
-                    }
-                    //si ya un résultat on update la ligne
-                    else {
-                        $date_achat = define_value_date_achat_by_type_achat($vehicule_transaction);
-                        $data = [
-                            'id' =>  $acheteur_id,
-                            'date_achat' => $date_achat
-                        ];
-                        $sql = "UPDATE payplan_achat SET date_achat = :date_achat WHERE ID = :id";
-                        $stmt = $pdo->prepare($sql);
-                        $stmt->execute($data);
-                    }
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($data);
+                }
+                //si ya un résultat on update la ligne
+                else {
+                    $date_achat = define_value_date_achat_by_type_achat($vehicule_transaction);
+                    $data = [
+                        'id' =>  $acheteur_id,
+                        'date_achat' => $date_achat
+                    ];
+                    $sql = "UPDATE payplan_achat SET date_achat = :date_achat WHERE ID = :id";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($data);
                 }
             }
         }
