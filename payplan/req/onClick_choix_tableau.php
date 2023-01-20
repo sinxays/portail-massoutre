@@ -5,12 +5,10 @@ include  "../../include.php";
 
 if ($_POST["choix_tableau_payplan"] && $_POST["choix_tableau_payplan"] !== "") {
 
-
     $choix_tableau_payplan = $_POST["choix_tableau_payplan"];
     $table_reprise = "";
     $table_achat = "";
     $table_commission_total = "";
-
 
     switch ($choix_tableau_payplan) {
         case "collaborateurs":
