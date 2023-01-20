@@ -48,9 +48,9 @@
 
     // test2();
 
-    $payplan_detail_collaborateur = get_payplan();
+    $test = get_mois_en_cours();
 
-    var_dump($payplan_detail_collaborateur);
+    var_dump($test);
 
 
 

@@ -1075,7 +1075,7 @@ function get_payplan_all_collaborateur($filtre = '')
 
     foreach ($liste_collaborateurs_payplan as $index => $collaborateur) {
         $id_collaborateur = $collaborateur['ID'];
-        $nb_reprise = get_reprise_by_collaborateur($id_collaborateur);
+        $nb_reprise = get_reprise_by_collaborateur($id_collaborateur,$filtre);
         $nb_achat = get_achat_by_collaborateur($id_collaborateur);
         $liste_collaborateurs_payplan[$index]['nb_reprise'] = $nb_reprise;
         $liste_collaborateurs_payplan[$index]['nb_achat'] = $nb_achat;
@@ -1271,7 +1271,7 @@ function define_payplan($payplan)
                     //on va chercher son ID
                     $repreneur_final_id = get_id_collaborateur_payplan_by_identification($vehicule_transaction['Options']);
                     $immatriculation = $vehicule_transaction['Immatriculation'];
-                  
+
                     /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
                     $request = $pdo->query("SELECT * FROM payplan_reprise WHERE immatriculation = '$immatriculation'");
                     $result = $request->fetch(PDO::FETCH_ASSOC);
@@ -1303,7 +1303,7 @@ function define_payplan($payplan)
 
         /*** GET ACHETEUR ***/
         if ($vehicule_transaction['Nom_Acheteur'] !== '' && !is_null($vehicule_transaction['Nom_Acheteur'])) {
-           
+
             $nom_complet_acheteur = $vehicule_transaction['Nom_Acheteur'];
             $acheteur = explode(" ", strtolower($nom_complet_acheteur));
             // si jamais on a un point à la plce de l'espace
@@ -1352,7 +1352,7 @@ function define_payplan($payplan)
     }
 }
 
-function get_reprise_by_collaborateur($id_collaborateur)
+function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
 {
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise WHERE collaborateur_payplan_ID = $id_collaborateur");
@@ -1634,4 +1634,10 @@ function define_value_date_achat_by_type_achat($vehicule)
         $date_achat = $vehicule['Date_Achat'];
     }
     return $date_achat;
+}
+
+function get_mois_en_cours()
+{
+    $mois_en_cours = date("Y-m-01");
+    return $mois_en_cours;
 }
