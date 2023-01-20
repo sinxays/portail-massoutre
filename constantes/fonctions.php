@@ -1054,20 +1054,6 @@ function get_payplan_all_collaborateur($filtre = '')
 {
     $pdo = Connection::getPDO();
 
-    if (isset($filtre) && $filtre !== '') {
-
-        //mois précédent
-        if (isset($filtre['mois_precedent_payplan']) && $filtre['mois_precedent_payplan'] !== '') {
-            $date_now = date('Y-m-d');
-            // $date_now = date('2022-12-22');
-            $mois_precedent = get_previous_month_and_his_last_day($date_now);
-            $first = $mois_precedent['first'];
-            $last = $mois_precedent['last'];
-            $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
-            $where_filtre = $date;
-        }
-    }
-
     $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet_collaborateur,ID,identifiant_payplan 
                             FROM collaborateurs_payplan
                             ORDER BY nom ASC");
@@ -1075,8 +1061,8 @@ function get_payplan_all_collaborateur($filtre = '')
 
     foreach ($liste_collaborateurs_payplan as $index => $collaborateur) {
         $id_collaborateur = $collaborateur['ID'];
-        $nb_reprise = get_reprise_by_collaborateur($id_collaborateur,$filtre);
-        $nb_achat = get_achat_by_collaborateur($id_collaborateur);
+        $nb_reprise = get_reprise_by_collaborateur($id_collaborateur, $filtre);
+        $nb_achat = get_achat_by_collaborateur($id_collaborateur, $filtre);
         $liste_collaborateurs_payplan[$index]['nb_reprise'] = $nb_reprise;
         $liste_collaborateurs_payplan[$index]['nb_achat'] = $nb_achat;
         $liste_collaborateurs_payplan[$index]['nom_complet_collaborateur'] = $collaborateur['nom_complet_collaborateur'];
@@ -1354,6 +1340,22 @@ function define_payplan($payplan)
 
 function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
 {
+
+    if (isset($filtre) && $filtre !== '') {
+        //mois en cours
+        if (isset($filtre['mois_en_cours']) && $filtre['mois_en_cours'] !== '') {
+            $filtre = $filtre['mois_en_cours'];
+        }
+        //mois précédent
+        if (isset($filtre['mois_precedent_payplan']) && $filtre['mois_precedent_payplan'] !== '') {
+            $filtre = $filtre['mois_precedent_payplan'];
+        }
+        //dates personnalisées
+        if (isset($filtre['dates_personnalisees']) && $filtre['dates_personnalisees'] !== '') {
+            $filtre = $filtre['dates_personnalisees'];
+        }
+    }
+
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise WHERE collaborateur_payplan_ID = $id_collaborateur");
     $result = $request->fetchColumn();
