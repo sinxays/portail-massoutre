@@ -1286,6 +1286,16 @@ function define_payplan($payplan)
                         $stmt = $pdo->prepare($sql);
                         $stmt->execute($data);
                     }
+                    //sinon on update la date de vente
+                    else {
+                        $data = [
+                            'id' =>  $repreneur_final_id,
+                            'date_vente' => $vehicule_transaction['Date_Vente']
+                        ];
+                        $sql = "UPDATE payplan_reprise SET date_vente = :date_vente WHERE ID = :id";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute($data);
+                    }
                 }
             }
 
@@ -1327,7 +1337,7 @@ function define_payplan($payplan)
                     else {
                         $date_achat = define_value_date_achat_by_type_achat($vehicule_transaction);
                         $data = [
-                            'id' =>  $result['ID'],
+                            'id' =>  $acheteur_id,
                             'date_achat' => $date_achat
                         ];
                         $sql = "UPDATE payplan_achat SET date_achat = :date_achat WHERE ID = :id";
