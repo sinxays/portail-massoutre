@@ -1260,7 +1260,8 @@ function define_payplan($payplan)
 
     $identifiants_collaborateurs_payplan = get_all_identifiants_collaborateurs_payplan();
     foreach ($payplan as $vehicule_transaction) {
-        //si on rentre dans une reprise
+
+        /*** GET REPRENEUR seulement si on rentre dans une reprise ***/
         if ($vehicule_transaction['Type_Achat'] == 'Reprise') {
             // si il y a un repreneur final
             if ($vehicule_transaction['Options'] !== '') {
@@ -1287,6 +1288,8 @@ function define_payplan($payplan)
                     }
                 }
             }
+
+            /*** GET ACHETEUR ***/
             if ($vehicule_transaction['Nom_Acheteur'] !== '') {
                 $nom_complet_acheteur = $vehicule_transaction['Nom_Acheteur'];
                 $acheteur = explode(" ", strtolower($nom_complet_acheteur));
@@ -1308,10 +1311,12 @@ function define_payplan($payplan)
                     // si pas de resultat on ajout une ligne 
                     if (!$result) {
                         /**** on alimente la table payplan *****/
+                        //avant on vérifie si c'est une reprise en type d'achat car dans ce cas on prend la date_stock
+                        $date_achat = define_value_date_achat_by_type_achat($vehicule_transaction);
                         $data = [
                             'collaborateur_id' =>  $acheteur_id,
                             'immatriculation' => $vehicule_transaction['Immatriculation'],
-                            'date_achat' => $vehicule_transaction['Date_Achat']
+                            'date_achat' => $date_achat
                         ];
                         $sql = "INSERT INTO payplan_achat (collaborateur_payplan_ID, immatriculation, date_achat) 
                                         VALUES (:collaborateur_id, :immatriculation,:date_achat)";
@@ -1320,9 +1325,10 @@ function define_payplan($payplan)
                     }
                     //si ya un résultat on update la ligne
                     else {
+                        $date_achat = define_value_date_achat_by_type_achat($vehicule_transaction);
                         $data = [
                             'id' =>  $result['ID'],
-                            'date_achat' => $vehicule_transaction['Date_Achat']
+                            'date_achat' => $date_achat
                         ];
                         $sql = "UPDATE payplan_achat SET date_achat = :date_achat WHERE ID = :id";
                         $stmt = $pdo->prepare($sql);
@@ -1606,4 +1612,14 @@ function get_array_nom_collaborateurs()
     $request = $pdo->query("SELECT LOWER(nom) FROM collaborateurs_payplan");
     $result = $request->fetchAll(PDO::FETCH_COLUMN);
     return $result;
+}
+
+function define_value_date_achat_by_type_achat($vehicule)
+{
+    if (strtolower($vehicule['Type_Achat']) == 'reprise') {
+        $date_achat = $vehicule['Date_stock'];
+    } else {
+        $date_achat = $vehicule['Date_Achat'];
+    }
+    return $date_achat;
 }
