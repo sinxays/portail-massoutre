@@ -86,7 +86,7 @@ $(document).ready(function () {
                     $.ajax({
                         url: "/payplan/req/onSelect_payplan_collaborateur_filtre.php",
                         type: "POST",
-                        data: { mois_precedent_payplan: date_select },
+                        data: { selected_date: date_select },
                         success: function (data) {
                             $("#table_payplan").html(data);
                         }
@@ -103,7 +103,7 @@ $(document).ready(function () {
                     $.ajax({
                         url: "/payplan/req/onSelect_payplan_filtre.php",
                         type: "POST",
-                        data: { mois_precedent_payplan: date_select },
+                        data: { selected_date: date_select },
                         success: function (data) {
                             $("#table_payplan").html(data);
                             $("#select_destination_payplan").val(0);

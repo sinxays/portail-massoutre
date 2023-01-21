@@ -2,7 +2,7 @@
 
 include  "../../include.php";
 
-/*** filtre destination ***/
+/*** FILTRE DESTINATION ***/
 
 // si on choisit negoce ou locations
 if (isset($_POST["destination"])) {
@@ -16,8 +16,7 @@ if (isset($_POST["destination"])) {
     }
 }
 
-
-/*** filtre achat ***/
+/*** FILTRE ACHAT ***/
 if (isset($_POST['type_achat'])) {
     if ($_POST['type_achat'] !== '0') {
         $type_achat_id = intval($_POST["type_achat"]);
@@ -29,12 +28,12 @@ if (isset($_POST['type_achat'])) {
     }
 }
 
-/*** filtre date mois précédent ***/
+/*** FILTRE DATE MOIS PRECEDENT ***/
 if (isset($_POST['mois_precedent_payplan'])) {
     $filtre['mois_precedent_payplan'] = $_POST['mois_precedent_payplan'];
 }
 
-/*** filtre date personnalisées ***/
+/*** FILTRE DATE PERSO ***/
 if (isset($_POST['date_debut']) && isset($_POST['date_fin'])) {
     $filtre['date_personnalisee']['debut'] = $_POST['date_debut'];
     $filtre['date_personnalisee']['fin'] = $_POST['date_fin'];

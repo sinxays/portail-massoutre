@@ -21,8 +21,8 @@ if (isset($_POST["id_collaborateur"])) {
 }
 
 /*** filtre date mois précédent ***/
-if (isset($_POST['mois_precedent_payplan'])) {
-    $filtre['mois_precedent_payplan'] = $_POST['mois_precedent_payplan'];
+if (isset($_POST['selected_date']) && $_POST['selected_date'] !== '') {
+    $selected_date = $_POST['selected_date'];
 }
 
 //returner la table
