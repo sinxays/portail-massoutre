@@ -1327,10 +1327,10 @@ function define_payplan($payplan)
                 else {
                     $date_achat = define_value_date_achat_by_type_achat($vehicule_transaction);
                     $data = [
-                        'immatriculation' =>  $vehicule_transaction['Immatriculation'],
+                        'ID' =>  $result['ID'],
                         'date_achat' => $date_achat
                     ];
-                    $sql = "UPDATE payplan_achat SET date_achat = :date_achat WHERE immatriculation = :immatriculation";
+                    $sql = "UPDATE payplan_achat SET date_achat = :date_achat WHERE ID = :ID";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute($data);
                 }
