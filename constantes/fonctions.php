@@ -1779,6 +1779,18 @@ function alimenter_payplan($data_payplan)
     $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $data_payplan);
     $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $data_payplan, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
 
+    var_dump($marge);
+    var_dump($acheteur_id_collaborateur);
+    var_dump($repreneur_id_collaborateur);
+    var_dump($vendeur_id_collaborateur);
+    var_dump($type_com_and_valeur_acheteur);
+    var_dump($type_com_and_valeur_repreneur_final);
+    var_dump($type_com_and_valeur_repreneur_final);
+    var_dump($type_com_and_valeur_vendeur);
+    var_dump($vehicule_id);
+
+    die();
+
 
     $data = [
         'vehicule_id' => $vehicule_id,
@@ -1904,22 +1916,3 @@ function calcul_percent_de_la_marge($marge)
     return $valeur_return;
 }
 
-function test_insert()
-{
-    $pdo = Connection::getPDO();
-
-    $data = [
-        'immatriculation' => 'toto',
-        'type_vehicule' => 'toto',
-        'modele' => 'toto',
-        'finition' => 'toto',
-
-    ];
-    $sql = "INSERT INTO vehicules_payplan (immatriculation, type_vehicule, modele, finition) 
-                    VALUES (:immatriculation, :type_vehicule,:modele,:finition)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($data);
-
-    $last_id = $pdo->lastInsertId();
-    return $last_id;
-}

@@ -47,8 +47,8 @@
     include "include.php";
 
 
-    $payplan = test_insert();
-    var_dump($payplan);
+    $payplan = get_payplan();
+    define_payplan_final($payplan);
 
 
 
