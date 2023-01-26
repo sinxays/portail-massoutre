@@ -1770,49 +1770,55 @@ function alimenter_payplan($data_payplan)
 
     $commisionable = 1;
     $vehicule_id = intval($data_payplan['vehicule_id']);
+    $parc_achat = strtolower($data_payplan['Parc_Achat']);
 
-    $marge = define_marge($data_payplan, $commisionable);
-    $acheteur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Nom_Acheteur']);
-    $repreneur_id_collaborateur = get_id_collaborateur_payplan_by_identification($data_payplan['Options']);
-    $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Vendeur']);
-    $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $data_payplan);
-    $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $data_payplan);
-    $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $data_payplan, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
+    if ($parc_achat !== '' || !is_null($parc_achat)) {
 
-    // var_dump($marge);
-    // var_dump($acheteur_id_collaborateur);
-    // var_dump($repreneur_id_collaborateur);
-    // var_dump($vendeur_id_collaborateur);
-    // var_dump($type_com_and_valeur_acheteur);
-    // var_dump($type_com_and_valeur_repreneur_final);
-    // var_dump($type_com_and_valeur_vendeur);
-    // var_dump($vehicule_id);
+        $marge = define_marge($data_payplan, $commisionable);
+        $acheteur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Nom_Acheteur']);
+        $repreneur_id_collaborateur = get_id_collaborateur_payplan_by_identification($data_payplan['Options']);
+        $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Vendeur']);
+        $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $parc_achat);
+        $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $parc_achat);
+        $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $parc_achat, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
 
-    // die();
+        // var_dump($marge);
+        // var_dump($acheteur_id_collaborateur);
+        // var_dump($repreneur_id_collaborateur);
+        // var_dump($vendeur_id_collaborateur);
+        // var_dump($type_com_and_valeur_acheteur);
+        // var_dump($type_com_and_valeur_repreneur_final);
+        // var_dump($type_com_and_valeur_vendeur);
+        // var_dump($vehicule_id);
+
+        // die();
 
 
-    $data = [
-        'vehicule_id' => $vehicule_id,
-        'parc_achat' => $data_payplan['Parc_Achat'],
-        'marge' => $marge,
-        'acheteur_collaborateur_id' => $acheteur_id_collaborateur,
-        'type_com_acheteur' =>  $type_com_and_valeur_acheteur['type_com'],
-        'valeur_com_acheteur' =>  $type_com_and_valeur_acheteur['valeur'],
-        'repreneur_final_collaborateur_id' =>  $repreneur_id_collaborateur,
-        'type_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['type_com'],
-        'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
-        'vendeur_collaborateur_id' =>  $vendeur_id_collaborateur,
-        'type_com_vendeur' =>  $type_com_and_valeur_vendeur['type_com'],
-        'valeur_com_vendeur' =>  $type_com_and_valeur_vendeur['valeur'],
-        'date_facturation' =>  $data_payplan['Date_facturation']
-    ];
+        $data = [
+            'vehicule_id' => $vehicule_id,
+            'parc_achat' => $data_payplan['Parc_Achat'],
+            'marge' => $marge,
+            'acheteur_collaborateur_id' => $acheteur_id_collaborateur,
+            'type_com_acheteur' =>  $type_com_and_valeur_acheteur['type_com'],
+            'valeur_com_acheteur' =>  $type_com_and_valeur_acheteur['valeur'],
+            'repreneur_final_collaborateur_id' =>  $repreneur_id_collaborateur,
+            'type_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['type_com'],
+            'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
+            'vendeur_collaborateur_id' =>  $vendeur_id_collaborateur,
+            'type_com_vendeur' =>  $type_com_and_valeur_vendeur['type_com'],
+            'valeur_com_vendeur' =>  $type_com_and_valeur_vendeur['valeur'],
+            'date_facturation' =>  $data_payplan['Date_facturation']
+        ];
 
-    $sql = "INSERT INTO payplan (vehicule_id, parc_achat, marge,acheteur_collaborateur_id,type_com_acheteur,valeur_com_acheteur, 
+        $sql = "INSERT INTO payplan (vehicule_id, parc_achat, marge,acheteur_collaborateur_id,type_com_acheteur,valeur_com_acheteur, 
     repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation) 
                     VALUES (:vehicule_id, :parc_achat, :marge, :acheteur_collaborateur_id, :type_com_acheteur, :valeur_com_acheteur, 
                     :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($data);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+    }
+
+    var_dump("parc achat n'est pas renseigné");
 }
 
 
@@ -1841,9 +1847,9 @@ function get_name_acheteur_vendeur($nom_complet)
 }
 
 
-function define_type_com_and_valeur_acheteur($marge, $data_vh_transaction)
+function define_type_com_and_valeur_acheteur($marge, $parc_achat)
 {
-    switch (strtolower($data_vh_transaction['Parc_Achat'])) {
+    switch ($parc_achat) {
         case 'rachat cash':
             $return['type_com'] = CINQ_MARGE;
             $return['valeur'] = calcul_percent_de_la_marge($marge);
@@ -1861,7 +1867,7 @@ function define_type_com_and_valeur_acheteur($marge, $data_vh_transaction)
     return $return;
 }
 
-function define_type_com_and_valeur_repreneur_final($marge, $data_vh_transaction)
+function define_type_com_and_valeur_repreneur_final($marge, $parc_achat)
 {
     $return['type_com'] = '';
     $return['valeur'] = '';
@@ -1869,10 +1875,9 @@ function define_type_com_and_valeur_repreneur_final($marge, $data_vh_transaction
     return $return;
 }
 
-function define_type_com_and_valeur_vendeur($marge, $data_vh_transaction, $id_acheteur, $id_vendeur)
+function define_type_com_and_valeur_vendeur($marge, $parc_achat, $id_acheteur, $id_vendeur)
 {
 
-    $parc_achat = strtolower($data_vh_transaction['Parc_Achat']);
 
     // si le vendeur est l'acheteur sont les mêmes
     if ($id_vendeur == $id_acheteur) {
@@ -1914,4 +1919,3 @@ function calcul_percent_de_la_marge($marge)
     $valeur_return = (VALUE_MARGE * $marge) / 100;
     return $valeur_return;
 }
-
