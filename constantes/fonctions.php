@@ -1289,17 +1289,11 @@ function define_payplan($payplan)
 
         /*** GET ACHETEUR ***/
         if ($vehicule_transaction['Nom_Acheteur'] !== '' && !is_null($vehicule_transaction['Nom_Acheteur'])) {
-
-            $nom_complet_acheteur = $vehicule_transaction['Nom_Acheteur'];
-            $acheteur = explode(" ", strtolower($nom_complet_acheteur));
-            // si jamais on a un point à la plce de l'espace
-            if (empty($acheteur[1])) {
-                $acheteur = explode(".", strtolower($nom_complet_acheteur));
-            }
-            // $prenom_acheteur = $acheteur[0];
-            $nom_acheteur = $acheteur[1];
+            //on chope son nom
+            $nom_acheteur = get_name_acheteur_vendeur($vehicule_transaction['Nom_Acheteur']);
             // on cherche quel est l'acheteur par le nom
             $array_nom_collaborateur = get_array_nom_collaborateurs();
+            // ATTENTION si deux collaborateur on le même nom il va falloir penser à remanier la fontion !
             if (in_array($nom_acheteur, $array_nom_collaborateur)) {
                 //on va chercher son ID
                 $acheteur_id = get_id_collaborateur_payplan_by_name($nom_acheteur);
@@ -1338,6 +1332,46 @@ function define_payplan($payplan)
         }
     }
 }
+
+
+
+
+function define_payplan_final($payplan)
+{
+
+    $pdo = Connection::getPDO();
+
+    $identifiants_collaborateurs_payplan = get_all_identifiants_collaborateurs_payplan();
+
+    foreach ($payplan as $vehicule_transaction) {
+        /*** GET REPRENEUR seulement si on rentre dans une reprise ***/
+        if ($vehicule_transaction['Type_Achat'] == 'Reprise') {
+
+            $immatriculation = $vehicule_transaction['Immatriculation'];
+
+            /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
+            $result = check_if_immatriculation_exist($immatriculation);
+
+            //si rien trouvé alors création nouveau véhicule
+            if (!$result) {
+                // on crée d'abord le vh dans vehicules_payplan et on récupere au passage l'id du vehicule crée
+                $last_id = creation_vh_into_vehicule_payplan($vehicule_transaction);
+                $vehicule_transaction['vehicule_id'] = $last_id;
+
+                /**** on alimente la table payplan *****/
+                alimenter_payplan($vehicule_transaction);
+            }
+            // else {
+            //     update_payplan($vehicule_transaction);
+            // }
+
+
+        }
+    }
+}
+
+
+
 
 function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
 {
@@ -1440,17 +1474,25 @@ function get_all_identifiants_collaborateurs_payplan()
 function get_id_collaborateur_payplan_by_identification($identification)
 {
     $pdo = Connection::getPDO();
+    $identification = strtolower($identification);
     $request = $pdo->query("SELECT ID FROM collaborateurs_payplan WHERE identifiant_payplan = '$identification'");
     $result = $request->fetch(PDO::FETCH_COLUMN);
     return intval($result);
 }
 //attention si deux personnes de même noms sont dans la liste des collaborateurs alors il faudra prévoir remanier la fonction
-function get_id_collaborateur_payplan_by_name($nom)
+function get_id_collaborateur_payplan_by_name($nom_complet)
 {
+
+    $nom = get_name_acheteur_vendeur($nom_complet);
+
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT ID FROM collaborateurs_payplan WHERE nom = '$nom'");
     $result = $request->fetch(PDO::FETCH_COLUMN);
-    return intval($result);
+    if (!$result) {
+        return NULL;
+    } else {
+        return intval($result);
+    }
 }
 
 
@@ -1686,4 +1728,178 @@ function get_mois_en_cours()
 {
     $mois_en_cours = date("Y-m-01");
     return $mois_en_cours;
+}
+
+function check_if_immatriculation_exist($immat)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT vh.immatriculation 
+                    from payplan 
+                    LEFT JOIN vehicules_payplan as vh on vh.ID = payplan.vehicule_id 
+                    WHERE vh.immatriculation = '$immat' ");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+
+    return $result;
+}
+
+
+function creation_vh_into_vehicule_payplan($vehicule)
+{
+
+    $pdo = Connection::getPDO();
+
+    $data = [
+        'immatriculation' => $vehicule['Immatriculation'],
+        'type_vehicule' => $vehicule['Type_Vehicule'],
+        'modele' => $vehicule['Modele'],
+        'finition' => $vehicule['Finition'],
+
+    ];
+    $sql = "INSERT INTO vehicules_payplan (immatriculation, type_vehicule, modele, finition) 
+                    VALUES (:immatriculation, :type_vehicule,:modele,:finition)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
+
+    $last_id = $pdo->lastInsertId();
+    return $last_id;
+}
+
+function alimenter_payplan($data_payplan)
+{
+    $pdo = Connection::getPDO();
+
+    $commisionable = 1;
+    $vehicule_id = intval($data_payplan['vehicule_id']);
+
+    $marge = define_marge($data_payplan, $commisionable);
+    $acheteur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Nom_Acheteur']);
+    $repreneur_id_collaborateur = get_id_collaborateur_payplan_by_identification($data_payplan['Options']);
+    $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Vendeur']);
+    $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $data_payplan);
+    $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $data_payplan);
+    $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $data_payplan, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
+
+
+    $data = [
+        'vehicule_id' => $vehicule_id,
+        'parc_achat' => $data_payplan['Parc_Achat'],
+        'marge' => $marge,
+        'acheteur_collaborateur_id' => $acheteur_id_collaborateur,
+        'type_com_acheteur' =>  $type_com_and_valeur_acheteur['type_com'],
+        'valeur_com_acheteur' =>  $type_com_and_valeur_acheteur['valeur'],
+        'repreneur_final_collaborateur_id' =>  $repreneur_id_collaborateur,
+        'type_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['type_com'],
+        'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
+        'vendeur_collaborateur_id' =>  $vendeur_id_collaborateur,
+        'type_com_vendeur' =>  $type_com_and_valeur_vendeur['type_com'],
+        'valeur_com_vendeur' =>  $type_com_and_valeur_vendeur['valeur'],
+        'date_facturation' =>  $data_payplan['Date_facturation']
+    ];
+
+    $sql = "INSERT INTO payplan (vehicule_id, parc_achat, marge,acheteur_collaborateur_id,type_com_acheteur,valeur_com_acheteur, 
+    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation) 
+                    VALUES (:vehicule_id, :parc_achat, :marge, :acheteur_collaborateur_id, :type_com_acheteur, :valeur_com_acheteur, 
+                    :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
+}
+
+
+function update_payplan($data_payplan)
+{
+    $pdo = Connection::getPDO();
+}
+
+
+function get_name_acheteur_vendeur($nom_complet)
+{
+
+    if ($nom_complet !== null) {
+        $nom_complet_acheteur = $nom_complet;
+        $acheteur = explode(" ", strtolower($nom_complet_acheteur));
+        // si jamais on a un point à la place de l'espace
+        if (empty($acheteur[1])) {
+            $acheteur = explode(".", strtolower($nom_complet_acheteur));
+        }
+        // $prenom_acheteur = $acheteur[0];
+        $nom_acheteur = $acheteur[1];
+        return $nom_acheteur;
+    } else {
+        return '';
+    }
+}
+
+
+function define_type_com_and_valeur_acheteur($marge, $data_vh_transaction)
+{
+    switch (strtolower($data_vh_transaction['Parc_Achat'])) {
+        case 'rachat cash':
+            $return['type_com'] = CINQ_MARGE;
+            $return['valeur'] = calcul_percent_de_la_marge($marge);
+            break;
+        case 'reprise':
+            $return['type_com'] = CINQ_MARGE;
+            $return['valeur'] = calcul_percent_de_la_marge($marge);
+            break;
+        default:
+            $return['type_com'] = COM_UNITAIRE;
+            $return['valeur'] = VALUE_COM_UNITAIRE;
+            break;
+    }
+
+    return $return;
+}
+
+function define_type_com_and_valeur_repreneur_final($marge, $data_vh_transaction)
+{
+    $return['type_com'] = '';
+    $return['valeur'] = '';
+
+    return $return;
+}
+
+function define_type_com_and_valeur_vendeur($marge, $data_vh_transaction, $id_acheteur, $id_vendeur)
+{
+
+    $parc_achat = strtolower($data_vh_transaction['Parc_Achat']);
+
+    // si le vendeur est l'acheteur sont les mêmes
+    if ($id_vendeur == $id_acheteur) {
+        switch ($parc_achat) {
+            case 'rachat cash':
+                $return['type_com'] = CINQ_MARGE;
+                $return['valeur'] = calcul_percent_de_la_marge($marge);
+                break;
+            case 'reprise':
+                $return['type_com'] = CINQ_MARGE;
+                $return['valeur'] = calcul_percent_de_la_marge($marge);
+                break;
+            default:
+                $return['type_com'] = COM_UNITAIRE;
+                $return['valeur'] = VALUE_COM_UNITAIRE;
+                break;
+        }
+    } else {
+        switch ($parc_achat) {
+            case 'rachat cash':
+                $return['type_com'] = COM_UNITAIRE;
+                $return['valeur'] = VALUE_COM_UNITAIRE;
+                break;
+            case 'reprise':
+                $return['type_com'] = COM_UNITAIRE;
+                $return['valeur'] = VALUE_COM_UNITAIRE;
+                break;
+            default:
+                $return['type_com'] = COM_UNITAIRE;
+                $return['valeur'] = VALUE_COM_UNITAIRE;
+                break;
+        }
+    }
+    return $return;
+}
+
+function calcul_percent_de_la_marge($marge)
+{
+    $valeur_return = (VALUE_MARGE * $marge) / 100;
+    return $valeur_return;
 }

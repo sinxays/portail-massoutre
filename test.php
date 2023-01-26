@@ -46,11 +46,9 @@
     include "right_menubar.php";
     include "include.php";
 
-    // test2();
 
-    $test = get_mois_en_cours();
-
-    var_dump($test);
+    $payplan = get_payplan();
+    define_payplan_final($payplan);
 
 
 
