@@ -1779,17 +1779,16 @@ function alimenter_payplan($data_payplan)
     $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $data_payplan);
     $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $data_payplan, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
 
-    var_dump($marge);
-    var_dump($acheteur_id_collaborateur);
-    var_dump($repreneur_id_collaborateur);
-    var_dump($vendeur_id_collaborateur);
-    var_dump($type_com_and_valeur_acheteur);
-    var_dump($type_com_and_valeur_repreneur_final);
-    var_dump($type_com_and_valeur_repreneur_final);
-    var_dump($type_com_and_valeur_vendeur);
-    var_dump($vehicule_id);
+    // var_dump($marge);
+    // var_dump($acheteur_id_collaborateur);
+    // var_dump($repreneur_id_collaborateur);
+    // var_dump($vendeur_id_collaborateur);
+    // var_dump($type_com_and_valeur_acheteur);
+    // var_dump($type_com_and_valeur_repreneur_final);
+    // var_dump($type_com_and_valeur_vendeur);
+    // var_dump($vehicule_id);
 
-    die();
+    // die();
 
 
     $data = [
