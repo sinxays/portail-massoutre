@@ -1903,3 +1903,23 @@ function calcul_percent_de_la_marge($marge)
     $valeur_return = (VALUE_MARGE * $marge) / 100;
     return $valeur_return;
 }
+
+function test_insert()
+{
+    $pdo = Connection::getPDO();
+
+    $data = [
+        'immatriculation' => 'toto',
+        'type_vehicule' => 'toto',
+        'modele' => 'toto',
+        'finition' => 'toto',
+
+    ];
+    $sql = "INSERT INTO vehicules_payplan (immatriculation, type_vehicule, modele, finition) 
+                    VALUES (:immatriculation, :type_vehicule,:modele,:finition)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
+
+    $last_id = $pdo->lastInsertId();
+    return $last_id;
+}
