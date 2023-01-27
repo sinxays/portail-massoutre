@@ -1811,7 +1811,7 @@ function alimenter_payplan($data_payplan)
         ];
 
         $sql = "INSERT INTO payplan (vehicule_id, parc_achat, marge,acheteur_collaborateur_id,type_com_acheteur,valeur_com_acheteur, 
-    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation) 
+                    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation) 
                     VALUES (:vehicule_id, :parc_achat, :marge, :acheteur_collaborateur_id, :type_com_acheteur, :valeur_com_acheteur, 
                     :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation)";
         $stmt = $pdo->prepare($sql);
