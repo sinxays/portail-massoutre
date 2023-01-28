@@ -4,7 +4,7 @@ $(document).ready(function () {
     $("#collaborateur_div").hide();
     // $("#bouton_tableau_commision").focus();
     // $("#bouton_tableau_commision").blur();
-    $("#bouton_tableau_commision").addClass("button_select_tableau_comission");
+    $("#bouton_tableau_commision").addClass("button_selected_tableau_comission");
 
 
 
@@ -176,7 +176,7 @@ $(document).ready(function () {
             $.ajax({
                 url: "/payplan/req/onSelect_payplan_collaborateur_filtre.php",
                 type: "POST",
-                data: { selected_date: date_select , date_perso : value_dates_perso },
+                data: { selected_date: date_select, date_perso: value_dates_perso },
                 success: function (data) {
                     $("#table_payplan_achat_reprise").html();
                     $("#table_payplan_achat_reprise").html(data);
@@ -188,12 +188,14 @@ $(document).ready(function () {
 
 
 
-    // au select du tableau collaborateurs
-    $("#bouton_tableau_collaborateurs").click(function (e) {
+    // au select du tableau achat/reprise collaborateur
+    $("#bouton_tableau_reprise_achat_collaborateur").click(function (e) {
         $("#table_payplan").fadeOut(0);
-        $("#bouton_tableau_collaborateurs").blur();
-        $("#bouton_tableau_collaborateurs").addClass("button_select_tableau_collaborateur");
-        $("#bouton_tableau_commision").removeClass("button_select_tableau_comission");
+        $("#bouton_tableau_reprise_achat_collaborateur").blur();
+        $("#bouton_tableau_reprise_achat_collaborateur").addClass("button_selected_tableau_reprise_achat");
+        $("#bouton_tableau_payplan").removeClass("button_selected_tableau_payplan");
+        $("#bouton_tableau_commision").removeClass("button_selected_tableau_comission");
+
         //mise a 0 des filtres ou disparition
         $("#div_form_destination").fadeOut(300);
         $("#div_form_type_achat").fadeOut(300);
@@ -212,14 +214,44 @@ $(document).ready(function () {
         });
     });
 
+    // au select du tableau payplan
+    $("#bouton_tableau_payplan").click(function (e) {
+        $("#table_payplan").fadeOut(100);
+        $("#table_payplan_achat_reprise").fadeOut(100);
+        $("#bouton_tableau_payplan").blur();
+        $("#bouton_tableau_payplan").addClass("button_selected_tableau_payplan");
+        $("#bouton_tableau_reprise_achat_collaborateur").removeClass("button_selected_tableau_reprise_achat");
+        $("#bouton_tableau_commision").removeClass("button_selected_tableau_comission");
+
+        //mise a 0 des filtres ou disparition
+        $("#div_form_destination").fadeOut(300);
+        $("#div_form_type_achat").fadeOut(300);
+        $("#collaborateur_div").fadeIn(300);
+        $("#tableau_selected").text("payplan");
+        $("#select_site_payplan").val(0);
+        $.ajax({
+            url: "/payplan/req/onClick_choix_tableau.php",
+            type: "POST",
+            data: { choix_tableau_payplan: $(this).val() },
+            success: function (data) {
+                // var parsed = JSON.parse(data);
+                $("#table_payplan").html(data);
+                $("#table_payplan").fadeIn(300);
+            }
+        });
+    });
+
     // au select du tableau comission total
     $("#bouton_tableau_commision").click(function (e) {
         $("#table_payplan_achat_reprise").fadeOut(0);
         $("#table_collaborateurs_reprise").fadeOut(200);
         $("#table_collaborateurs_achat").fadeOut(200);
         $("#bouton_tableau_commision").blur();
-        $("#bouton_tableau_commision").addClass("button_select_tableau_comission");
-        $("#bouton_tableau_collaborateurs").removeClass("button_select_tableau_collaborateur");
+        $("#bouton_tableau_commision").addClass("button_selected_tableau_comission");
+        $("#bouton_tableau_payplan").removeClass("button_selected_tableau_payplan");
+        $("#bouton_tableau_reprise_achat_collaborateur").removeClass("button_selected_tableau_reprise_achat");
+       
+        //mise a 0 des filtres ou disparition
         $("#collaborateur_div").fadeOut(300);
         $("#div_form_destination").fadeIn(300);
         $("#div_form_type_achat").fadeIn(300);

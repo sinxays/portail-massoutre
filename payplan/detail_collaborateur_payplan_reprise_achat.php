@@ -87,7 +87,7 @@
             echo "<span id='span_id_collaborateur' style='visibility:hidden;'>$id_collaborateur_detail</span>";
         }
 
-        // $payplan = get_payplan();
+        // $payplan = get_commission();
         // var_dump($payplan);
 
         ?>

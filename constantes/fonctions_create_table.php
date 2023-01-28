@@ -318,7 +318,7 @@ function create_table_marges($header, $liste_agence)
     return $table_marges;
 }
 
-function create_table_payplan($header, $array)
+function create_table_commission($header, $array)
 {
 
     $commisionable = 1;
@@ -530,6 +530,37 @@ function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all
     return $table_collaborateurs_payplan;
 }
 
+
+function create_table_payplan($payplan, $header_payplan)
+{
+    $table_payplan = "";
+
+    $table_payplan .= create_header_row($header_payplan);
+
+    foreach ($payplan as $line_payplan) {
+
+        $immatriculation = get_immatriculation_by_id_vehicule(intval($line_payplan['vehicule_id']));
+        $nom_acheteur = get_nom_complet_collaborateur_by_id($line_payplan['acheteur_collaborateur_id']);
+        $nom_repreneur = get_nom_complet_collaborateur_by_id($line_payplan['repreneur_final_collaborateur_id']);
+        $nom_vendeur = get_nom_complet_collaborateur_by_id($line_payplan['vendeur_collaborateur_id']);
+
+        $table_payplan .= "<tr>";
+        $table_payplan .= "<td>" . $immatriculation . " </td>";
+        $table_payplan .= "<td>" . $line_payplan['parc_achat'] . " </td>";
+        $table_payplan .= "<td>" . $line_payplan['marge'] . " </td>";
+        $table_payplan .= "<td>" . $nom_acheteur . " </td>";
+        $table_payplan .= "<td>" . $line_payplan['valeur_com_acheteur'] . " </td>";
+        $table_payplan .= "<td>" . $nom_repreneur . " </td>";
+        // $table_payplan .= "<td>" . $line_payplan['valeur_com_repreneur_final'] . " </td>";
+        $table_payplan .= "<td>" . $nom_vendeur . " </td>";
+        $table_payplan .= "<td>" . $line_payplan['valeur_com_vendeur'] . " </td>";
+        $table_payplan .= "<td>" . $line_payplan['date_achat'] . " </td>";
+        $table_payplan .= "<td>" . $line_payplan['date_facturation'] . " </td>";
+        $table_payplan .= "</tr>";
+    }
+
+    return $table_payplan;
+}
 
 
 function create_header_row($header)

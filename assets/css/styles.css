@@ -589,12 +589,17 @@ img {
     color: rgb(15, 15, 15);
   }
 
-  .button_select_tableau_collaborateur{
+  .button_selected_tableau_reprise_achat{
     background-color: #ffffff;
     color: rgb(15, 15, 15);
   }  
 
-  .button_select_tableau_comission{
+  .button_selected_tableau_payplan{
+    background-color: #ffffff;
+    color: rgb(15, 15, 15);
+  }  
+
+  .button_selected_tableau_comission{
     background-color: #ffffff;
     color: rgb(15, 15, 15);
   }  

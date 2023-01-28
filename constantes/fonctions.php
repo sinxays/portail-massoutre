@@ -1062,6 +1062,7 @@ function get_payplan_all_collaborateur($filtre = '')
     foreach ($liste_collaborateurs_payplan as $index => $collaborateur) {
         $id_collaborateur = $collaborateur['ID'];
         $nb_reprise = get_reprise_by_collaborateur($id_collaborateur, $filtre);
+        // $nb_reprise = get_reprise_by_collaborateur_final($id_collaborateur, $filtre);
         $nb_achat = get_achat_by_collaborateur($id_collaborateur, $filtre);
         $liste_collaborateurs_payplan[$index]['nb_reprise'] = $nb_reprise;
         $liste_collaborateurs_payplan[$index]['nb_achat'] = $nb_achat;
@@ -1118,7 +1119,7 @@ function get_all_collaborateurs_cvo_for_select()
     return $liste_site_cvo;
 }
 
-function get_payplan($filtre = '')
+function get_commission($filtre = '')
 {
     $pdo = Connection::getPDO_2();
 
@@ -1226,10 +1227,54 @@ function get_payplan($filtre = '')
     // print_r($request);
     // die();
 
-    $payplan = $request->fetchAll(PDO::FETCH_ASSOC);
+    $commission = $request->fetchAll(PDO::FETCH_ASSOC);
 
-    return $payplan;
+    return $commission;
 }
+
+
+function get_payplan($filtre = '')
+{
+
+    $pdo = Connection::getPDO();
+
+    //choper le mois en cours avec m pour la version numerique
+    $mois_en_cours = date("Y-m-01");
+
+
+    $where_initial = "date_facturation>='$mois_en_cours'";
+
+    if (isset($filtre) && $filtre !== '') {
+        if (isset($filtre['date'])) {
+            //mois précédent
+            if (isset($filtre['date']['mois_precedent_payplan']) && $filtre['date']['mois_precedent_payplan'] !== '') {
+                $date_now = date('Y-m-d');
+                $mois_precedent = get_previous_month_and_his_last_day($date_now);
+                $first = $mois_precedent['first'];
+                $last = $mois_precedent['last'];
+                $date = "date_facturation BETWEEN '$first' AND '$last'";
+                $where_filtre = $date;
+            }
+            if (isset($filtre['date']['date_personnalisee']) && $filtre['date']['date_personnalisee'] !== '') {
+                $date_debut = $filtre['date_personnalisee']['debut'];
+                $date_fin = $filtre['date_personnalisee']['fin'];
+                $date = "date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+                $where_filtre = $date;
+            }
+        }
+    }
+
+    $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
+
+    var_dump($where);
+
+    $request = $pdo->query("SELECT * FROM payplan WHERE $where");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
+
+
+
 
 function test2()
 {
@@ -1341,15 +1386,13 @@ function define_payplan_final($payplan)
 
     $pdo = Connection::getPDO();
 
-    $identifiants_collaborateurs_payplan = get_all_identifiants_collaborateurs_payplan();
-
     foreach ($payplan as $vehicule_transaction) {
-        /*** GET REPRENEUR seulement si on rentre dans une reprise ***/
+        /*** alimenter seulement si on rentre dans une reprise ***/
         if ($vehicule_transaction['Type_Achat'] == 'Reprise') {
 
             $immatriculation = $vehicule_transaction['Immatriculation'];
 
-            /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
+            /****** Avant d'alienter la table on vérifie si l'immat n'est pas déja dans payplan */
             $result = check_if_immatriculation_exist($immatriculation);
 
             //si rien trouvé alors création nouveau véhicule
@@ -1405,6 +1448,42 @@ function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
 
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise WHERE collaborateur_payplan_ID = $id_collaborateur $where_date");
+    $result = $request->fetchColumn();
+    return $result;
+}
+
+function get_reprise_by_collaborateur_final($id_collaborateur, $filtre = '')
+{
+    $where_date = '';
+
+    // var_dump($filtre);
+
+    if (isset($filtre) && $filtre !== '') {
+        //mois précédent
+        if (isset($filtre[0]) && $filtre[0] == "mois_precedent_payplan") {
+            $mois_en_cours = get_mois_en_cours();
+            $mois_precedent = get_previous_month_and_his_last_day($mois_en_cours);
+            $first = $mois_precedent['first'];
+            $last = $mois_precedent['last'];
+            $where_date = "AND date_vente BETWEEN '$first' AND '$last' ";
+        }
+        //dates personnalisées
+        if (isset($filtre['dates_personnalisees']) && $filtre['dates_personnalisees'] !== '') {
+            $date_debut = $filtre['dates_personnalisees']['debut'];
+            $date_fin = $filtre['dates_personnalisees']['fin'];
+            $where_date = "AND date_vente BETWEEN '$date_debut' AND '$date_fin' ";
+        }
+    }
+    //mois en cours
+    else {
+        $mois_en_cours = get_mois_en_cours();
+        $where_date = "AND date_vente >= '$mois_en_cours'";
+    }
+
+    // echo "SELECT COUNT(*) FROM payplan_reprise WHERE collaborateur_payplan_ID = $id_collaborateur $where_date";
+
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE repreneur_final_collaborateur_id = $id_collaborateur $where_date");
     $result = $request->fetchColumn();
     return $result;
 }
@@ -1477,7 +1556,11 @@ function get_id_collaborateur_payplan_by_identification($identification)
     $identification = strtolower($identification);
     $request = $pdo->query("SELECT ID FROM collaborateurs_payplan WHERE identifiant_payplan = '$identification'");
     $result = $request->fetch(PDO::FETCH_COLUMN);
-    return intval($result);
+    if ($result) {
+        return intval($result);
+    } else {
+        return null;
+    }
 }
 //attention si deux personnes de même noms sont dans la liste des collaborateurs alors il faudra prévoir remanier la fonction
 function get_id_collaborateur_payplan_by_name($nom_complet)
@@ -1781,6 +1864,7 @@ function alimenter_payplan($data_payplan)
         $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $parc_achat);
         $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $parc_achat);
         $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $parc_achat, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
+        $date_achat = define_date_achat_by_type_achat($data_payplan);
 
         // var_dump($marge);
         // var_dump($acheteur_id_collaborateur);
@@ -1790,9 +1874,6 @@ function alimenter_payplan($data_payplan)
         // var_dump($type_com_and_valeur_repreneur_final);
         // var_dump($type_com_and_valeur_vendeur);
         // var_dump($vehicule_id);
-
-        // die();
-
 
         $data = [
             'vehicule_id' => $vehicule_id,
@@ -1807,18 +1888,19 @@ function alimenter_payplan($data_payplan)
             'vendeur_collaborateur_id' =>  $vendeur_id_collaborateur,
             'type_com_vendeur' =>  $type_com_and_valeur_vendeur['type_com'],
             'valeur_com_vendeur' =>  $type_com_and_valeur_vendeur['valeur'],
-            'date_facturation' =>  $data_payplan['Date_facturation']
+            'date_facturation' =>  $data_payplan['Date_facturation'],
+            'date_achat' => $date_achat
         ];
 
         $sql = "INSERT INTO payplan (vehicule_id, parc_achat, marge,acheteur_collaborateur_id,type_com_acheteur,valeur_com_acheteur, 
-                    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation) 
+                    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation,date_achat) 
                     VALUES (:vehicule_id, :parc_achat, :marge, :acheteur_collaborateur_id, :type_com_acheteur, :valeur_com_acheteur, 
-                    :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation)";
+                    :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation, :date_achat)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
+    } else {
+        var_dump("parc achat n'est pas renseigné");
     }
-
-    var_dump("parc achat n'est pas renseigné");
 }
 
 
@@ -1830,8 +1912,7 @@ function update_payplan($data_payplan)
 
 function get_name_acheteur_vendeur($nom_complet)
 {
-
-    if ($nom_complet !== null) {
+    if ($nom_complet !== null || $nom_complet !== '') {
         $nom_complet_acheteur = $nom_complet;
         $acheteur = explode(" ", strtolower($nom_complet_acheteur));
         // si jamais on a un point à la place de l'espace
@@ -1869,8 +1950,8 @@ function define_type_com_and_valeur_acheteur($marge, $parc_achat)
 
 function define_type_com_and_valeur_repreneur_final($marge, $parc_achat)
 {
-    $return['type_com'] = '';
-    $return['valeur'] = '';
+    $return['type_com'] = null;
+    $return['valeur'] = null;
 
     return $return;
 }
@@ -1918,4 +1999,51 @@ function calcul_percent_de_la_marge($marge)
 {
     $valeur_return = (VALUE_MARGE * $marge) / 100;
     return $valeur_return;
+}
+
+
+function define_date_achat_by_type_achat($data_payplan)
+{
+    $type_achat = strtolower($data_payplan['Type_Achat']);
+    switch ($type_achat) {
+        case 'reprise':
+            $date_achat = $data_payplan['Date_stock'];
+            break;
+        case 'occasion':
+            // if (isset($data_payplan['Date_Achat']) && (!is_null($data_payplan['Date_Achat']) || $data_payplan['Date_achat'] !== '')) {
+            $date_achat = $data_payplan['Date_Achat'];
+            // } else {
+            //     $date_achat = $data_payplan['Date_stock'];
+            // }
+            break;
+        case 'neuf':
+            $date_achat = $data_payplan['Date_Achat'];
+            break;
+    }
+    return $date_achat;
+}
+
+function get_immatriculation_by_id_vehicule($vehicule_id)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT vp.immatriculation 
+    FROM payplan
+    LEFT JOIN vehicules_payplan as vp ON payplan.vehicule_id = vp.ID
+     WHERE vehicule_id = $vehicule_id ");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return $result;
+}
+
+function get_nom_complet_collaborateur_by_id($id)
+{
+    if (!is_null($id)) {
+        $pdo = Connection::getPDO();
+        $id = intval($id);
+        $request = $pdo->query("SELECT * FROM collaborateurs_payplan WHERE ID = $id ");
+        $result = $request->fetch(PDO::FETCH_ASSOC);
+        $nom_complet = $result['prenom'] . " " . $result['nom'];
+        return $nom_complet;
+    } else {
+        return '';
+    }
 }

@@ -62,7 +62,8 @@
             </div>
             <div class="div_payplan_update2">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary" id="bouton_tableau_collaborateurs" value="collaborateurs">Tableau collaborateurs Payplan</button>
+                    <button type="button" class="btn btn-primary" id="bouton_tableau_reprise_achat_collaborateur" value="collaborateurs">Tableau reprise/achat colalborateurs</button>
+                    <button type="button" class="btn btn-success" id="bouton_tableau_payplan" value="payplan">Payplan</button>
                     <button type="button" class="btn btn-warning" id="bouton_tableau_commision" value="commission">Tableau Commission Total</button>
                 </div>
             </div>
@@ -191,7 +192,7 @@
         <?php
         saut_de_ligne();
 
-        // $payplan = get_payplan();
+        // $payplan = get_commission();
         // var_dump($payplan);
 
         ?>

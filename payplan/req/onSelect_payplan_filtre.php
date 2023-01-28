@@ -38,6 +38,6 @@ if (isset($_POST['date_debut']) && isset($_POST['date_fin'])) {
     $filtre['date_personnalisee']['debut'] = $_POST['date_debut'];
     $filtre['date_personnalisee']['fin'] = $_POST['date_fin'];
 }
-$payplan = get_payplan($filtre);
-$table = create_table_payplan($payplan_table_header_row, $payplan);
+$payplan = get_commission($filtre);
+$table = create_table_commission($commission_table_header_row, $payplan);
 echo $table;

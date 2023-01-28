@@ -51,7 +51,7 @@
 
 
     $payplan = get_payplan();
-    define_payplan_final($payplan);
+    var_dump($payplan);
 
 
 
