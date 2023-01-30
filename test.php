@@ -49,10 +49,12 @@
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
-
+    truncate_before_update();
+    
     $payplan = get_payplan();
     var_dump($payplan);
 
+    
 
 
 

@@ -2047,3 +2047,18 @@ function get_nom_complet_collaborateur_by_id($id)
         return '';
     }
 }
+
+function truncate_before_update()
+{
+
+    $pdo = Connection::getPDO();
+    $sql = "TRUNCATE TABLE `vehicules_payplan`";
+    $statement = $pdo->prepare($sql);
+    $statement->execute();
+
+    $sql = "TRUNCATE TABLE `payplan`";
+    $statement = $pdo->prepare($sql);
+    $statement->execute();
+
+
+}
