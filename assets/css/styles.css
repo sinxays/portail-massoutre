@@ -482,6 +482,12 @@ img {
     background-color: #f2f2f2;
   }
 
+  .my_tab_payplan tr:nth-child(even),
+  .my_tab_commission tr:nth-child(even),
+  .my_tab_reprise_achat tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
   .my_tab_perso tr:hover {
     background-color: #ddf0ff;
   }
@@ -526,7 +532,8 @@ img {
     font-weight: bold;
   }
 
-  .my_tab_payplan .td_options {
+  .my_tab_payplan .td_options,
+  .my_tab_commission .td_options {
     background-color: #fbff92;
   }
 
@@ -565,20 +572,46 @@ img {
 
   }
 
-  .my_tab_payplan {
+  .my_tab_payplan,
+  .my_tab_commission,
+  .my_tab_reprise_achat {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     margin: 0px 10px 0px 10px;
     font-size: 60%;
   }
 
-  .my_tab_payplan td,
-  .my_tab_payplan th {
+
+  .my_tab_commission td,
+  .my_tab_commission th {
     border: 1px solid #ddd;
     padding: 8px;
   }
 
-  .my_tab_payplan .th1 {
+  .my_tab_payplan td,
+  .my_tab_payplan th {
+    border: 0px solid #ddd;
+    padding: 8px;
+  }
+
+
+
+  .my_tab_reprise_achat td,
+  .my_tab_reprise_achat th {
+    border: 0px solid #ddd;
+    padding: 8px;
+  }
+
+  .my_tab_payplan .td_label_total_payplan {
+    border: none;
+    text-align: end;
+    font-size: large;
+    font-weight: bold;
+  }
+
+  .my_tab_payplan .th1,
+  .my_tab_commission .th1,
+  .my_tab_reprise_achat .th1 {
     text-align: left;
     background-color: #ff6e6e;
     color: white;
@@ -589,23 +622,23 @@ img {
     color: rgb(15, 15, 15);
   }
 
-  .button_selected_tableau_reprise_achat{
+  .button_selected_tableau_reprise_achat {
     background-color: #ffffff;
     color: rgb(15, 15, 15);
-  }  
+  }
 
-  .button_selected_tableau_payplan{
+  .button_selected_tableau_payplan {
     background-color: #ffffff;
     color: rgb(15, 15, 15);
-  }  
+  }
 
-  .button_selected_tableau_comission{
+  .button_selected_tableau_comission {
     background-color: #ffffff;
     color: rgb(15, 15, 15);
-  }  
+  }
 
 
-  .div_tableau_payplan{
+  .div_tableau_payplan {
     width: auto;
     height: auto;
     margin: 20px;
@@ -1096,4 +1129,10 @@ img {
   justify-content: center;
   flex-direction: column;
   border: 2px solid #da5ebb;
+}
+
+.td_total_payplan {
+  background-color: #e6c7c7;
+  font-weight: bold;
+  font-size: large;
 }

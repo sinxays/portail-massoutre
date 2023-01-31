@@ -537,12 +537,20 @@ function create_table_payplan($payplan, $header_payplan)
 
     $table_payplan .= create_header_row($header_payplan);
 
+    $total_com_acheteur = 0;
+    $total_com_vendeur = 0;
+    $total_marge = 0;
+
     foreach ($payplan as $line_payplan) {
 
         $immatriculation = get_immatriculation_by_id_vehicule(intval($line_payplan['vehicule_id']));
         $nom_acheteur = get_nom_complet_collaborateur_by_id($line_payplan['acheteur_collaborateur_id']);
         $nom_repreneur = get_nom_complet_collaborateur_by_id($line_payplan['repreneur_final_collaborateur_id']);
         $nom_vendeur = get_nom_complet_collaborateur_by_id($line_payplan['vendeur_collaborateur_id']);
+
+        $total_com_acheteur = $total_com_acheteur + $line_payplan['valeur_com_acheteur'];
+        $total_com_vendeur = $total_com_vendeur + $line_payplan['valeur_com_vendeur'];
+        $total_marge = $total_marge + $line_payplan['marge'];
 
         $table_payplan .= "<tr>";
         $table_payplan .= "<td>" . $immatriculation . " </td>";
@@ -558,6 +566,21 @@ function create_table_payplan($payplan, $header_payplan)
         $table_payplan .= "<td>" . $line_payplan['date_facturation'] . " </td>";
         $table_payplan .= "</tr>";
     }
+
+    // derniere ligne pout les totaux
+    $table_payplan .= "<tr>";
+    $table_payplan .= "<td style='border:none;'> </td>";
+    $table_payplan .= "<td class='td_label_total_payplan'> TOTAL MARGE </td>";
+    $table_payplan .= "<td class='td_total_payplan'>" . $total_marge . " </td>";
+    $table_payplan .= "<td class='td_label_total_payplan'> TOTAL COM ACHETEUR </td>";
+    $table_payplan .= "<td class='td_total_payplan'>" . $total_com_acheteur . " </td>";
+    $table_payplan .= "<td style='border:none;'> </td>";
+    // $table_payplan .= "<td>" . $line_payplan['valeur_com_repreneur_final'] . " </td>";
+    $table_payplan .= "<td class='td_label_total_payplan'> TOTAL COM VENDEUR </td>";
+    $table_payplan .= "<td class='td_total_payplan'>" . $total_com_vendeur . " </td>";
+    $table_payplan .= "<td style='border:none;'> </td>";
+    $table_payplan .= "<td style='border:none;'> </td>";
+    $table_payplan .= "</tr>";
 
     return $table_payplan;
 }

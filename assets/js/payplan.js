@@ -14,7 +14,7 @@ $(document).ready(function () {
         url: "/payplan/req/req_tableau_payplan.php",
         data: {},
         success: function (data) {
-            $("#table_payplan").html(data);
+            $("#table_commission").html(data);
         }
     });
 
@@ -191,6 +191,7 @@ $(document).ready(function () {
     // au select du tableau achat/reprise collaborateur
     $("#bouton_tableau_reprise_achat_collaborateur").click(function (e) {
         $("#table_payplan").fadeOut(0);
+        $("#table_commission").fadeOut(0);
         $("#bouton_tableau_reprise_achat_collaborateur").blur();
         $("#bouton_tableau_reprise_achat_collaborateur").addClass("button_selected_tableau_reprise_achat");
         $("#bouton_tableau_payplan").removeClass("button_selected_tableau_payplan");
@@ -216,7 +217,7 @@ $(document).ready(function () {
 
     // au select du tableau payplan
     $("#bouton_tableau_payplan").click(function (e) {
-        $("#table_payplan").fadeOut(100);
+        $("#table_commission").fadeOut(100);
         $("#table_payplan_achat_reprise").fadeOut(100);
         $("#bouton_tableau_payplan").blur();
         $("#bouton_tableau_payplan").addClass("button_selected_tableau_payplan");
@@ -241,11 +242,10 @@ $(document).ready(function () {
         });
     });
 
-    // au select du tableau comission total
+    // au select du tableau commission total
     $("#bouton_tableau_commision").click(function (e) {
         $("#table_payplan_achat_reprise").fadeOut(0);
-        $("#table_collaborateurs_reprise").fadeOut(200);
-        $("#table_collaborateurs_achat").fadeOut(200);
+        $("#table_payplan").fadeOut(0);
         $("#bouton_tableau_commision").blur();
         $("#bouton_tableau_commision").addClass("button_selected_tableau_comission");
         $("#bouton_tableau_payplan").removeClass("button_selected_tableau_payplan");
@@ -265,8 +265,8 @@ $(document).ready(function () {
             success: function (data) {
                 // var parsed = JSON.parse(data);
                 // $("#table_payplan").html(parsed["table_commission_total"]);
-                $("#table_payplan").html(data);
-                $("#table_payplan").fadeIn(300);
+                $("#table_commission").html(data);
+                $("#table_commission").fadeIn(300);
             }
         });
     });
