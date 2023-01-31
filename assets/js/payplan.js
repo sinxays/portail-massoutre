@@ -21,6 +21,7 @@ $(document).ready(function () {
 
     // au select du collaborateur
     $("#select_collaborateur_payplan").change(function (e) {
+        
         id_collaborateur_selected = $("#select_collaborateur_payplan").val()
         $.ajax({
             url: "/payplan/req/onSelect_payplan_collaborateur_filtre.php",
