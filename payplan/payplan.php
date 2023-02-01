@@ -176,7 +176,7 @@
         <div class="div_tableau_payplan">
             <table class="my_tab_commission" id="table_commission"> </table>
             <table class="my_tab_payplan" id="table_payplan"> </table>
-            <table class="my_tab_reprise_achat" id="table_payplan_achat_reprise"> </table>
+            <table class="my_tab_reprise_achat" id="table_achat_reprise"> </table>
 
 
         </div>

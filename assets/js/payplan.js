@@ -31,7 +31,7 @@ $(document).ready(function () {
                 // var parsed = JSON.parse(data);
                 // $("#table_collaborateurs_reprise").html(parsed["table_reprise"]);
                 // $("#table_collaborateurs_achat").html(parsed["table_achat"]);
-                $("#table_payplan_achat_reprise").html(data);
+                $("#table_achat_reprise").html(data);
             }
         });
     });
@@ -92,7 +92,7 @@ $(document).ready(function () {
                             type: "POST",
                             data: { selected_date: date_select },
                             success: function (data) {
-                                $("#table_payplan_achat_reprise").html(data);
+                                $("#table_achat_reprise").html(data);
                             }
                         });
                         break;
@@ -131,7 +131,7 @@ $(document).ready(function () {
                         type: "POST",
                         data: { selected_date: date_select },
                         success: function (data) {
-                            $("#table_payplan_achat_reprise").html(data);
+                            $("#table_achat_reprise").html(data);
                         }
                     });
                 }
@@ -190,7 +190,7 @@ $(document).ready(function () {
                 $.ajax({
                     url: "/payplan/req/onSelect_commission_filtre.php",
                     type: "POST",
-                    data: { date_perso : value_dates_perso },
+                    data: { date_perso: value_dates_perso },
                     success: function (data) {
                         $("#table_commission").html(data);
                         $("#select_destination_payplan").val(0);
@@ -202,10 +202,10 @@ $(document).ready(function () {
                 $.ajax({
                     url: "/payplan/req/onSelect_reprise_achat_collaborateur_filtre.php",
                     type: "POST",
-                    data: {  date_perso: value_dates_perso },
+                    data: { date_perso: value_dates_perso },
                     success: function (data) {
-                        $("#table_payplan_achat_reprise").html();
-                        $("#table_payplan_achat_reprise").html(data);
+                        $("#table_achat_reprise").html();
+                        $("#table_achat_reprise").html(data);
                     }
                 });
                 break;
@@ -226,21 +226,17 @@ $(document).ready(function () {
 
     // au select du tableau achat/reprise collaborateur
     $("#bouton_tableau_reprise_achat_collaborateur").click(function (e) {
-        $("#table_payplan").fadeOut(0);
-        $("#table_commission").fadeOut(0);
+        $("#tableau_selected").text("collaborateur");
+
+        hide_tables();
+
         $("#bouton_tableau_reprise_achat_collaborateur").blur();
         $("#bouton_tableau_reprise_achat_collaborateur").addClass("button_selected_tableau_reprise_achat");
         $("#bouton_tableau_payplan").removeClass("button_selected_tableau_payplan");
         $("#bouton_tableau_commision").removeClass("button_selected_tableau_comission");
 
         //mise a 0 des filtres ou disparition
-        $("#div_form_destination").fadeOut(300);
-        $("#div_form_type_achat").fadeOut(300);
-        $("#collaborateur_div").fadeIn(300);
-        $("#tableau_selected").text("collaborateur");
-        $("#select_site_payplan").val(0);
-        $("#select_date_payplan").val("0");
-
+        reset_filtre();
 
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
@@ -248,30 +244,26 @@ $(document).ready(function () {
             data: { choix_tableau_payplan: $(this).val() },
             success: function (data) {
                 // var parsed = JSON.parse(data);
-                $("#table_payplan_achat_reprise").html(data);
-                $("#table_payplan_achat_reprise").fadeIn(300);
+                $("#table_achat_reprise").html(data);
+                $("#table_achat_reprise").fadeIn(300);
             }
         });
     });
 
     // au select du tableau payplan
     $("#bouton_tableau_payplan").click(function (e) {
+        $("#tableau_selected").text("payplan");
 
-        reset_filtre();
-        $("#table_commission").fadeOut(100);
-        $("#table_payplan_achat_reprise").fadeOut(100);
+        hide_tables();
+
         $("#bouton_tableau_payplan").blur();
         $("#bouton_tableau_payplan").addClass("button_selected_tableau_payplan");
         $("#bouton_tableau_reprise_achat_collaborateur").removeClass("button_selected_tableau_reprise_achat");
         $("#bouton_tableau_commision").removeClass("button_selected_tableau_comission");
 
         //mise a 0 des filtres ou disparition
-        $("#div_form_destination").fadeOut(300);
-        $("#div_form_type_achat").fadeOut(300);
-        $("#collaborateur_div").fadeIn(300);
-        $("#tableau_selected").text("payplan");
-        $("#select_site_payplan").val(0);
-        $("#select_date_payplan").val("0");
+        reset_filtre();
+
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
             type: "POST",
@@ -286,20 +278,17 @@ $(document).ready(function () {
 
     // au select du tableau commission total
     $("#bouton_tableau_commision").click(function (e) {
-        $("#table_payplan_achat_reprise").fadeOut(0);
-        $("#table_payplan").fadeOut(0);
+        $("#tableau_selected").text("commission");
+
+        hide_tables();
+
         $("#bouton_tableau_commision").blur();
         $("#bouton_tableau_commision").addClass("button_selected_tableau_comission");
         $("#bouton_tableau_payplan").removeClass("button_selected_tableau_payplan");
         $("#bouton_tableau_reprise_achat_collaborateur").removeClass("button_selected_tableau_reprise_achat");
 
         //mise a 0 des filtres ou disparition
-        $("#collaborateur_div").fadeOut(300);
-        $("#div_form_destination").fadeOut(300);
-        $("#div_form_type_achat").fadeOut(300);
-        $("#select_site_payplan").val(0);
-        $("#tableau_selected").text("commission");
-        $("#select_date_payplan").val("0");
+        reset_filtre();
 
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
@@ -334,6 +323,7 @@ $(document).ready(function () {
 function reset_filtre() {
     $("#date_payplan_debut").val('');
     $("#date_payplan_fin").val('');
+    $("#div_date_fin").fadeOut();
     $("#date_personnalisees_div").fadeOut(100);
     $("#select_date_payplan").val("0");
     $("#select_type_achat_payplan").val(0);
@@ -341,6 +331,11 @@ function reset_filtre() {
     $("#select_collaborateur_payplan").val(0);
 }
 
+function hide_tables() {
+    $("#table_payplan").fadeOut(100);
+    $("#table_commission").fadeOut(100);
+    $("#table_achat_reprise").fadeOut(100);
+}
 
 
 
