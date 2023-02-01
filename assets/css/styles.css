@@ -615,6 +615,12 @@ img {
     text-align: left;
     background-color: #ff6e6e;
     color: white;
+    border: 1px solid #ddd;
+  }
+
+  .tr_sticky{
+    position: sticky;
+    top : 60px;
   }
 
   .payplan_collaborateurs_option {

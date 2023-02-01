@@ -589,7 +589,7 @@ function create_table_payplan($payplan, $header_payplan)
 function create_header_row($header)
 {
     $return = "";
-    $return .= "<tr>";
+    $return .= "<tr class='tr_sticky'>";
     foreach ($header as $title_header) {
         $return .= "<th class='th1'> $title_header </th>";
     }
