@@ -208,7 +208,7 @@ $(document).ready(function () {
 
     });
 
-
+    /************** SELECTION DES TABLEAUX ****************/
 
     // au select du tableau achat/reprise collaborateur
     $("#bouton_tableau_reprise_achat_collaborateur").click(function (e) {
@@ -225,6 +225,9 @@ $(document).ready(function () {
         $("#collaborateur_div").fadeIn(300);
         $("#tableau_selected").text("collaborateur");
         $("#select_site_payplan").val(0);
+        $("#select_date_payplan").val("0");
+
+
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
             type: "POST",
@@ -252,6 +255,7 @@ $(document).ready(function () {
         $("#collaborateur_div").fadeIn(300);
         $("#tableau_selected").text("payplan");
         $("#select_site_payplan").val(0);
+        $("#select_date_payplan").val("0");
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
             type: "POST",
@@ -279,6 +283,7 @@ $(document).ready(function () {
         $("#div_form_type_achat").fadeIn(300);
         $("#select_site_payplan").val(0);
         $("#tableau_selected").text("commission");
+        $("#select_date_payplan").val("0");
 
         $.ajax({
             url: "/payplan/req/onClick_choix_tableau.php",
