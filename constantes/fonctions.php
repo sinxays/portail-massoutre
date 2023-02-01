@@ -1050,9 +1050,10 @@ function vider_vp_vu_cumul()
     $statement->execute();
 }
 
-function get_payplan_all_collaborateur($filtre = '')
+function get_reprise_achat_collaborateurs($filtre = '')
 {
     $pdo = Connection::getPDO();
+
 
     $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet_collaborateur,ID,identifiant_payplan 
                             FROM collaborateurs_payplan
@@ -1062,7 +1063,6 @@ function get_payplan_all_collaborateur($filtre = '')
     foreach ($liste_collaborateurs_payplan as $index => $collaborateur) {
         $id_collaborateur = $collaborateur['ID'];
         $nb_reprise = get_reprise_by_collaborateur($id_collaborateur, $filtre);
-        // $nb_reprise = get_reprise_by_collaborateur_final($id_collaborateur, $filtre);
         $nb_achat = get_achat_by_collaborateur($id_collaborateur, $filtre);
         $liste_collaborateurs_payplan[$index]['nb_reprise'] = $nb_reprise;
         $liste_collaborateurs_payplan[$index]['nb_achat'] = $nb_achat;
@@ -1254,7 +1254,7 @@ function get_payplan($filtre = '')
             $date = "date_facturation BETWEEN '$first' AND '$last'";
             $where_filtre = $date;
         }
-        if (isset($filtre['date']['date_personnalisee']) && $filtre['date']['date_personnalisee'] !== '') {
+        if (isset($filtre['date_personnalisee'])) {
             $date_debut = $filtre['date_personnalisee']['debut'];
             $date_fin = $filtre['date_personnalisee']['fin'];
             $date = "date_facturation BETWEEN '$date_debut' AND '$date_fin'";
@@ -1414,69 +1414,34 @@ function define_payplan_final($payplan)
 
 
 
+
+
 function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
 {
     $where_date = '';
 
-    // var_dump($filtre);
-
     if (isset($filtre) && $filtre !== '') {
         //mois précédent
-        if (isset($filtre[0]) && $filtre[0] == "mois_precedent_payplan") {
+        if (isset($filtre["mois_precedent"])) {
             $mois_en_cours = get_mois_en_cours();
             $mois_precedent = get_previous_month_and_his_last_day($mois_en_cours);
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
-            $where_date = "AND date_vente BETWEEN '$first' AND '$last' ";
+            $where_date = "AND date_stock BETWEEN '$first' AND '$last' ";
         }
         //dates personnalisées
         if (isset($filtre['dates_personnalisees']) && $filtre['dates_personnalisees'] !== '') {
             $date_debut = $filtre['dates_personnalisees']['debut'];
             $date_fin = $filtre['dates_personnalisees']['fin'];
-            $where_date = "AND date_vente BETWEEN '$date_debut' AND '$date_fin' ";
+            $where_date = "AND date_stock BETWEEN '$date_debut' AND '$date_fin' ";
         }
     }
     //mois en cours
     else {
         $mois_en_cours = get_mois_en_cours();
-        $where_date = "AND date_vente >= '$mois_en_cours'";
+        $where_date = "AND date_stock >= '$mois_en_cours'";
     }
 
-    // echo "SELECT COUNT(*) FROM payplan_reprise WHERE collaborateur_payplan_ID = $id_collaborateur $where_date";
-
-    $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise WHERE collaborateur_payplan_ID = $id_collaborateur $where_date");
-    $result = $request->fetchColumn();
-    return $result;
-}
-
-function get_reprise_by_collaborateur_final($id_collaborateur, $filtre = '')
-{
-    $where_date = '';
-
-    // var_dump($filtre);
-
-    if (isset($filtre) && $filtre !== '') {
-        //mois précédent
-        if (isset($filtre[0]) && $filtre[0] == "mois_precedent_payplan") {
-            $mois_en_cours = get_mois_en_cours();
-            $mois_precedent = get_previous_month_and_his_last_day($mois_en_cours);
-            $first = $mois_precedent['first'];
-            $last = $mois_precedent['last'];
-            $where_date = "AND date_vente BETWEEN '$first' AND '$last' ";
-        }
-        //dates personnalisées
-        if (isset($filtre['dates_personnalisees']) && $filtre['dates_personnalisees'] !== '') {
-            $date_debut = $filtre['dates_personnalisees']['debut'];
-            $date_fin = $filtre['dates_personnalisees']['fin'];
-            $where_date = "AND date_vente BETWEEN '$date_debut' AND '$date_fin' ";
-        }
-    }
-    //mois en cours
-    else {
-        $mois_en_cours = get_mois_en_cours();
-        $where_date = "AND date_vente >= '$mois_en_cours'";
-    }
 
     // echo "SELECT COUNT(*) FROM payplan_reprise WHERE collaborateur_payplan_ID = $id_collaborateur $where_date";
 
@@ -1491,11 +1456,9 @@ function get_achat_by_collaborateur($id_collaborateur, $filtre = '')
 
     $where_date = '';
 
-    // var_dump($filtre);
-
     if (isset($filtre) && $filtre !== '') {
         //mois précédent
-        if (isset($filtre[0]) && $filtre[0] == "mois_precedent_payplan") {
+        if (isset($filtre["mois_precedent"])) {
             $mois_en_cours = get_mois_en_cours();
             $mois_precedent = get_previous_month_and_his_last_day($mois_en_cours);
             $first = $mois_precedent['first'];
@@ -1515,12 +1478,8 @@ function get_achat_by_collaborateur($id_collaborateur, $filtre = '')
         $where_date = "AND date_achat >= '$mois_en_cours'";
     }
 
-    // var_dump($where_date);
-
-    // echo "SELECT COUNT(*) FROM payplan_achat WHERE collaborateur_payplan_ID = $id_collaborateur $where_date";
-
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT COUNT(*) FROM payplan_achat WHERE collaborateur_payplan_ID = $id_collaborateur $where_date");
+    $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE acheteur_collaborateur_id = $id_collaborateur $where_date");
     $result = $request->fetchColumn();
     return $result;
 }
@@ -1541,7 +1500,7 @@ function test()
 function get_all_identifiants_collaborateurs_payplan()
 {
     $array_identifiants_collaborateurs = array();
-    $array_collaborateurs = get_payplan_all_collaborateur();
+    $array_collaborateurs = get_reprise_achat_collaborateurs();
     foreach ($array_collaborateurs as $collaborateur) {
         array_push($array_identifiants_collaborateurs, $collaborateur['identifiant_payplan']);
     }
@@ -1887,13 +1846,14 @@ function alimenter_payplan($data_payplan)
             'type_com_vendeur' =>  $type_com_and_valeur_vendeur['type_com'],
             'valeur_com_vendeur' =>  $type_com_and_valeur_vendeur['valeur'],
             'date_facturation' =>  $data_payplan['Date_facturation'],
-            'date_achat' => $date_achat
+            'date_achat' => $date_achat,
+            'date_stock' => $data_payplan['Date_stock']
         ];
 
         $sql = "INSERT INTO payplan (vehicule_id, parc_achat, marge,acheteur_collaborateur_id,type_com_acheteur,valeur_com_acheteur, 
-                    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation,date_achat) 
+                    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation,date_achat,date_stock) 
                     VALUES (:vehicule_id, :parc_achat, :marge, :acheteur_collaborateur_id, :type_com_acheteur, :valeur_com_acheteur, 
-                    :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation, :date_achat)";
+                    :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation, :date_achat, :date_stock)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
     } else {

@@ -2,9 +2,7 @@
 
 include  "../../include.php";
 
-/*** FILTRE DESTINATION ***/
-
-
+$filtre = array();
 
 /*** FILTRE DATE  ***/
 if (isset($_POST['selected_date'])) {
@@ -14,6 +12,9 @@ if (isset($_POST['selected_date'])) {
             $filtre['mois_precedent_payplan'] = array();
             break;
     }
+}
+if (isset($_POST['date_perso'])) {
+    $filtre['date_personnalisee'] = $_POST['date_perso'];
 }
 
 

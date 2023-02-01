@@ -62,7 +62,7 @@
             </div>
             <div class="div_payplan_update2">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary" id="bouton_tableau_reprise_achat_collaborateur" value="collaborateurs">Tableau reprise/achat colalborateurs</button>
+                    <button type="button" class="btn btn-primary" id="bouton_tableau_reprise_achat_collaborateur" value="collaborateurs">Tableau reprise/achat collaborateurs</button>
                     <button type="button" class="btn btn-success" id="bouton_tableau_payplan" value="payplan">Payplan</button>
                     <button type="button" class="btn btn-warning" id="bouton_tableau_commision" value="commission">Tableau Commission Total</button>
                 </div>
@@ -113,7 +113,7 @@
                 </select>
             </div> -->
 
-            <div class="my_div_form" id="div_form_destination">
+            <div class="my_div_form" id="div_form_destination" style="display: none;">
                 <label for="select_destination_payplan">Destination</label>
                 <select id="select_destination_payplan" class="form-select">
                     <?php
@@ -126,7 +126,7 @@
                 </select>
             </div>
 
-            <div class="my_div_form" id="div_form_type_achat">
+            <div class="my_div_form" id="div_form_type_achat" style="display: none;">
                 <label for="select_type_achat_payplan">Type Achat</label>
                 <select id="select_type_achat_payplan" class="form-select">
                     <?php

@@ -50,17 +50,19 @@
     ini_set("display_errors", 1);
 
     truncate_before_update();
-    
-    $payplan = get_payplan();
-    var_dump($payplan);
 
-    
+    $filtre['mois_precedent_commision'] = array();
 
-
+    $commission = get_commission($filtre);
+    define_payplan_final($commission);
 
 
 
-    // get_payplan_all_collaborateur();
+
+
+
+
+    // get_reprise_achat_collaborateurs();
 
 
 

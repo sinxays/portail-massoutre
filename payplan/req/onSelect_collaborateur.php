@@ -17,7 +17,7 @@ if ($_POST["id_collaborateur"] !== "") {
     //select TOUT 
     else {
         $id_collaborateur = $id_collaborateur_selected;
-        $collaborateurs = get_payplan_all_collaborateur();
+        $collaborateurs = get_reprise_achat_collaborateurs();
         $table_reprise = create_table_collaborateurs_payplan($collaborateurs_payplan_header_row, $collaborateurs);
         $table_achat = create_table_collaborateurs_payplan($collaborateurs_payplan_header_row, $collaborateurs);
         
