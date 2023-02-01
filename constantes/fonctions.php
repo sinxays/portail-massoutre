@@ -1144,9 +1144,10 @@ function get_commission($filtre = '')
             $libelle_type_achat = get_libelle_type_achat_from_id($type_id);
             $type = "AND typeachats.libelle = '$libelle_type_achat'";
             $where_filtre = $where_initial . " " . $type;
-        }
+        } //mois en cours
+
         //mois précédent
-        if (isset($filtre['mois_precedent_payplan']) && $filtre['mois_precedent_payplan'] !== '') {
+        if (isset($filtre['mois_precedent_commision'])) {
             $date_now = date('Y-m-d');
             $mois_precedent = get_previous_month_and_his_last_day($date_now);
             $first = $mois_precedent['first'];
@@ -1241,26 +1242,23 @@ function get_payplan($filtre = '')
     //choper le mois en cours avec m pour la version numerique
     $mois_en_cours = date("Y-m-01");
 
-
     $where_initial = "date_facturation>='$mois_en_cours'";
 
     if (isset($filtre) && $filtre !== '') {
-        if (isset($filtre['date'])) {
-            //mois précédent
-            if (isset($filtre['date']['mois_precedent_payplan']) && $filtre['date']['mois_precedent_payplan'] !== '') {
-                $date_now = date('Y-m-d');
-                $mois_precedent = get_previous_month_and_his_last_day($date_now);
-                $first = $mois_precedent['first'];
-                $last = $mois_precedent['last'];
-                $date = "date_facturation BETWEEN '$first' AND '$last'";
-                $where_filtre = $date;
-            }
-            if (isset($filtre['date']['date_personnalisee']) && $filtre['date']['date_personnalisee'] !== '') {
-                $date_debut = $filtre['date_personnalisee']['debut'];
-                $date_fin = $filtre['date_personnalisee']['fin'];
-                $date = "date_facturation BETWEEN '$date_debut' AND '$date_fin'";
-                $where_filtre = $date;
-            }
+        //mois précédent
+        if (isset($filtre['mois_precedent_payplan'])) {
+            $date_now = date('Y-m-d');
+            $mois_precedent = get_previous_month_and_his_last_day($date_now);
+            $first = $mois_precedent['first'];
+            $last = $mois_precedent['last'];
+            $date = "date_facturation BETWEEN '$first' AND '$last'";
+            $where_filtre = $date;
+        }
+        if (isset($filtre['date']['date_personnalisee']) && $filtre['date']['date_personnalisee'] !== '') {
+            $date_debut = $filtre['date_personnalisee']['debut'];
+            $date_fin = $filtre['date_personnalisee']['fin'];
+            $date = "date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+            $where_filtre = $date;
         }
     }
 
@@ -2059,6 +2057,4 @@ function truncate_before_update()
     $sql = "TRUNCATE TABLE `payplan`";
     $statement = $pdo->prepare($sql);
     $statement->execute();
-
-
 }

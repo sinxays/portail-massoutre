@@ -9,7 +9,9 @@ ini_set("display_errors", 1);
 truncate_before_update();
 
 
-$commission = get_commission();
+$filtre['mois_precedent_commision'] = array();
+
+$commission = get_commission($filtre);
 define_payplan_final($commission);
 $table = create_table_commission($commission_table_header_row, $commission);
 

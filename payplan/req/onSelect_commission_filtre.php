@@ -2,22 +2,17 @@
 
 include  "../../include.php";
 
-/*** FILTRE DESTINATION ***/
-
-
-
 /*** FILTRE DATE  ***/
 if (isset($_POST['selected_date'])) {
     $selected_date = $_POST['selected_date'];
     switch ($selected_date) {
         case '1':
-            $filtre['mois_precedent_payplan'] = array();
+            $filtre['mois_precedent_commision'] = array();
             break;
     }
 }
 
 
-$payplan = get_payplan($filtre);
-// var_dump($payplan);
-$table = create_table_payplan($payplan, $payplan_table_header_row);
+$commission = get_commission($filtre);
+$table = create_table_commission($commission_table_header_row, $commission);
 echo $table;

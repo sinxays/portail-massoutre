@@ -21,7 +21,7 @@ $(document).ready(function () {
 
     // au select du collaborateur
     $("#select_collaborateur_payplan").change(function (e) {
-        
+
         id_collaborateur_selected = $("#select_collaborateur_payplan").val()
         $.ajax({
             url: "/payplan/req/onSelect_payplan_collaborateur_filtre.php",
@@ -39,7 +39,7 @@ $(document).ready(function () {
     // au select de la destination
     $("#select_destination_payplan").change(function (e) {
         $.ajax({
-            url: "/payplan/req/onSelect_payplan_filtre.php",
+            url: "/payplan/req/onSelect_commission_filtre.php",
             type: "POST",
             data: { destination: $(this).val() },
             success: function (data) {
@@ -52,7 +52,7 @@ $(document).ready(function () {
     // au select du type achat
     $("#select_type_achat_payplan").change(function (e) {
         $.ajax({
-            url: "/payplan/req/onSelect_payplan_filtre.php",
+            url: "/payplan/req/onSelect_commission_filtre.php",
             type: "POST",
             data: { type_achat: $(this).val() },
             success: function (data) {
@@ -62,7 +62,7 @@ $(document).ready(function () {
         });
     });
 
-    // au select de date
+    /********************** AU SELECT DATE ***************************/
     $("#select_date_payplan").change(function (e) {
         date_select = this.value;
         tableau_selected = $("#tableau_selected").text();
@@ -101,22 +101,33 @@ $(document).ready(function () {
                 $("#date_payplan_fin").val("");
                 if (tableau_selected == "commission") {
                     $.ajax({
-                        url: "/payplan/req/onSelect_payplan_filtre.php",
+                        url: "/payplan/req/onSelect_commission_filtre.php",
                         type: "POST",
                         data: { selected_date: date_select },
                         success: function (data) {
-                            $("#table_payplan").html(data);
+                            $("#table_commission").html(data);
                             $("#select_destination_payplan").val(0);
                             $("#select_type_achat_payplan").val(0);
                         }
                     });
-                } else if (tableau_selected == "collaborateur") {
+                }
+                else if (tableau_selected == "collaborateur") {
                     $.ajax({
                         url: "/payplan/req/onSelect_payplan_collaborateur_filtre.php",
                         type: "POST",
                         data: { selected_date: date_select },
                         success: function (data) {
                             $("#table_payplan_achat_reprise").html(data);
+                        }
+                    });
+                }
+                else if (tableau_selected == "payplan") {
+                    $.ajax({
+                        url: "/payplan/req/onSelect_payplan_filtre.php",
+                        type: "POST",
+                        data: { selected_date: date_select },
+                        success: function (data) {
+                            $("#table_payplan").html(data);
                         }
                     });
                 }
@@ -163,7 +174,7 @@ $(document).ready(function () {
 
         if (tableau_selected == "commission") {
             $.ajax({
-                url: "/payplan/req/onSelect_payplan_filtre.php",
+                url: "/payplan/req/onSelect_commission_filtre.php",
                 type: "POST",
                 data: { date_debut: date_debut, date_fin: date_fin },
                 success: function (data) {
@@ -181,6 +192,16 @@ $(document).ready(function () {
                 success: function (data) {
                     $("#table_payplan_achat_reprise").html();
                     $("#table_payplan_achat_reprise").html(data);
+                }
+            });
+        } else if (tableau_selected == "payplan") {
+            $.ajax({
+                url: "/payplan/req/onSelect_payplan_filtre.php",
+                type: "POST",
+                data: { selected_date: date_select, date_perso: value_dates_perso },
+                success: function (data) {
+                    $("#table_payplan").html();
+                    $("#tablea_payplan").html(data);
                 }
             });
         }
@@ -251,7 +272,7 @@ $(document).ready(function () {
         $("#bouton_tableau_commision").addClass("button_selected_tableau_comission");
         $("#bouton_tableau_payplan").removeClass("button_selected_tableau_payplan");
         $("#bouton_tableau_reprise_achat_collaborateur").removeClass("button_selected_tableau_reprise_achat");
-       
+
         //mise a 0 des filtres ou disparition
         $("#collaborateur_div").fadeOut(300);
         $("#div_form_destination").fadeIn(300);
