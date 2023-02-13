@@ -1847,13 +1847,12 @@ function alimenter_payplan($data_payplan)
             'valeur_com_vendeur' =>  $type_com_and_valeur_vendeur['valeur'],
             'date_facturation' =>  $data_payplan['Date_facturation'],
             'date_achat' => $date_achat,
-            'date_stock' => $data_payplan['Date_stock']
         ];
 
         $sql = "INSERT INTO payplan (vehicule_id, parc_achat, marge,acheteur_collaborateur_id,type_com_acheteur,valeur_com_acheteur, 
-                    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation,date_achat,date_stock) 
+                    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation,date_achat) 
                     VALUES (:vehicule_id, :parc_achat, :marge, :acheteur_collaborateur_id, :type_com_acheteur, :valeur_com_acheteur, 
-                    :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation, :date_achat, :date_stock)";
+                    :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation, :date_achat)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
     } else {
@@ -1929,6 +1928,10 @@ function define_type_com_and_valeur_vendeur($marge, $parc_achat, $id_acheteur, $
                 $return['type_com'] = CINQ_MARGE;
                 $return['valeur'] = calcul_percent_de_la_marge($marge);
                 break;
+            case 'reprise sur vente':
+                $return['type_com'] = CINQ_MARGE;
+                $return['valeur'] = calcul_percent_de_la_marge($marge);
+                break;
             default:
                 $return['type_com'] = COM_UNITAIRE;
                 $return['valeur'] = VALUE_COM_UNITAIRE;
@@ -1943,6 +1946,10 @@ function define_type_com_and_valeur_vendeur($marge, $parc_achat, $id_acheteur, $
             case 'reprise':
                 $return['type_com'] = COM_UNITAIRE;
                 $return['valeur'] = VALUE_COM_UNITAIRE;
+                break;
+            case 'reprise':
+                $return['type_com'] = CINQ_MARGE;
+                $return['valeur'] = calcul_percent_de_la_marge($marge);
                 break;
             default:
                 $return['type_com'] = COM_UNITAIRE;
