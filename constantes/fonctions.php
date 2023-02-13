@@ -1869,6 +1869,9 @@ function update_payplan($data_payplan)
 
 function get_name_acheteur_vendeur($nom_complet)
 {
+
+    var_dump($nom_complet);
+    
     if ($nom_complet !== null || $nom_complet !== '') {
         $nom_complet_acheteur = $nom_complet;
         $acheteur = explode(" ", strtolower($nom_complet_acheteur));
