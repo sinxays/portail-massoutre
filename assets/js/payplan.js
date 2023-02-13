@@ -305,13 +305,13 @@ $(document).ready(function () {
 
     // update tableau payplan
     $("#bouton_update_payplan").click(function (e) {
-        $("#table_payplan").fadeOut(0);
+        $("#table_commission").fadeOut(0);
         $.ajax({
             url: "/payplan/req/update_payplan.php",
             data: {},
             success: function (data) {
-                $("#table_payplan").html(data);
-                $("#table_payplan").fadeIn(300);
+                $("#table_commission").html(data);
+                $("#table_commission").fadeIn(300);
             }
         });
     });
