@@ -49,12 +49,12 @@
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
-    truncate_before_update();
+  $test= "DREUX test";
 
-    $filtre['mois_precedent_commision'] = array();
+  $acheteur = str_word_count($test);
+  var_dump($acheteur);
 
-    $commission = get_commission($filtre);
-    define_payplan_final($commission);
+
 
 
 

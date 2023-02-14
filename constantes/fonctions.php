@@ -1427,19 +1427,19 @@ function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
             $mois_precedent = get_previous_month_and_his_last_day($mois_en_cours);
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
-            $where_date = "AND date_stock BETWEEN '$first' AND '$last' ";
+            $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
         }
         //dates personnalisées
         if (isset($filtre['dates_personnalisees']) && $filtre['dates_personnalisees'] !== '') {
             $date_debut = $filtre['dates_personnalisees']['debut'];
             $date_fin = $filtre['dates_personnalisees']['fin'];
-            $where_date = "AND date_stock BETWEEN '$date_debut' AND '$date_fin' ";
+            $where_date = "AND date_achat BETWEEN '$date_debut' AND '$date_fin' ";
         }
     }
     //mois en cours
     else {
         $mois_en_cours = get_mois_en_cours();
-        $where_date = "AND date_stock >= '$mois_en_cours'";
+        $where_date = "AND date_achat >= '$mois_en_cours'";
     }
 
 
@@ -1870,20 +1870,30 @@ function update_payplan($data_payplan)
 function get_name_acheteur_vendeur($nom_complet)
 {
 
-    var_dump($nom_complet);
+    $nb_word_nom_complet = str_word_count($nom_complet);
 
-    if ($nom_complet !== null || $nom_complet !== '') {
-        $nom_complet_acheteur = $nom_complet;
-        $acheteur = explode(" ", strtolower($nom_complet_acheteur));
-        // si jamais on a un point à la place de l'espace
-        if (empty($acheteur[1])) {
-            $acheteur = explode(".", strtolower($nom_complet_acheteur));
-        }
-        // $prenom_acheteur = $acheteur[0];
-        $nom_acheteur = $acheteur[1];
-        return $nom_acheteur;
-    } else {
-        return '';
+    switch ($nb_word_nom_complet) {
+            //si c'est une agence
+        case 1:
+            return $nom_complet;
+            break;
+
+            //sinon si c'est un collaborateur hors agence
+        case 2:
+            if ($nom_complet !== null || $nom_complet !== '') {
+                $nom_complet_acheteur = $nom_complet;
+                $acheteur = explode(" ", strtolower($nom_complet_acheteur));
+                // si jamais on a un point à la place de l'espace
+                if (empty($acheteur[1])) {
+                    $acheteur = explode(".", strtolower($nom_complet_acheteur));
+                }
+                // $prenom_acheteur = $acheteur[0];
+                $nom_acheteur = $acheteur[1];
+                return $nom_acheteur;
+            } else {
+                return '';
+            }
+            break;
     }
 }
 
