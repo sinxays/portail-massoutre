@@ -70,7 +70,7 @@ $(document).ready(function () {
         console.log(tableau_selected);
 
         switch (date_select) {
-            //afficher tout 
+            //mois en cours
             case '0':
                 $("#date_personnalisees_div").fadeOut(200);
                 $("#date_payplan_debut").val("");

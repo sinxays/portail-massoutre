@@ -49,10 +49,10 @@
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
-  $test= "DREUX test";
-
-  $acheteur = str_word_count($test);
-  var_dump($acheteur);
+    $first = date("Y-m-01");
+    $last = date("Y-m-t");
+    $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
+    echo $where_date;
 
 
 

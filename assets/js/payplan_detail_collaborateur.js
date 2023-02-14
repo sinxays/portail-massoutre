@@ -1,10 +1,11 @@
 $(document).ready(function () {
 
     // réglages au chargement de la page
+    var date_value = '';
     var type = getUrlParameter('type');
     var filtre = getUrlParameter('filtre');
-    if(filtre=='date'){
-        
+    if (filtre == 'date') {
+        var date_value = getUrlParameter('value');
     }
     var id_collaborateur = getUrlParameter('id_detail_collaborateur_payplan_reprise_achat');
 
@@ -18,7 +19,7 @@ $(document).ready(function () {
     $.ajax({
         url: "/payplan/req/req_tableau_payplan_detail_collaborateur.php",
         type: "POST",
-        data: { id_collaborateur: id_collaborateur, type: type, filtre: filtre },
+        data: { id_collaborateur: id_collaborateur, type: type, filtre: filtre, date_value: date_value },
         success: function (data) {
             $("#titre_table").text(type);
             $("#table_payplan_detail_collaborateur").html(data);

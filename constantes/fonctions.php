@@ -1149,7 +1149,7 @@ function get_commission($filtre = '')
         //mois précédent
         if (isset($filtre['mois_precedent_commision'])) {
             $date_now = date('Y-m-d');
-            $mois_precedent = get_previous_month_and_his_last_day($date_now);
+            $mois_precedent = get_previous_month_and_his_last_day();
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
             $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
@@ -1248,7 +1248,7 @@ function get_payplan($filtre = '')
         //mois précédent
         if (isset($filtre['mois_precedent_payplan'])) {
             $date_now = date('Y-m-d');
-            $mois_precedent = get_previous_month_and_his_last_day($date_now);
+            $mois_precedent = get_previous_month_and_his_last_day();
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
             $date = "date_facturation BETWEEN '$first' AND '$last'";
@@ -1421,18 +1421,25 @@ function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
     $where_date = '';
 
     if (isset($filtre) && $filtre !== '') {
+        //mois en cours par select
+        if (isset($filtre["mois_en_cours"])) {
+            $first = date("Y-m-01");
+            $last = date("Y-m-t");
+            $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
+        }
+
         //mois précédent
-        if (isset($filtre["mois_precedent"])) {
+        else if (isset($filtre["mois_precedent"])) {
             $mois_en_cours = get_mois_en_cours();
-            $mois_precedent = get_previous_month_and_his_last_day($mois_en_cours);
+            $mois_precedent = get_previous_month_and_his_last_day();
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
             $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
         }
         //dates personnalisées
-        if (isset($filtre['dates_personnalisees']) && $filtre['dates_personnalisees'] !== '') {
-            $date_debut = $filtre['dates_personnalisees']['debut'];
-            $date_fin = $filtre['dates_personnalisees']['fin'];
+        else if (isset($filtre['date_personnalisees']) && $filtre['date_personnalisees'] !== '') {
+            $date_debut = $filtre['date_personnalisees']['debut'];
+            $date_fin = $filtre['date_personnalisees']['fin'];
             $where_date = "AND date_achat BETWEEN '$date_debut' AND '$date_fin' ";
         }
     }
@@ -1441,7 +1448,6 @@ function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
         $mois_en_cours = get_mois_en_cours();
         $where_date = "AND date_achat >= '$mois_en_cours'";
     }
-
 
     // echo "SELECT COUNT(*) FROM payplan_reprise WHERE collaborateur_payplan_ID = $id_collaborateur $where_date";
 
@@ -1456,19 +1462,26 @@ function get_achat_by_collaborateur($id_collaborateur, $filtre = '')
 
     $where_date = '';
 
+
     if (isset($filtre) && $filtre !== '') {
+        //mois en cours par select
+        if (isset($filtre["mois_en_cours"])) {
+            $first = date("Y-m-01");
+            $last = date("Y-m-t");
+            $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
+        }
         //mois précédent
         if (isset($filtre["mois_precedent"])) {
             $mois_en_cours = get_mois_en_cours();
-            $mois_precedent = get_previous_month_and_his_last_day($mois_en_cours);
+            $mois_precedent = get_previous_month_and_his_last_day();
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
             $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
         }
         //dates personnalisées
-        if (isset($filtre['dates_personnalisees']) && $filtre['dates_personnalisees'] !== '') {
-            $date_debut = $filtre['dates_personnalisees']['debut'];
-            $date_fin = $filtre['dates_personnalisees']['fin'];
+        if (isset($filtre['date_personnalisees']) && $filtre['date_personnalisees'] !== '') {
+            $date_debut = $filtre['date_personnalisees']['debut'];
+            $date_fin = $filtre['date_personnalisees']['fin'];
             $where_date = "AND date_achat BETWEEN '$date_debut' AND '$date_fin' ";
         }
     }
@@ -1718,24 +1731,63 @@ function get_libelle_type_achat_from_id($type_achat_id)
     return $result;
 }
 
-function get_payplan_detail_reprise_collaborateur($collaborateur_id)
+function get_payplan_detail_reprise_collaborateur($collaborateur_id, $filtre = '')
 {
+
+    $filtre_initial = '';
+
+    if (isset($filtre) && $filtre !== '') {
+        if ($filtre['date'][0] == 'mois_precedent') {
+            $previous_month = get_previous_month_and_his_last_day();
+            $first = $previous_month['first'];
+            $last = $previous_month['last'];
+            $filtre_date = "AND date_achat BETWEEN $first AND $last";
+        } else if ($filtre['date'][0] == 'date_personnalisee') {
+            $date_debut = $filtre['date'][1]['date_debut'];
+            $date_fin = $filtre['date'][1]['date_fin'];
+            $filtre_date = "AND date_achat BETWEEN $date_debut AND $date_fin";
+        }
+    }
+
+    $filtre_final = (isset($filtre_date) && $filtre_date !== '') ? $filtre_date : $filtre_initial;
+
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan_reprise WHERE collaborateur_payplan_ID = $collaborateur_id");
+    $request = $pdo->query("SELECT * FROM payplan 
+     LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
+     WHERE repreneur_final_collaborateur_id = $collaborateur_id $filtre_final");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
 
-function get_payplan_detail_achat_collaborateur($collaborateur_id)
+function get_payplan_detail_achat_collaborateur($collaborateur_id, $filtre = '')
 {
+
+    $filtre_initial = '';
+
+    if (isset($filtre) && $filtre !== '') {
+        if ($filtre['date'][0] == 'mois_precedent') {
+            $previous_month = get_previous_month_and_his_last_day();
+            $first = $previous_month['first'];
+            $last = $previous_month['last'];
+            $filtre_date = "AND date_achat BETWEEN '$first' AND '$last'";
+        } else if ($filtre['date'][0] == 'date_personnalisee') {
+            $date_debut = $filtre['date'][1]['date_debut'];
+            $date_fin = $filtre['date'][1]['date_fin'];
+            $filtre_date = "AND date_achat BETWEEN '$date_debut' AND '$date_fin'";
+        }
+    }
+
+    $filtre_final = (isset($filtre_date) && $filtre_date !== '') ? $filtre_date : $filtre_initial;
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan_achat WHERE collaborateur_payplan_ID = $collaborateur_id");
+    $request = $pdo->query("SELECT * FROM payplan 
+     LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
+     WHERE acheteur_collaborateur_id = $collaborateur_id $filtre_final");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
 
 
-function get_previous_month_and_his_last_day($date)
+function get_previous_month_and_his_last_day()
 {
     $previous_month_first_day = date('Y-m-d', strtotime('first day of last month'));
     $previous_month_last_day = date('Y-m-d', strtotime('last day of last month'));
