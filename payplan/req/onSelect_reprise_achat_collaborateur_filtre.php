@@ -19,17 +19,17 @@ if (isset($_POST['selected_date'])) {
         case '1':
             $filtre['mois_precedent'] = array();
             break;
-            //dates personnalisées
+            
     }
 }
-
+//dates personnalisées
 if (isset($_POST['date_perso'])) {
     $filtre['date_personnalisee'] = $_POST['date_perso'];
 }
 
 
 $collaborateurs = get_reprise_achat_collaborateurs($filtre);
-$table_reprise_achat = create_table_payplan_reprise_achat($table_payplan_reprise_achat_header_row, $collaborateurs, true);
+$table_reprise_achat = create_table_payplan_reprise_achat($table_payplan_reprise_achat_header_row, $collaborateurs, true,$filtre);
 
 
 //returner la table

@@ -306,12 +306,14 @@ $(document).ready(function () {
     // update tableau payplan
     $("#bouton_update_payplan").click(function (e) {
         $("#table_commission").fadeOut(0);
+        $("#text_chargement_update").text("Update en cours...");
         $.ajax({
             url: "/payplan/req/update_payplan.php",
             data: {},
             success: function (data) {
                 $("#table_commission").html(data);
                 $("#table_commission").fadeIn(300);
+                $("#text_chargement_update").text("");
             }
         });
     });

@@ -557,6 +557,8 @@ img {
     border: #c537a4 0px solid;
     display: flex;
     flex-direction: row;
+    column-gap: 10px;
+    row-gap: 10px;
 
   }
 

@@ -4,6 +4,12 @@ include  "../../include.php";
 
 if (isset($_POST['id_collaborateur']) && $_POST['id_collaborateur'] !== '') {
     if (isset($_POST['type'])) {
+
+        if (isset($_POST['filtre']) && !empty($_POST['filtre'])) {
+            var_dump($_POST['filtre']);
+            die();
+        }
+
         switch ($_POST['type']) {
             case 'reprise':
                 $id_collaborateur = $_POST['id_collaborateur'];

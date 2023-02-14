@@ -59,6 +59,7 @@
         <div class="div_payplan_update">
             <div class="div_payplan_update1">
                 <button type="button" class="btn btn-success" style="text-align: center;" id="bouton_update_payplan"><span>Update</span> <i class='bx bx-refresh bx-sm bx-tada'></i></button>
+                <span id="text_chargement_update"></span>
             </div>
             <div class="div_payplan_update2">
                 <div class="btn-group" role="group" aria-label="Basic example">

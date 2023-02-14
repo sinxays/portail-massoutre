@@ -505,9 +505,21 @@ function create_table_payplan_detail_achat_collaborateur($header, $array_detail_
 
 
 
-function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all = '')
+function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all = '', $filtre = '')
 {
     $table_collaborateurs_payplan = "";
+
+    $filtre_initial = "";
+
+    if (isset($filtre)) {
+        if (isset($filtre['mois_precedent'])) {
+            $filtre_date = "&filtre=date&value=mois_precedent";
+        } elseif (isset($filtre['date_personnalisee'])) {
+            $filtre_date = "&filtre=date&value=" . $filtre['date_personnalisee']['debut'] . "_" . $filtre['date_personnalisee']['fin'];
+        }
+    }
+
+    $filtre = (isset($filtre_date) && $filtre_date !== '') ? $filtre_date : $filtre_initial;
 
     $table_collaborateurs_payplan .= create_header_row($header);
 
@@ -515,15 +527,15 @@ function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all
         foreach ($array_collaborateurs as $collaborateur) {
             $table_collaborateurs_payplan .= "<tr>";
             $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet_collaborateur"] . " </td>";
-            $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_reprise=" . $collaborateur['id_collaborateur'] . "&type=reprise'>" . $collaborateur['nb_reprise'] . "</a></td>";
-            $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?detail_collaborateur_payplan_achat=" . $collaborateur['id_collaborateur'] . "&type=achat'>" . $collaborateur['nb_achat'] . "</a></td>";
+            $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $collaborateur['id_collaborateur'] . "&type=reprise" . $filtre . "'>" . $collaborateur['nb_reprise'] . "</a></td>";
+            $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $collaborateur['id_collaborateur'] . "&type=achat" . $filtre . "'>" . $collaborateur['nb_achat'] . "</a></td>";
             $table_collaborateurs_payplan .= "</tr>";
         }
     } else {
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $array_collaborateurs["nom_complet_collaborateur"] . " </td>";
-        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $array_collaborateurs['id_collaborateur'] . "&type=reprise'>" . $array_collaborateurs['nb_reprise'] . "</a></td>";
-        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $array_collaborateurs['id_collaborateur'] . "&type=achat'>" . $array_collaborateurs['nb_achat'] . "</a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $array_collaborateurs['id_collaborateur'] . "&type=reprise" . $filtre . "'>" . $array_collaborateurs['nb_reprise'] . "</a></td>";
+        $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $array_collaborateurs['id_collaborateur'] . "&type=achat" . $filtre . "'>" . $array_collaborateurs['nb_achat'] . "</a></td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
 
