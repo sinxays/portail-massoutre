@@ -1871,7 +1871,7 @@ function get_name_acheteur_vendeur($nom_complet)
 {
 
     var_dump($nom_complet);
-    
+
     if ($nom_complet !== null || $nom_complet !== '') {
         $nom_complet_acheteur = $nom_complet;
         $acheteur = explode(" ", strtolower($nom_complet_acheteur));
@@ -1896,6 +1896,10 @@ function define_type_com_and_valeur_acheteur($marge, $parc_achat)
             $return['valeur'] = calcul_percent_de_la_marge($marge);
             break;
         case 'reprise':
+            $return['type_com'] = CINQ_MARGE;
+            $return['valeur'] = calcul_percent_de_la_marge($marge);
+            break;
+        case 'reprise sur vente':
             $return['type_com'] = CINQ_MARGE;
             $return['valeur'] = calcul_percent_de_la_marge($marge);
             break;
