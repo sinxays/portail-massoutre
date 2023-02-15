@@ -151,6 +151,8 @@
                 echo "</select>";
                 ?>
 
+                <span id="span_load_date"></span>
+
             </div>
 
             <div class="my_div_form" id="date_personnalisees_div" style="display:none">

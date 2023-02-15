@@ -1129,7 +1129,8 @@ function get_commission($filtre = '')
     $mois_en_cours = date("m");
     $annee_en_cours = date("Y");
 
-    $where_initial = "WHERE factureventes.date_facturation>='$annee_en_cours-$mois_en_cours-01'";
+    // $where_initial = "WHERE factureventes.date_facturation>='$annee_en_cours-$mois_en_cours-01'";
+    $where_initial = "WHERE vehicules.date_stock >= '$annee_en_cours-$mois_en_cours-01'";
 
     if (isset($filtre) && $filtre !== '') {
 
@@ -1152,13 +1153,15 @@ function get_commission($filtre = '')
             $mois_precedent = get_previous_month_and_his_last_day();
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
-            $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
+            // $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
+            $date = "WHERE vehicules.date_stock BETWEEN '$first' AND '$last'";
             $where_filtre = $date;
         }
         if (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== '') {
             $date_debut = $filtre['date_personnalisee']['debut'];
             $date_fin = $filtre['date_personnalisee']['fin'];
-            $date = "WHERE factureventes.date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+            // $date = "WHERE factureventes.date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+            $date = "WHERE vehicules.date_stock BETWEEN '$date_debut' AND '$date_fin'";
             $where_filtre = $date;
         }
     }
@@ -1166,9 +1169,6 @@ function get_commission($filtre = '')
 
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
-
-    var_dump($where);
-
 
     $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
     destinations.libelle AS Destination,
@@ -1225,7 +1225,7 @@ function get_commission($filtre = '')
     
     $where");
 
-    // print_r($request);
+    var_dump($where);
     // die();
 
     $commission = $request->fetchAll(PDO::FETCH_ASSOC);
@@ -1242,7 +1242,7 @@ function get_payplan($filtre = '')
     //choper le mois en cours avec m pour la version numerique
     $mois_en_cours = date("Y-m-01");
 
-    $where_initial = "date_facturation>='$mois_en_cours'";
+    $where_initial = "date_achat >='$mois_en_cours'";
 
     if (isset($filtre) && $filtre !== '') {
         //mois précédent
@@ -1251,13 +1251,13 @@ function get_payplan($filtre = '')
             $mois_precedent = get_previous_month_and_his_last_day();
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
-            $date = "date_facturation BETWEEN '$first' AND '$last'";
+            $date = "date_achat BETWEEN '$first' AND '$last'";
             $where_filtre = $date;
         }
         if (isset($filtre['date_personnalisee'])) {
             $date_debut = $filtre['date_personnalisee']['debut'];
             $date_fin = $filtre['date_personnalisee']['fin'];
-            $date = "date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+            $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
             $where_filtre = $date;
         }
     }
@@ -1869,6 +1869,7 @@ function alimenter_payplan($data_payplan)
         $marge = define_marge($data_payplan, $commisionable);
         $acheteur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Nom_Acheteur']);
         $repreneur_id_collaborateur = get_id_collaborateur_payplan_by_identification($data_payplan['Options']);
+        var_dump($repreneur_id_collaborateur);
         $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Vendeur']);
         $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $parc_achat);
         $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $parc_achat);

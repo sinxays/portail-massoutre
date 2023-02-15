@@ -9,9 +9,9 @@ $(document).ready(function () {
 
 
 
-    // load le tableau payplan 
+    // load le tableau comission 
     $.ajax({
-        url: "/payplan/req/req_tableau_payplan.php",
+        url: "/payplan/req/req_tableau_commission.php",
         data: {},
         success: function (data) {
             $("#table_commission").html(data);
@@ -113,6 +113,7 @@ $(document).ready(function () {
                 $("#date_personnalisees_div").fadeOut(200);
                 $("#date_payplan_debut").val("");
                 $("#date_payplan_fin").val("");
+                $("#span_load_date").text("chargement en cours...");
                 if (tableau_selected == "commission") {
                     $.ajax({
                         url: "/payplan/req/onSelect_commission_filtre.php",
@@ -122,6 +123,7 @@ $(document).ready(function () {
                             $("#table_commission").html(data);
                             $("#select_destination_payplan").val(0);
                             $("#select_type_achat_payplan").val(0);
+                            $("#span_load_date").text("");
                         }
                     });
                 }
@@ -132,6 +134,7 @@ $(document).ready(function () {
                         data: { selected_date: date_select },
                         success: function (data) {
                             $("#table_achat_reprise").html(data);
+                            $("#span_load_date").text("");
                         }
                     });
                 }
@@ -142,6 +145,7 @@ $(document).ready(function () {
                         data: { selected_date: date_select },
                         success: function (data) {
                             $("#table_payplan").html(data);
+                            $("#span_load_date").text("");
                         }
                     });
                 }
