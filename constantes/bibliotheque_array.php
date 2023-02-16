@@ -35,7 +35,7 @@ $commission_table_header_row = array(
 
 $payplan_table_header_row = array("Immatriculation","Parc Achat","Marge","Acheteur","Com Acheteur","Repreneur Final","Vendeur","Com Vendeur","Date d'Achat","Date de Facturation");
 
-$payplan_detail_reprise_collaborateur_table_header_row = array("Immatriculation", "Date de vente");
+$payplan_detail_reprise_collaborateur_table_header_row = array("Immatriculation", "Date de reprise finale");
 
 $payplan_detail_achat_collaborateur_table_header_row = array("Immatriculation", "Date Achat");
 

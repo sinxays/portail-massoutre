@@ -1744,11 +1744,11 @@ function get_payplan_detail_reprise_collaborateur($collaborateur_id, $filtre = '
             $previous_month = get_previous_month_and_his_last_day();
             $first = $previous_month['first'];
             $last = $previous_month['last'];
-            $filtre_date = "AND date_achat BETWEEN $first AND $last";
+            $filtre_date = "AND date_achat BETWEEN '$first' AND '$last'";
         } else if ($filtre['date'][0] == 'date_personnalisee') {
             $date_debut = $filtre['date'][1]['date_debut'];
             $date_fin = $filtre['date'][1]['date_fin'];
-            $filtre_date = "AND date_achat BETWEEN $date_debut AND $date_fin";
+            $filtre_date = "AND date_achat BETWEEN '$date_debut' AND '$date_fin'";
         }
     }
 
@@ -1757,7 +1757,7 @@ function get_payplan_detail_reprise_collaborateur($collaborateur_id, $filtre = '
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT * FROM payplan 
      LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
-     WHERE repreneur_final_collaborateur_id = $collaborateur_id $filtre_final");
+     WHERE payplan.repreneur_final_collaborateur_id = $collaborateur_id $filtre_final");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
