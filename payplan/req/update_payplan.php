@@ -6,13 +6,13 @@ error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 //on vide la table avant
-// truncate_before_update();
+truncate_before_update();
 
 
 // mois précédent
-// $filtre['mois_precedent_commision'] = array();
-// $commission = get_commission($filtre);
-// define_payplan_final($commission);
+$filtre['mois_precedent_commision'] = array();
+$commission = get_commission($filtre);
+define_payplan_final($commission);
 
 
 //mois en cours
