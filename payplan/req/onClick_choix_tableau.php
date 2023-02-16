@@ -21,7 +21,6 @@ if ($_POST["choix_tableau_payplan"] && $_POST["choix_tableau_payplan"] !== "") {
             break;
 
         case "payplan":
-            //récupérer les collaborateurs
             $payplan = get_payplan();
             $table_payplan = create_table_payplan($payplan, $payplan_table_header_row);
             // echo json_encode(array("table_reprise" => $table_reprise, "table_achat" => $table_achat));

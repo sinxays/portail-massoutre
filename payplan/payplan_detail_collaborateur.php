@@ -56,6 +56,17 @@
 
         <H2> PAYPLAN DETAIL </H2>
 
+        </br>
+
+        <div id="div_retour_detail_collaborateur">
+            <i class='bx bx-left-arrow-circle bx-md'></i><span>Retour ( non fonctionnel pour le moment )</span>
+        </div>
+
+
+
+
+
+
         <form class="my_form_payplan" style="display:none">
             <?php
             ini_set('xdebug.var_display_max_depth', 99);
@@ -79,7 +90,7 @@
 
         <span id="titre_table"></span>
 
-        <table class="my_tab_payplan" id="table_payplan_detail_collaborateur">  </table>
+        <table class="my_tab_payplan" id="table_payplan_detail_collaborateur"> </table>
 
 
         <?php

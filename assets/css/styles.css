@@ -620,9 +620,9 @@ img {
     border: 1px solid #ddd;
   }
 
-  .tr_sticky{
+  .tr_sticky {
     position: sticky;
-    top : 60px;
+    top: 60px;
   }
 
   .payplan_collaborateurs_option {
@@ -1143,4 +1143,20 @@ img {
   background-color: #e6c7c7;
   font-weight: bold;
   font-size: large;
+}
+
+#div_retour_detail_collaborateur {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
+}
+
+#div_retour_detail_collaborateur:hover {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
+  color: #31a6ff;
+  cursor: pointer;
 }

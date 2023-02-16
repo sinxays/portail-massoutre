@@ -1242,7 +1242,8 @@ function get_payplan($filtre = '')
     //choper le mois en cours avec m pour la version numerique
     $mois_en_cours = date("Y-m-01");
 
-    $where_initial = "date_achat >='$mois_en_cours'";
+    // $where_initial = "date_achat >='$mois_en_cours'";
+    $where_initial = "date_facturation >='$mois_en_cours'";
 
     if (isset($filtre) && $filtre !== '') {
         //mois précédent
@@ -1251,13 +1252,15 @@ function get_payplan($filtre = '')
             $mois_precedent = get_previous_month_and_his_last_day();
             $first = $mois_precedent['first'];
             $last = $mois_precedent['last'];
-            $date = "date_achat BETWEEN '$first' AND '$last'";
+            // $date = "date_achat BETWEEN '$first' AND '$last'";
+            $date = "date_facturation BETWEEN '$first' AND '$last'";
             $where_filtre = $date;
         }
         if (isset($filtre['date_personnalisee'])) {
             $date_debut = $filtre['date_personnalisee']['debut'];
             $date_fin = $filtre['date_personnalisee']['fin'];
-            $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
+            // $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
+            $date = "date_facturation BETWEEN '$date_debut' AND '$date_fin'";
             $where_filtre = $date;
         }
     }
@@ -1869,7 +1872,6 @@ function alimenter_payplan($data_payplan)
         $marge = define_marge($data_payplan, $commisionable);
         $acheteur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Nom_Acheteur']);
         $repreneur_id_collaborateur = get_id_collaborateur_payplan_by_identification($data_payplan['Options']);
-        var_dump($repreneur_id_collaborateur);
         $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Vendeur']);
         $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $parc_achat);
         $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $parc_achat);

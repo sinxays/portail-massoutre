@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     // réglages au chargement de la page
     var date_value = '';
-    var type = getUrlParameter('type');
+    var type_tableau = getUrlParameter('type');
     var filtre = getUrlParameter('filtre');
     if (filtre == 'date') {
         var date_value = getUrlParameter('value');
@@ -11,7 +11,7 @@ $(document).ready(function () {
 
 
 
-    console.log(type);
+    console.log(type_tableau);
     console.log(filtre);
     console.log(id_collaborateur);
 
@@ -19,12 +19,21 @@ $(document).ready(function () {
     $.ajax({
         url: "/payplan/req/req_tableau_payplan_detail_collaborateur.php",
         type: "POST",
-        data: { id_collaborateur: id_collaborateur, type: type, filtre: filtre, date_value: date_value },
+        data: { id_collaborateur: id_collaborateur, type: type_tableau, filtre: filtre, date_value: date_value },
         success: function (data) {
-            $("#titre_table").text(type);
+            $("#titre_table").text(type_tableau);
             $("#table_payplan_detail_collaborateur").html(data);
         }
     });
+
+
+
+    $("#div_retour_detail_collaborateur").click(function (e) { 
+        e.preventDefault();
+        
+    });
+
+
 
 
 });
