@@ -525,15 +525,31 @@ function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all
 
     $table_collaborateurs_payplan .= create_header_row($header);
 
+    $nb_repreneur_total = 0;
+    $nb_achat_total = 0;
+
     if (isset($all) && $all == true) {
         foreach ($array_collaborateurs as $collaborateur) {
+
+            $nb_repreneur_total =  $nb_repreneur_total + $collaborateur['nb_reprise'];
+            $nb_achat_total = $nb_achat_total + $collaborateur['nb_achat'];
+
             $table_collaborateurs_payplan .= "<tr>";
             $table_collaborateurs_payplan .= "<td>" . $collaborateur["nom_complet_collaborateur"] . " </td>";
             $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $collaborateur['id_collaborateur'] . "&type=reprise" . $filtre . "'>" . $collaborateur['nb_reprise'] . "</a></td>";
             $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $collaborateur['id_collaborateur'] . "&type=achat" . $filtre . "'>" . $collaborateur['nb_achat'] . "</a></td>";
             $table_collaborateurs_payplan .= "</tr>";
         }
-    } else {
+
+        //afficher le total
+        $table_collaborateurs_payplan .= "<tr>";
+        $table_collaborateurs_payplan .= "<td class='td_label_total'> TOTAL </td>";
+        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> " . $nb_repreneur_total . "</a></td>";
+        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> " . $nb_achat_total . "</a></td>";
+        $table_collaborateurs_payplan .= "</tr>";
+    }
+    //si on affiche que un seul collaborateur
+    else {
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td>" . $array_collaborateurs["nom_complet_collaborateur"] . " </td>";
         $table_collaborateurs_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $array_collaborateurs['id_collaborateur'] . "&type=reprise" . $filtre . "'>" . $array_collaborateurs['nb_reprise'] . "</a></td>";

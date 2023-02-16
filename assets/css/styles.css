@@ -604,12 +604,21 @@ img {
     padding: 8px;
   }
 
+  .my_tab_reprise_achat .td_label_total {
+    border: none;
+    text-align: start;
+    font-size: large;
+    font-weight: bold;
+  }
+
   .my_tab_payplan .td_label_total_payplan {
     border: none;
     text-align: end;
     font-size: large;
     font-weight: bold;
   }
+
+  
 
   .my_tab_payplan .th1,
   .my_tab_commission .th1,
