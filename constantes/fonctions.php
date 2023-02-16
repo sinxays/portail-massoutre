@@ -1526,7 +1526,7 @@ function get_all_identifiants_collaborateurs_payplan()
 function get_id_collaborateur_payplan_by_identification($identification)
 {
     $pdo = Connection::getPDO();
-    $identification = strtolower($identification);
+    $identification = strtolower(trim($identification));
     $request = $pdo->query("SELECT ID FROM collaborateurs_payplan WHERE identifiant_payplan = '$identification'");
     $result = $request->fetch(PDO::FETCH_COLUMN);
     if ($result) {
@@ -1871,7 +1871,7 @@ function alimenter_payplan($data_payplan)
 
         $marge = define_marge($data_payplan, $commisionable);
         $acheteur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Nom_Acheteur']);
-        $repreneur_id_collaborateur = get_id_collaborateur_payplan_by_identification($data_payplan['Options']);
+        $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($data_payplan['Options']);
         $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Vendeur']);
         $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $parc_achat);
         $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $parc_achat);
@@ -1894,7 +1894,7 @@ function alimenter_payplan($data_payplan)
             'acheteur_collaborateur_id' => $acheteur_id_collaborateur,
             'type_com_acheteur' =>  $type_com_and_valeur_acheteur['type_com'],
             'valeur_com_acheteur' =>  $type_com_and_valeur_acheteur['valeur'],
-            'repreneur_final_collaborateur_id' =>  $repreneur_id_collaborateur,
+            'repreneur_final_collaborateur_id' =>  $repreneur_final_id_collaborateur,
             'type_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['type_com'],
             'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
             'vendeur_collaborateur_id' =>  $vendeur_id_collaborateur,
