@@ -10,9 +10,9 @@ truncate_before_update();
 
 
 // mois précédent
-$filtre['mois_precedent_commision'] = array();
-$commission = get_commission($filtre);
-define_payplan_final($commission);
+// $filtre['mois_precedent_commision'] = array();
+// $commission = get_commission($filtre);
+// define_payplan_final($commission);
 
 
 //mois en cours
