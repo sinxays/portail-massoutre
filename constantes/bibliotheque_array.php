@@ -26,23 +26,23 @@ $marges_table_header_row  = array(
 );
 
 $commission_table_header_row = array(
-    "Immatriculation", "Destination", "Type véhicule", "Type achat", "Categorie VU", "Modele", "Reference lot", "Finition", "Parc achat", "Nom acheteur", "Date de vente","Date d'achat", "Prix achat net remisé",
+    "Immatriculation", "Destination", "Type véhicule", "Type achat", "Categorie VU", "Modele", "Reference lot", "Finition", "Parc achat", "Nom acheteur", "Date de vente", "Date d'achat", "Prix achat net remisé",
     "Durée de stock", "Date premiere location", "Date derniere location", "Date stock", "Prix CG", "Prix Transport", "Montant Bonus Malus", "Commission CGA", "Commission achat", "Marge nette", "Vendeur", "Destination sortie",
     "Prix reservé", "Montant", "Client", "Marge financement", "Montant garantie", "Marge Pack", "Montant pack livraison", "Marges diverses", "Commission massoutre", "Montant publicité", "Montant revision", "Montant carrosserie",
     "Montant preparation", "Montant CT", "Prix transport CVO", "Date Facturation", "Options", "Type de com", "Frais Financier", "Marge", "Commission", "Taux com reprise", "Com reprise", "Contrôle marge negoce",
     "Contrôle date", "Frais remise en état", "Pdt complémentaire total", "Mois Vente"
 );
 
-$payplan_table_header_row = array("Immatriculation","Parc Achat","Marge","Acheteur","Com Acheteur","Repreneur Final","Vendeur","Com Vendeur","Date d'Achat","Date de Facturation");
+$payplan_table_header_row = array("Immatriculation", "Parc Achat", "Marge", "Acheteur", "Com Acheteur", "Repreneur Final", "Vendeur", "Com Vendeur", "Date d'Achat", "Date de Facturation");
 
-$payplan_detail_reprise_collaborateur_table_header_row = array("Immatriculation", "Date de reprise finale");
+$payplan_detail_reprise_collaborateur_table_header_row = array("Immatriculation", "Parc Achat", "Date de reprise finale");
 
-$payplan_detail_achat_collaborateur_table_header_row = array("Immatriculation", "Date Achat");
+$payplan_detail_achat_collaborateur_table_header_row = array("Immatriculation", "Parc Achat", "Date Achat");
 
 
 $collaborateurs_payplan_header_row = array("Collaborateur", "Reprise");
 
-$table_payplan_reprise_achat_header_row = array("Collaborateur", "Repreneur final","Achat");
+$table_payplan_reprise_achat_header_row = array("Collaborateur", "Repreneur final", "Achat");
 
 
 $imprimantes_table_header_row = array(
@@ -61,5 +61,3 @@ $liste_telephonique_header_row = array(
 $liste_telephonique_header_agence_row = array(
     "Service", "Numero Service", "Numero court service"
 );
-
-

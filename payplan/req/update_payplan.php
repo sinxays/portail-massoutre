@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 //on vide la table avant
-truncate_before_update();
+// truncate_before_update();
 
 
 // mois précédent

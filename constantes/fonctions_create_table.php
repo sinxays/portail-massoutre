@@ -479,6 +479,7 @@ function create_table_payplan_detail_reprise_collaborateur($header, $array_detai
     foreach ($array_detail_payplan as $detail_payplan) {
         $table_collaborateur_payplan_detail .= "<tr>";
         $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['immatriculation'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['parc_achat'] . " </td>";
         $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['date_achat'] . " </td>";
         $table_collaborateur_payplan_detail .= "</tr>";
     }
@@ -496,6 +497,7 @@ function create_table_payplan_detail_achat_collaborateur($header, $array_detail_
     foreach ($array_detail_payplan as $detail_payplan) {
         $table_collaborateur_payplan_detail .= "<tr>";
         $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['immatriculation'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['parc_achat'] . " </td>";
         $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan['date_achat'] . " </td>";
         $table_collaborateur_payplan_detail .= "</tr>";
     }
