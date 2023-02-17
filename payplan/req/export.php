@@ -3,7 +3,6 @@
 include  "../../include.php";
 include_once "../../assets/xlsxwriter.class.php";
 
-
 $filtre = array();
 
 if (isset($_POST['tableau_selected']) && isset($_POST['date_selected'])) {
@@ -17,11 +16,9 @@ if (isset($_POST['tableau_selected']) && isset($_POST['date_selected'])) {
             break;
         case 1:
             $filtre['mois_precedent'] = array();
-
             break;
         case 2:
             $filtre['date_personnalisee'] = $_POST['date_personnalisee'];
-
             break;
     }
 
@@ -39,15 +36,7 @@ if (isset($_POST['tableau_selected']) && isset($_POST['date_selected'])) {
             break;
     }
 
-    $filename = "test_export.xlsx";
-    header('Content-disposition: attachment; filename="' . XLSXWriter::sanitize_filename($filename) . '"');
-    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    header('Content-Transfer-Encoding: binary');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
+    // var_dump($array_export);
+    // die();
 
-
-    $writer = new XLSXWriter();
-    $writer->writeSheet($array_export);
-    $writer->writeToStdOut();
 }
