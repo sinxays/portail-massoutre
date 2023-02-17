@@ -10,9 +10,14 @@ if (isset($_POST['id_collaborateur']) && $_POST['id_collaborateur'] !== '') {
         if (isset($_POST['filtre']) && $_POST['filtre'] == 'date') {
             $date_value = $_POST['date_value'];
 
-            if ($date_value == 'mois_precedent') {
+            if ($date_value == 'mois_en_cours') {
+                $filtre['date'] = array("mois_en_cours");
+            }
+
+            elseif ($date_value == 'mois_precedent') {
                 $filtre['date'] = array("mois_precedent");
             }
+            
             //sinon ça veut dire qu'on a une date personnalisée
             else {
                 $date_perso_tmp = explode("_", $date_value);

@@ -59,7 +59,7 @@
         </br>
 
         <div id="div_retour_detail_collaborateur">
-            <i class='bx bx-left-arrow-circle bx-md'></i><span>Retour ( non fonctionnel pour le moment )</span>
+            <i class='bx bx-left-arrow-circle bx-md'></i><span>Retour</span>
         </div>
 
 

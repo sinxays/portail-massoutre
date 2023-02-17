@@ -1740,15 +1740,25 @@ function get_payplan_detail_reprise_collaborateur($collaborateur_id, $filtre = '
     $filtre_initial = '';
 
     if (isset($filtre) && $filtre !== '') {
-        if ($filtre['date'][0] == 'mois_precedent') {
-            $previous_month = get_previous_month_and_his_last_day();
-            $first = $previous_month['first'];
-            $last = $previous_month['last'];
-            $filtre_date = "AND payplan.date_achat BETWEEN '$first' AND '$last'";
-        } else if ($filtre['date'][0] == 'date_personnalisee') {
-            $date_debut = $filtre['date'][1]['date_debut'];
-            $date_fin = $filtre['date'][1]['date_fin'];
-            $filtre_date = "AND payplan.date_achat BETWEEN '$date_debut' AND '$date_fin'";
+        $choix_select_date = $filtre['date'][0];
+        var_dump($choix_select_date);
+        die();
+        switch ($choix_select_date) {
+            case 'mois_en_cours':
+                $date_mois_en_cours = date("Y-m-01");
+                $filtre_date = "AND payplan.date_achat >= '$date_mois_en_cours'";
+                break;
+            case 'mois_precedent':
+                $previous_month = get_previous_month_and_his_last_day();
+                $first = $previous_month['first'];
+                $last = $previous_month['last'];
+                $filtre_date = "AND payplan.date_achat BETWEEN '$first' AND '$last'";
+                break;
+            case 'date_personnalisee':
+                $date_debut = $filtre['date'][1]['date_debut'];
+                $date_fin = $filtre['date'][1]['date_fin'];
+                $filtre_date = "AND payplan.date_achat BETWEEN '$date_debut' AND '$date_fin'";
+                break;
         }
     }
 
@@ -1768,15 +1778,24 @@ function get_payplan_detail_achat_collaborateur($collaborateur_id, $filtre = '')
     $filtre_initial = '';
 
     if (isset($filtre) && $filtre !== '') {
-        if ($filtre['date'][0] == 'mois_precedent') {
-            $previous_month = get_previous_month_and_his_last_day();
-            $first = $previous_month['first'];
-            $last = $previous_month['last'];
-            $filtre_date = "AND payplan.date_achat BETWEEN '$first' AND '$last'";
-        } else if ($filtre['date'][0] == 'date_personnalisee') {
-            $date_debut = $filtre['date'][1]['date_debut'];
-            $date_fin = $filtre['date'][1]['date_fin'];
-            $filtre_date = "AND payplan.date_achat BETWEEN '$date_debut' AND '$date_fin'";
+        $choix_select_date = $filtre['date'][0];
+
+        switch ($choix_select_date) {
+            case 'mois_en_cours':
+                $date_mois_en_cours = date("Y-m-01");
+                $filtre_date = "AND payplan.date_achat >= '$date_mois_en_cours'";
+                break;
+            case 'mois_precedent':
+                $previous_month = get_previous_month_and_his_last_day();
+                $first = $previous_month['first'];
+                $last = $previous_month['last'];
+                $filtre_date = "AND payplan.date_achat BETWEEN '$first' AND '$last'";
+                break;
+            case 'date_personnalisee':
+                $date_debut = $filtre['date'][1]['date_debut'];
+                $date_fin = $filtre['date'][1]['date_fin'];
+                $filtre_date = "AND payplan.date_achat BETWEEN '$date_debut' AND '$date_fin'";
+                break;
         }
     }
 

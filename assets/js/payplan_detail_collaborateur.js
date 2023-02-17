@@ -29,8 +29,7 @@ $(document).ready(function () {
 
 
     $("#div_retour_detail_collaborateur").click(function (e) { 
-        e.preventDefault();
-        
+        history.back();
     });
 
 
