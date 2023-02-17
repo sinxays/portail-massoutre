@@ -1735,8 +1735,6 @@ function get_payplan_detail_reprise_collaborateur($collaborateur_id, $filtre = '
 
     if (isset($filtre) && $filtre !== '') {
         $choix_select_date = $filtre['date'][0];
-        var_dump($choix_select_date);
-        die();
         switch ($choix_select_date) {
             case 'mois_en_cours':
                 $date_mois_en_cours = date("Y-m-01");
