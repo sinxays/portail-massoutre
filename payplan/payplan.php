@@ -56,6 +56,7 @@
 
         <H2> PAYPLAN </H2>
 
+
         <div class="div_payplan_update">
             <div class="div_payplan_update1">
                 <button type="button" class="btn btn-success" style="text-align: center;" id="bouton_update_payplan"><span>Update</span> <i class='bx bx-refresh bx-sm bx-tada'></i></button>
@@ -172,16 +173,29 @@
         </form>
 
 
-        </br>
+
+
+        <div class="toast" id='toast_export' role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Statut Export</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Export terminé
+            </div>
+        </div>
+
         </br>
 
+
+        <div id="btn_exporter">
+            <i class='bx bxs-file-export bx-md'></i><span id='label_export'>Exporter</span>
+        </div>
 
         <div class="div_tableau_payplan">
             <table class="my_tab_commission" id="table_commission"> </table>
             <table class="my_tab_payplan" id="table_payplan"> </table>
             <table class="my_tab_reprise_achat" id="table_achat_reprise"> </table>
-
-
         </div>
 
 
@@ -200,6 +214,8 @@
         // var_dump($payplan);
 
         ?>
+
+
 
 
 

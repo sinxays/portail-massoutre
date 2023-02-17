@@ -6,10 +6,15 @@ $filtre = array();
 
 /*** FILTRE DATE  ***/
 if (isset($_POST['selected_date'])) {
-    $selected_date = $_POST['selected_date'];
+    $selected_date = intval($_POST['selected_date']);
     switch ($selected_date) {
-        case '1':
-            $filtre['mois_precedent_payplan'] = array();
+            //mois en cours
+        case 0:
+            $filtre['mois_en_cours'] = array();
+            break;
+            //mois précedent
+        case 1:
+            $filtre['mois_precedent'] = array();
             break;
     }
 }

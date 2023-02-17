@@ -517,8 +517,8 @@ function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all
     if (isset($filtre) && $filtre !== '') {
         if (isset($filtre['mois_precedent'])) {
             $filtre_date = "&filtre=date&value=mois_precedent";
-        } elseif (isset($filtre['date_personnalisees'])) {
-            $filtre_date = "&filtre=date&value=" . $filtre['date_personnalisees']['debut'] . "_" . $filtre['date_personnalisees']['fin'];
+        } elseif (isset($filtre['date_personnalisee'])) {
+            $filtre_date = "&filtre=date&value=" . $filtre['date_personnalisee']['debut'] . "_" . $filtre['date_personnalisee']['fin'];
         }
     }
     else{

@@ -323,6 +323,45 @@ $(document).ready(function () {
     });
 
 
+    $("#bouton").click(function () {
+
+    });
+
+
+
+    //export
+
+    $("#btn_exporter").click(function (e) {
+        $("#label_export").text("Export en cours...");
+        var tableau_selected = $("#tableau_selected").text();
+        date_selected = $("#select_date_payplan").val();
+        //si on choisit date_personnalisée
+        if (date_selected == 2) {
+            var date_payplan_debut = $("#date_payplan_debut").val();
+            var date_payplan_fin = $("#date_payplan_fin").val();
+            var date_personnalisee = {};
+            date_personnalisee['debut'] = date_payplan_debut;
+            date_personnalisee['fin'] = date_payplan_fin;
+        }
+        // console.log(tableau_selected);
+        // console.log(date_selected);
+        // console.log("début " + date_payplan_debut);
+        // console.log("fin " + date_payplan_fin);
+        console.log(date_personnalisee);
+
+        $.ajax({
+            url: "/payplan/req/export.php",
+            type: "POST",
+            data: { tableau_selected: tableau_selected, date_selected: date_selected, date_personnalisee: date_personnalisee },
+            success: function () {
+                $("#label_export").text("Export");
+                $('#toast_export').toast('show');
+            }
+        });
+    });
+
+
+
 
 });
 

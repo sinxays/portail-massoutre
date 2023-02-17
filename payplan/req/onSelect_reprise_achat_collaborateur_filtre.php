@@ -26,9 +26,9 @@ if (isset($_POST['selected_date'])) {
 }
 //dates personnalisées
 if (isset($_POST['date_perso'])) {
-    $filtre['date_personnalisees'] = array();
-    $filtre['date_personnalisees']['debut'] = $_POST['date_perso']['debut'];
-    $filtre['date_personnalisees']['fin'] = $_POST['date_perso']['fin'];
+    $filtre['date_personnalisee'] = array();
+    $filtre['date_personnalisee']['debut'] = $_POST['date_perso']['debut'];
+    $filtre['date_personnalisee']['fin'] = $_POST['date_perso']['fin'];
 }
 
 

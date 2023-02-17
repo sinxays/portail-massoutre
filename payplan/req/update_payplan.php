@@ -10,7 +10,7 @@ ini_set("display_errors", 1);
 
 
 // mois précédent
-// $filtre['mois_precedent_commision'] = array();
+// $filtre['mois_precedent'] = array();
 // $commission = get_commission($filtre);
 // define_payplan_final($commission);
 

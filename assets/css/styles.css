@@ -1169,3 +1169,19 @@ img {
   color: #31a6ff;
   cursor: pointer;
 }
+
+#btn_exporter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
+}
+
+#btn_exporter:hover {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
+  color: #8e0000;
+  cursor: pointer;
+}

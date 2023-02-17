@@ -1123,50 +1123,38 @@ function get_commission($filtre = '')
 {
     $pdo = Connection::getPDO_2();
 
-    //choper le mois en cours avec m pour la version numerique
-    // $mois_en_cours = 11;
-    // $annee_en_cours = date("Y", strtotime("last year"));
-    $mois_en_cours = date("m");
-    $annee_en_cours = date("Y");
 
-    // $where_initial = "WHERE factureventes.date_facturation>='$annee_en_cours-$mois_en_cours-01'";
-    $where_initial = "WHERE vehicules.date_stock >= '$annee_en_cours-$mois_en_cours-01'";
 
     if (isset($filtre) && $filtre !== '') {
 
-        if (isset($filtre['destination']) && $filtre['destination'] !== '') {
-            $destination_id = $filtre['destination'];
-            $libelle_destination = get_libelle_destinations_from_id($destination_id);
-            $destination = "AND destinations.libelle = '$libelle_destination'";
-            $where_filtre = $where_initial . " " . $destination;
+        switch (true) {
+            case (isset($filtre['mois_en_cours'])):
+                $mois_en_cours = date("Y-m-01");
+                $date = "WHERE vehicules.date_stock >= '$mois_en_cours'";
+                // $date = "WHERE factureventes.date_facturation >= '$mois_en_cours'";
+                $where_filtre = $date;
+                break;
+            case (isset($filtre['mois_precedent'])):
+                $mois_precedent = get_previous_month_and_his_last_day();
+                $first = $mois_precedent['first'];
+                $last = $mois_precedent['last'];
+                // $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
+                $date = "WHERE vehicules.date_stock BETWEEN '$first' AND '$last'";
+                $where_filtre = $date;
+                break;
+            case (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== ''):
+                $date_debut = $filtre['date_personnalisee']['debut'];
+                $date_fin = $filtre['date_personnalisee']['fin'];
+                // $date = "WHERE factureventes.date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+                $date = "WHERE vehicules.date_stock BETWEEN '$date_debut' AND '$date_fin'";
+                $where_filtre = $date;
+                break;
         }
-        if (isset($filtre['type_achat']) && $filtre['type_achat'] !== '') {
-            $type_id = $filtre['type_achat'];
-            $libelle_type_achat = get_libelle_type_achat_from_id($type_id);
-            $type = "AND typeachats.libelle = '$libelle_type_achat'";
-            $where_filtre = $where_initial . " " . $type;
-        } //mois en cours
-
-        //mois précédent
-        if (isset($filtre['mois_precedent_commision'])) {
-            $date_now = date('Y-m-d');
-            $mois_precedent = get_previous_month_and_his_last_day();
-            $first = $mois_precedent['first'];
-            $last = $mois_precedent['last'];
-            // $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
-            $date = "WHERE vehicules.date_stock BETWEEN '$first' AND '$last'";
-            $where_filtre = $date;
-        }
-        if (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== '') {
-            $date_debut = $filtre['date_personnalisee']['debut'];
-            $date_fin = $filtre['date_personnalisee']['fin'];
-            // $date = "WHERE factureventes.date_facturation BETWEEN '$date_debut' AND '$date_fin'";
-            $date = "WHERE vehicules.date_stock BETWEEN '$date_debut' AND '$date_fin'";
-            $where_filtre = $date;
-        }
+    } else {
+        $mois_en_cours = date("Y-m-01");
+        $where_initial = "WHERE vehicules.date_stock >= '$mois_en_cours'";
+        // $date = "WHERE factureventes.date_facturation >= '$mois_en_cours'";
     }
-
-
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
 
@@ -1239,30 +1227,36 @@ function get_payplan($filtre = '')
 
     $pdo = Connection::getPDO();
 
-    //choper le mois en cours avec m pour la version numerique
-    $mois_en_cours = date("Y-m-01");
-
-    // $where_initial = "date_achat >='$mois_en_cours'";
-    $where_initial = "date_facturation >='$mois_en_cours'";
-
     if (isset($filtre) && $filtre !== '') {
-        //mois précédent
-        if (isset($filtre['mois_precedent_payplan'])) {
-            $date_now = date('Y-m-d');
-            $mois_precedent = get_previous_month_and_his_last_day();
-            $first = $mois_precedent['first'];
-            $last = $mois_precedent['last'];
-            // $date = "date_achat BETWEEN '$first' AND '$last'";
-            $date = "date_facturation BETWEEN '$first' AND '$last'";
-            $where_filtre = $date;
+
+        switch (true) {
+            case (isset($filtre['mois_en_cours'])):
+                $mois_en_cours = date("Y-m-01");
+                // $date = "date_achat BETWEEN '$first' AND '$last'";
+                $date = "date_facturation >='$mois_en_cours'";
+                $where_filtre = $date;
+                break;
+            case (isset($filtre['mois_precedent'])):
+                $mois_precedent = get_previous_month_and_his_last_day();
+                $first = $mois_precedent['first'];
+                $last = $mois_precedent['last'];
+                // $date = "date_achat BETWEEN '$first' AND '$last'";
+                $date = "date_facturation BETWEEN '$first' AND '$last'";
+                $where_filtre = $date;
+                break;
+            case (isset($filtre['date_personnalisee'])):
+                $date_debut = $filtre['date_personnalisee']['debut'];
+                $date_fin = $filtre['date_personnalisee']['fin'];
+                // $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
+                $date = "date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+                $where_filtre = $date;
+                break;
         }
-        if (isset($filtre['date_personnalisee'])) {
-            $date_debut = $filtre['date_personnalisee']['debut'];
-            $date_fin = $filtre['date_personnalisee']['fin'];
-            // $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
-            $date = "date_facturation BETWEEN '$date_debut' AND '$date_fin'";
-            $where_filtre = $date;
-        }
+    }
+    //premiere arrivée sur la page 
+    else {
+        $mois_en_cours = date("Y-m-01");
+        $where_initial = "date_facturation >='$mois_en_cours'";
     }
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
@@ -1440,9 +1434,9 @@ function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
             $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
         }
         //dates personnalisées
-        else if (isset($filtre['date_personnalisees']) && $filtre['date_personnalisees'] !== '') {
-            $date_debut = $filtre['date_personnalisees']['debut'];
-            $date_fin = $filtre['date_personnalisees']['fin'];
+        else if (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== '') {
+            $date_debut = $filtre['date_personnalisee']['debut'];
+            $date_fin = $filtre['date_personnalisee']['fin'];
             $where_date = "AND date_achat BETWEEN '$date_debut' AND '$date_fin' ";
         }
     }
@@ -1482,9 +1476,9 @@ function get_achat_by_collaborateur($id_collaborateur, $filtre = '')
             $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
         }
         //dates personnalisées
-        if (isset($filtre['date_personnalisees']) && $filtre['date_personnalisees'] !== '') {
-            $date_debut = $filtre['date_personnalisees']['debut'];
-            $date_fin = $filtre['date_personnalisees']['fin'];
+        if (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== '') {
+            $date_debut = $filtre['date_personnalisee']['debut'];
+            $date_fin = $filtre['date_personnalisee']['fin'];
             $where_date = "AND date_achat BETWEEN '$date_debut' AND '$date_fin' ";
         }
     }
