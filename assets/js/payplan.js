@@ -87,6 +87,7 @@ $(document).ready(function () {
                             data: { selected_date: date_select },
                             success: function (data) {
                                 $("#table_commission").html(data);
+                                $("#span_load_date").text("");
                             }
                         });
                         break;
@@ -97,6 +98,7 @@ $(document).ready(function () {
                             data: { selected_date: date_select },
                             success: function (data) {
                                 $("#table_achat_reprise").html(data);
+                                $("#span_load_date").text("");
                             }
                         });
                         break;
@@ -107,12 +109,13 @@ $(document).ready(function () {
                             data: { selected_date: date_select },
                             success: function (data) {
                                 $("#table_payplan").html(data);
+                                $("#span_load_date").text("");
                             }
                         });
                         break;
                 }
-                $("#span_load_date").text("");
                 break;
+
             //si on choisit mois précédent
             case '1':
                 $("#date_personnalisees_div").fadeOut(200);
@@ -127,6 +130,7 @@ $(document).ready(function () {
                             $("#table_commission").html(data);
                             $("#select_destination_payplan").val(0);
                             $("#select_type_achat_payplan").val(0);
+                            $("#span_load_date").text("");
                         }
                     });
                 }
@@ -152,7 +156,6 @@ $(document).ready(function () {
                         }
                     });
                 }
-                $("#span_load_date").text("");
                 break;
             //date personnalisée
             case '2':
