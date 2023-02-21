@@ -1,7 +1,7 @@
 <?php
 
 include  "../../include.php";
-include_once "../../assets/xlsxwriter.class.php";
+include_once "../../assets/CSV.php";
 
 $filtre = array();
 
@@ -22,21 +22,39 @@ if (isset($_POST['tableau_selected']) && isset($_POST['date_selected'])) {
             break;
     }
 
-
+    $date = date("Y_m_d_H_i");
 
     switch ($tableau_selected) {
         case 'collaborateur':
             $array_export = get_reprise_achat_collaborateurs($filtre);
+            $filename = "reprise_achat_$date";
             break;
         case 'payplan':
             $array_export = get_payplan($filtre);
+            $filename = "payplan_$date";
             break;
         case 'commission':
             $array_export = get_commission($filtre);
+            $filename = "tableau_commissions_$date";
             break;
     }
 
+
+    function export($datas, $filename)
+    {
+        header('Content-Type: text/csv;');
+        header('Content-Disposition: attachment; filename="' . $filename . '.csv"');
+        $i = 0;
+        foreach ($datas as $v) {
+            if ($i == 0) {
+                echo '"' . implode('";"', array_keys($v)) . '"' . "\n";
+            }
+            echo '"' . implode('";"', $v) . '"' . "\n";
+            $i++;
+        }
+    }
     // var_dump($array_export);
     // die();
 
+    export($array_export, $filename);
 }

@@ -49,10 +49,12 @@
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
-    $first = date("Y-m-01");
-    $last = date("Y-m-t");
-    $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
-    echo $where_date;
+    setlocale(LC_TIME, 'fr_FR');
+    date_default_timezone_set('Europe/Paris');
+
+    $date = date("Y_m_d");
+
+    echo $date;
 
 
 

@@ -165,6 +165,7 @@
                     <label for="date_payplan_fin">Date Fin</label>
                     <input type="date" id="date_payplan_fin" style="border-radius: 5px;" placeholder="Date de fin payplan" />
                 </div>
+                <button type="button" class="btn btn-success" disabled id="btn_valider_date_perso">Valider date</button>
             </div>
 
             <!-- <div class="my-last-div-form">
@@ -189,6 +190,7 @@
 
 
         <div id="btn_exporter">
+            <!-- <a href="req/export.php"><i class='bx bxs-file-export bx-md'></i><span id='label_export'>Exporter</span></a> -->
             <i class='bx bxs-file-export bx-md'></i><span id='label_export'>Exporter</span>
         </div>
 

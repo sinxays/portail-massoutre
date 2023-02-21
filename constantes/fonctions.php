@@ -1123,7 +1123,7 @@ function get_commission($filtre = '')
 {
     $pdo = Connection::getPDO_2();
 
-
+    // var_dump($filtre);
 
     if (isset($filtre) && $filtre !== '') {
 
@@ -1213,7 +1213,7 @@ function get_commission($filtre = '')
     
     $where");
 
-    var_dump($where);
+    // var_dump($where);
     // die();
 
     $commission = $request->fetchAll(PDO::FETCH_ASSOC);
@@ -1261,7 +1261,7 @@ function get_payplan($filtre = '')
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
 
-    var_dump($where);
+    // var_dump($where);
 
     $request = $pdo->query("SELECT * FROM payplan WHERE $where");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);

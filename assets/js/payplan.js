@@ -5,6 +5,7 @@ $(document).ready(function () {
     // $("#bouton_tableau_commision").focus();
     // $("#bouton_tableau_commision").blur();
     $("#bouton_tableau_commision").addClass("button_selected_tableau_comission");
+    $("#tableau_selected").text("commission");
 
 
 
@@ -68,6 +69,8 @@ $(document).ready(function () {
         tableau_selected = $("#tableau_selected").text();
         console.log(date_select);
         console.log(tableau_selected);
+        $("#span_load_date").text("chargement en cours...");
+
 
         switch (date_select) {
             //mois en cours
@@ -80,7 +83,8 @@ $(document).ready(function () {
                     case 'commission':
                         $.ajax({
                             url: "/payplan/req/onSelect_commission_filtre.php",
-                            data: {},
+                            type: "POST",
+                            data: { selected_date: date_select },
                             success: function (data) {
                                 $("#table_commission").html(data);
                             }
@@ -107,13 +111,13 @@ $(document).ready(function () {
                         });
                         break;
                 }
+                $("#span_load_date").text("");
                 break;
             //si on choisit mois précédent
             case '1':
                 $("#date_personnalisees_div").fadeOut(200);
                 $("#date_payplan_debut").val("");
                 $("#date_payplan_fin").val("");
-                $("#span_load_date").text("chargement en cours...");
                 if (tableau_selected == "commission") {
                     $.ajax({
                         url: "/payplan/req/onSelect_commission_filtre.php",
@@ -123,7 +127,6 @@ $(document).ready(function () {
                             $("#table_commission").html(data);
                             $("#select_destination_payplan").val(0);
                             $("#select_type_achat_payplan").val(0);
-                            $("#span_load_date").text("");
                         }
                     });
                 }
@@ -149,6 +152,7 @@ $(document).ready(function () {
                         }
                     });
                 }
+                $("#span_load_date").text("");
                 break;
             //date personnalisée
             case '2':
@@ -164,17 +168,80 @@ $(document).ready(function () {
     //affichage ou non de date fin selon la valeur de la date début 
     $("#date_payplan_debut").change(function (e) {
         date_debut = $("#date_payplan_debut").val();
+        date_fin = $("#date_payplan_fin").val();
         if (date_debut !== '') {
             $("#div_date_fin").fadeIn(200);
         } else {
             $("#div_date_fin").fadeOut(200);
+            $("#btn_valider_date_perso").prop('disabled', true);
+
         }
     });
 
 
+    //
     $("#date_payplan_fin").change(function (e) {
         date_debut = $("#date_payplan_debut").val();
         date_fin = this.value;
+        tableau_selected = $("#tableau_selected").text();
+
+        $("#btn_valider_date_perso").prop('disabled', false);
+
+
+        // console.log(date_debut);
+        // console.log(date_fin);
+
+        // // value_dates_perso = Array(date_debut,date_fin);
+
+        // let value_dates_perso = {};
+        // value_dates_perso['debut'] = date_debut;
+        // value_dates_perso['fin'] = date_fin;
+
+        // console.log(value_dates_perso);
+
+        // switch (tableau_selected) {
+
+        //     case 'commission':
+        //         $.ajax({
+        //             url: "/payplan/req/onSelect_commission_filtre.php",
+        //             type: "POST",
+        //             data: { date_perso: value_dates_perso },
+        //             success: function (data) {
+        //                 $("#table_commission").html(data);
+        //                 $("#select_destination_payplan").val(0);
+        //                 $("#select_type_achat_payplan").val(0);
+        //             }
+        //         });
+        //         break;
+        //     case 'collaborateur':
+        //         $.ajax({
+        //             url: "/payplan/req/onSelect_reprise_achat_collaborateur_filtre.php",
+        //             type: "POST",
+        //             data: { date_perso: value_dates_perso },
+        //             success: function (data) {
+        //                 $("#table_achat_reprise").html();
+        //                 $("#table_achat_reprise").html(data);
+        //             }
+        //         });
+        //         break;
+        //     case 'payplan':
+        //         $.ajax({
+        //             url: "/payplan/req/onSelect_payplan_filtre.php",
+        //             type: "POST",
+        //             data: { date_perso: value_dates_perso },
+        //             success: function (data) {
+        //                 $("#table_payplan").html(data);
+        //             }
+        //         });
+        //         break;
+        // }
+    });
+
+
+
+    $("#btn_valider_date_perso").click(function (e) {
+        date_debut = $("#date_payplan_debut").val();
+        date_fin = $("#date_payplan_fin").val();
         tableau_selected = $("#tableau_selected").text();
 
         console.log(date_debut);
@@ -225,6 +292,9 @@ $(document).ready(function () {
                 break;
         }
     });
+
+
+
 
     /************** SELECTION DES TABLEAUX ****************/
 
@@ -353,9 +423,25 @@ $(document).ready(function () {
             url: "/payplan/req/export.php",
             type: "POST",
             data: { tableau_selected: tableau_selected, date_selected: date_selected, date_personnalisee: date_personnalisee },
-            success: function () {
+            // success: function () {
+            //     $("#label_export").text("Export");
+            //     $('#toast_export').toast('show');
+            // }
+
+            success: function (result) {
                 $("#label_export").text("Export");
                 $('#toast_export').toast('show');
+                var a = document.createElement('a');
+                var url = window.URL.createObjectURL(result);
+                a.href = url;
+                a.download = 'test.csv';
+                document.body.append(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            },
+            error: function (error) {
+                console.log(error);
             }
         });
     });
