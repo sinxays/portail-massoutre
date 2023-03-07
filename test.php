@@ -46,15 +46,9 @@
     include "right_menubar.php";
     include "include.php";
 
-    error_reporting(E_ALL);
-    ini_set("display_errors", 1);
+    update_payplan();
 
-    setlocale(LC_TIME, 'fr_FR');
-    date_default_timezone_set('Europe/Paris');
-
-    $date = date("Y_m_d");
-
-    echo $date;
+    // var_dump($test);
 
 
 

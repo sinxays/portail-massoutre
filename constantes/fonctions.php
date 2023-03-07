@@ -1927,9 +1927,46 @@ function alimenter_payplan($data_payplan)
 }
 
 
-function update_payplan($data_payplan)
+function update_payplan()
+{  
+
+    $list_vh_non_vendu = get_all_vh_non_vendu();
+
+    foreach ($list_vh_non_vendu as $vh_non_vendu) {
+        // echo $vh_non_vendu['immatriculation'];
+        // echo "<br/>";
+        $date_facturation = get_date_facturation_by_vh($vh_non_vendu['immatriculation']);
+        if(!is_null($date_facturation)){
+            echo "toto";
+            echo "<br/>";
+        }
+
+    }
+}
+
+function get_all_vh_non_vendu()
 {
     $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT payplan.ID as payplan_ID,vh.immatriculation FROM payplan 
+    LEFT JOIN vehicules_payplan as vh ON vh.ID = payplan.vehicule_id 
+    WHERE payplan.date_achat IS NOT NULL 
+    AND payplan.date_facturation IS NULL");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    return $result;
+}
+
+function get_date_facturation_by_vh($immatriculation){
+    //portail
+    $pdo2 = Connection::getPDO_2();
+
+    $request = $pdo2->query("SELECT factureventes.date_facturation AS Date_facturation
+    FROM factureventes
+    LEFT JOIN vehicules ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
+    WHERE vehicules.immatriculation = '$immatriculation'");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+
+    return $result;
 }
 
 
