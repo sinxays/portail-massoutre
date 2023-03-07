@@ -10,15 +10,15 @@ ini_set("display_errors", 1);
 
 
 // mois précédent
-// $filtre['mois_precedent'] = array();
-// $commission = get_commission($filtre);
-// define_payplan_final($commission);
+$filtre['mois_precedent'] = array();
+$commission = get_commission($filtre);
+define_payplan_final($commission);
 
 
 //mois en cours
-$filtre = '';
-$commission = get_commission($filtre);
-define_payplan_final($commission);
+// $filtre = '';
+// $commission = get_commission($filtre);
+// define_payplan_final($commission);
 
 $table = create_table_commission($commission_table_header_row, $commission);
 
