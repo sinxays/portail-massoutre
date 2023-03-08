@@ -190,7 +190,6 @@ $(document).ready(function () {
 
         $("#btn_valider_date_perso").prop('disabled', false);
 
-
         // console.log(date_debut);
         // console.log(date_fin);
 
