@@ -1579,7 +1579,7 @@ function define_prix_reserve2($destination, $montant)
 
 
 
-function define_marge($array, $commisionable)
+function define_marge($array, $commissionable)
 {
 
 
@@ -1603,15 +1603,14 @@ function define_marge($array, $commisionable)
     $montant_preparation = $array['Montant_Preparation'];
     $montant_ct = $array['Montant_Ct'];
     $prix_transport_cvo = $array['Prix_Transport_CVO'];
-    $frais_financier = define_frais_financier($array['Prix_achat_net_remise'], $array['Duree_stock'], $commisionable);
+    $frais_financier = define_frais_financier($array['Prix_achat_net_remise'], $array['Duree_stock'], $commissionable);
     $prix_achat_net_remise = $array['Prix_achat_net_remise'];
-    $commissionnables = 1;
 
     // possibilité plus tard de mettre un switch case
     if ($destination == 'Location') {
         $marge = ($montant - $prix_reserve2 - $prix_cg - $prix_transport - $montant_bonus_malus - $commission_GCA - $commission_achat + $marge_financement + $montant_garanti + $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier);
     } else {
-        $marge = (($montant - $prix_achat_net_remise - $prix_cg - $prix_transport - $montant_bonus_malus - $commission_GCA - $commission_achat - $marge_financement - $montant_garanti - $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier) * $commissionnables);
+        $marge = (($montant - $prix_achat_net_remise - $prix_cg - $prix_transport - $montant_bonus_malus - $commission_GCA - $commission_achat - $marge_financement - $montant_garanti - $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier) * $commissionable);
     }
 
     return $marge;
@@ -1874,13 +1873,13 @@ function alimenter_payplan($data_payplan)
 {
     $pdo = Connection::getPDO();
 
-    $commisionable = 1;
+    $commissionable = 1;
     $vehicule_id = intval($data_payplan['vehicule_id']);
     $parc_achat = strtolower($data_payplan['Parc_Achat']);
 
     if ($parc_achat !== '' || !is_null($parc_achat)) {
 
-        $marge = define_marge($data_payplan, $commisionable);
+        $marge = define_marge($data_payplan, $commissionable);
         $acheteur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Nom_Acheteur']);
         $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($data_payplan['Options']);
         $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($data_payplan['Vendeur']);
@@ -1928,7 +1927,8 @@ function alimenter_payplan($data_payplan)
 
 
 function update_payplan()
-{  
+{
+    $pdo = Connection::getPDO();
 
     $list_vh_non_vendu = get_all_vh_non_vendu();
 
@@ -1936,11 +1936,15 @@ function update_payplan()
         // echo $vh_non_vendu['immatriculation'];
         // echo "<br/>";
         $date_facturation = get_date_facturation_by_vh($vh_non_vendu['immatriculation']);
-        if(!is_null($date_facturation)){
-            echo "toto";
-            echo "<br/>";
+        if (!is_null($date_facturation)) {
+            $data = [
+                'id' =>  $vh_non_vendu['payplan_ID'],
+                'date_facturation' => $date_facturation
+            ];
+            $sql = "UPDATE payplan SET date_facturation = :date_facturation WHERE ID = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data);
         }
-
     }
 }
 
@@ -1956,13 +1960,41 @@ function get_all_vh_non_vendu()
     return $result;
 }
 
-function get_date_facturation_by_vh($immatriculation){
+function get_date_facturation_by_vh($immatriculation)
+{
     //portail
     $pdo2 = Connection::getPDO_2();
 
-    $request = $pdo2->query("SELECT factureventes.date_facturation AS Date_facturation
-    FROM factureventes
-    LEFT JOIN vehicules ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
+
+
+    $request = $pdo2->query("SELECT vehicules.immatriculation AS Immatriculation,
+    vehicules.prix_achat_net_remise AS Prix_achat_net_remise,
+    vehicules.prix_carte_grise AS Prix_carte_grise,
+    vehicules.prix_transport AS Prix_transport,
+    vehicules.montant_bonus_malus AS Montant_Bonus_Malus,
+    vehicules.commission_gca AS Commission_GCA,
+    vehicules.commission_achat AS Commission_Achat,
+    vehicules.options as Options,
+    destinations.libelle AS Destination,
+    CONCAT(utilisateurs.prenom,' ',utilisateurs.nom) AS Vendeur,
+    factureventes.montant AS Montant,
+    factureventes.marge_financement AS Marge_Financement,
+    factureventes.montant_garantie AS Montant_Garantie,
+    factureventes.marge_pack AS Marge_Pack,
+    factureventes.montant_pack_livraison AS Montant_Pack_Livraison,
+    factureventes.marges_diverses AS Marges_diverses,
+    factureventes.commission_massoutre AS Commissions_Massoutre,
+    factureventes.montant_publicite AS Montant_Publicite,
+    factureventes.montant_revision AS Montant_Revision, 
+    factureventes.montant_carrosserie AS Montant_Carrosserie,
+    factureventes.montant_preparation AS Montant_Preparation,
+    factureventes.montant_ct AS Montant_Ct,
+    factureventes.prix_transport_CVO AS Prix_Transport_CVO,
+    factureventes.date_facturation AS Date_facturation
+    FROM vehicules
+    LEFT JOIN destinations ON vehicules.destination_id = destinations.id
+    LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
+    LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
     WHERE vehicules.immatriculation = '$immatriculation'");
     $result = $request->fetch(PDO::FETCH_ASSOC);
 

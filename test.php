@@ -46,9 +46,12 @@
     include "right_menubar.php";
     include "include.php";
 
-    update_payplan();
+    
+    $immat = 'EY298RZ';
 
-    // var_dump($test);
+    $test = get_date_facturation_by_vh($immat);
+
+    var_dump($test);
 
 
 
