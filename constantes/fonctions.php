@@ -1944,11 +1944,11 @@ function update_payplan()
         if (!is_null($date_facturation)) {
             echo $vh_non_vendu['immatriculation'] . " ==> " . $date_facturation . "<br/>";
 
-            /*$marge = define_marge($datas, $commissionable);
+            $marge = define_marge($datas, $commissionable);
             $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas['Options']);
             $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($datas['Vendeur']);
             $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $datas['Parc_Achat']);
-            $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $datas['Parc_Achat'], $vh_non_vendu['acheteur_id_collaborateur'], $vendeur_id_collaborateur);
+            $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $datas['Parc_Achat'], $vh_non_vendu['acheteur_collaborateur_id'], $vendeur_id_collaborateur);
 
             $data = [
                 'id' =>  $vh_non_vendu['payplan_ID'],
@@ -1961,6 +1961,10 @@ function update_payplan()
                 'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
                 'date_facturation' => $date_facturation,
             ];
+
+            var_dump($data);
+
+            /*
             $sql = "UPDATE payplan SET 
             date_facturation = :date_facturation,
             marge = :marge,
@@ -2001,6 +2005,7 @@ function get_datas_to_update_payplan($immatriculation)
     vehicules.montant_bonus_malus AS Montant_Bonus_Malus,
     vehicules.commission_gca AS Commission_GCA,
     vehicules.commission_achat AS Commission_Achat,
+    vehicules.duree_stock AS Duree_stock,
     vehicules.options as Options,
     vehicules.parc_achat AS Parc_Achat,
     destinations.libelle AS Destination,

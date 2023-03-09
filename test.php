@@ -24,7 +24,7 @@
     <!--========== HEADER ==========-->
     <header class="header">
         <div class="header__container">
-            <strong>agence auxerre</strong>
+            <strong>page de test</strong>
             <img src="../assets/img/perfil.jpg" alt="" class="header__img">
 
             <a href="#" class="header__logo"> </a>
