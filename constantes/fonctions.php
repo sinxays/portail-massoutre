@@ -1929,21 +1929,50 @@ function alimenter_payplan($data_payplan)
 function update_payplan()
 {
     $pdo = Connection::getPDO();
+    $commissionable = 1;
 
+    //on liste tous les véhicules non vendus
     $list_vh_non_vendu = get_all_vh_non_vendu();
 
     foreach ($list_vh_non_vendu as $vh_non_vendu) {
-        // echo $vh_non_vendu['immatriculation'];
-        // echo "<br/>";
-        $date_facturation = get_date_facturation_by_vh($vh_non_vendu['immatriculation']);
+
+        //pour chaque véhicule non vendu on va chercher si il ya une date de facturation, en résumé si elle est vendue.
+        $datas = get_datas_to_update_payplan($vh_non_vendu['immatriculation']);
+        $date_facturation = $datas['Date_facturation'];
+
+        //si on trouve uen date de facturation alors on met à jour la table payplan
         if (!is_null($date_facturation)) {
+            echo $date_facturation . "<br/>";
+
+            /*$marge = define_marge($datas, $commissionable);
+            $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas['Options']);
+            $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($datas['Vendeur']);
+            $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $datas['Parc_Achat']);
+            $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $datas['Parc_Achat'], $vh_non_vendu['acheteur_id_collaborateur'], $vendeur_id_collaborateur);
+
             $data = [
                 'id' =>  $vh_non_vendu['payplan_ID'],
-                'date_facturation' => $date_facturation
+                'marge' => $marge,
+                'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
+                'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
+                'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
+                'repreneur_final_collaborateur_id' =>  $repreneur_final_id_collaborateur,
+                'type_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['type_com'],
+                'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
+                'date_facturation' => $date_facturation,
             ];
-            $sql = "UPDATE payplan SET date_facturation = :date_facturation WHERE ID = :id";
+            $sql = "UPDATE payplan SET 
+            date_facturation = :date_facturation,
+            marge = :marge,
+            vendeur_collaborateur_id = :vendeur_collaborateur_id,
+            type_com_vendeur = :type_com_vendeur,
+            valeur_com_vendeur = :valeur_com_vendeur,
+            repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id,
+            type_com_repreneur_final = :type_com_repreneur_final,
+            valeur_com_repreneur_final = :valeur_com_repreneur_final
+            WHERE ID = :id";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute($data);
+            $stmt->execute($data);*/
         }
     }
 }
@@ -1951,7 +1980,7 @@ function update_payplan()
 function get_all_vh_non_vendu()
 {
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT payplan.ID as payplan_ID,vh.immatriculation FROM payplan 
+    $request = $pdo->query("SELECT payplan.ID as payplan_ID,vh.immatriculation,payplan.acheteur_collaborateur_id FROM payplan 
     LEFT JOIN vehicules_payplan as vh ON vh.ID = payplan.vehicule_id 
     WHERE payplan.date_achat IS NOT NULL 
     AND payplan.date_facturation IS NULL");
@@ -1960,12 +1989,10 @@ function get_all_vh_non_vendu()
     return $result;
 }
 
-function get_date_facturation_by_vh($immatriculation)
+function get_datas_to_update_payplan($immatriculation)
 {
     //portail
     $pdo2 = Connection::getPDO_2();
-
-
 
     $request = $pdo2->query("SELECT vehicules.immatriculation AS Immatriculation,
     vehicules.prix_achat_net_remise AS Prix_achat_net_remise,
@@ -1975,6 +2002,7 @@ function get_date_facturation_by_vh($immatriculation)
     vehicules.commission_gca AS Commission_GCA,
     vehicules.commission_achat AS Commission_Achat,
     vehicules.options as Options,
+    vehicules.parc_achat AS Parc_Achat,
     destinations.libelle AS Destination,
     CONCAT(utilisateurs.prenom,' ',utilisateurs.nom) AS Vendeur,
     factureventes.montant AS Montant,
