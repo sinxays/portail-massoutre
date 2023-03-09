@@ -1942,7 +1942,7 @@ function update_payplan()
 
         //si on trouve uen date de facturation alors on met à jour la table payplan
         if (!is_null($date_facturation)) {
-            echo $date_facturation . "<br/>";
+            echo $vh_non_vendu['immatriculation'] . " ==> " . $date_facturation . "<br/>";
 
             /*$marge = define_marge($datas, $commissionable);
             $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas['Options']);
