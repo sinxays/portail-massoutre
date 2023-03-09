@@ -1932,7 +1932,8 @@ function update_payplan()
     $commissionable = 1;
 
     //on liste tous les véhicules non vendus
-    $list_vh_non_vendu = get_all_vh_non_vendu();
+    // $list_vh_non_vendu = get_all_vh_non_vendu();
+    $list_vh_non_vendu = get_all_vh_non_vendu_test();
 
     foreach ($list_vh_non_vendu as $vh_non_vendu) {
 
@@ -1944,7 +1945,10 @@ function update_payplan()
         if (!is_null($date_facturation)) {
             echo $vh_non_vendu['immatriculation'] . " ==> " . $date_facturation . "<br/>";
 
+            //comme le véhicule est vendu maitenant, il faut redéfibir la marge nette finale
             $marge = define_marge($datas, $commissionable);
+            //par rapport à la marge on fait le calcul pour les collaborateurs
+            $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $datas['Parc_Achat']);
             $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas['Options']);
             $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($datas['Vendeur']);
             $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $datas['Parc_Achat']);
@@ -1953,6 +1957,7 @@ function update_payplan()
             $data = [
                 'id' =>  $vh_non_vendu['payplan_ID'],
                 'marge' => $marge,
+                'valeur_com_acheteur' => $type_com_and_valeur_acheteur['valeur'],
                 'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
                 'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
                 'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
@@ -1962,12 +1967,13 @@ function update_payplan()
                 'date_facturation' => $date_facturation,
             ];
 
-            var_dump($data);
+            // var_dump($data);
 
-            /*
+
             $sql = "UPDATE payplan SET 
             date_facturation = :date_facturation,
             marge = :marge,
+            valeur_com_acheteur = :valeur_com_acheteur,
             vendeur_collaborateur_id = :vendeur_collaborateur_id,
             type_com_vendeur = :type_com_vendeur,
             valeur_com_vendeur = :valeur_com_vendeur,
@@ -1976,7 +1982,7 @@ function update_payplan()
             valeur_com_repreneur_final = :valeur_com_repreneur_final
             WHERE ID = :id";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute($data);*/
+            $stmt->execute($data);
         }
     }
 }
@@ -1988,6 +1994,18 @@ function get_all_vh_non_vendu()
     LEFT JOIN vehicules_payplan as vh ON vh.ID = payplan.vehicule_id 
     WHERE payplan.date_achat IS NOT NULL 
     AND payplan.date_facturation IS NULL");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    return $result;
+}
+
+function get_all_vh_non_vendu_test()
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT payplan.ID as payplan_ID,vh.immatriculation,payplan.acheteur_collaborateur_id 
+    FROM payplan 
+    LEFT JOIN vehicules_payplan as vh ON vh.ID = payplan.vehicule_id 
+    WHERE payplan.date_achat IS NOT NULL");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
 
     return $result;
@@ -2068,7 +2086,7 @@ function get_name_acheteur_vendeur($nom_complet)
 
 function define_type_com_and_valeur_acheteur($marge, $parc_achat)
 {
-    switch ($parc_achat) {
+    switch (strtolower($parc_achat)) {
         case 'rachat cash':
             $return['type_com'] = CINQ_MARGE;
             $return['valeur'] = calcul_percent_de_la_marge($marge);
@@ -2104,7 +2122,7 @@ function define_type_com_and_valeur_vendeur($marge, $parc_achat, $id_acheteur, $
 
     // si le vendeur est l'acheteur sont les mêmes
     if ($id_vendeur == $id_acheteur) {
-        switch ($parc_achat) {
+        switch (strtolower($parc_achat)) {
             case 'rachat cash':
                 $return['type_com'] = CINQ_MARGE;
                 $return['valeur'] = calcul_percent_de_la_marge($marge);
