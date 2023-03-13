@@ -1846,9 +1846,9 @@ function update_payplan()
         $datas = get_datas_to_update_payplan($vh_non_vendu['immatriculation']);
         $date_facturation = $datas['Date_facturation'];
 
-        //si on trouve uen date de facturation alors on met à jour la table payplan
+        //si on trouve une date de facturation alors on met à jour la table payplan
         if (!is_null($date_facturation)) {
-            echo $vh_non_vendu['immatriculation'] . " ==> " . $date_facturation . "<br/>";
+            // echo $vh_non_vendu['immatriculation'] . " ==> " . $date_facturation . "<br/>";
 
             //comme le véhicule est vendu maitenant, il faut redéfibir la marge nette finale
             $marge = define_marge($datas, $commissionable);
