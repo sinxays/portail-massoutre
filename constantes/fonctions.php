@@ -1896,21 +1896,22 @@ function update_repreneur_final()
 {
 
     $pdo = Connection::getPDO();
-    
+
     $list_vh_payplan_without_repreneur_final = get_vh_payplan_without_repreneur_final();
 
     foreach ($list_vh_payplan_without_repreneur_final as $vh) {
 
         $datas = get_datas_to_update_payplan_repreneur_final($vh['immatriculation']);
 
-        $repreneur_final_id_collaborateur = $datas['Options'];
+        $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas['Options']);
+
         $data = [
             'id' =>  $vh['payplan_ID'],
             'repreneur_final_collaborateur_id' =>  $repreneur_final_id_collaborateur
         ];
 
         $sql = "UPDATE payplan SET 
-        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id,
+        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id
         WHERE ID = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
