@@ -1892,6 +1892,43 @@ function update_payplan()
     }
 }
 
+function update_repreneur_final()
+{
+
+    $pdo = Connection::getPDO();
+    
+    $list_vh_payplan_without_repreneur_final = get_vh_payplan_without_repreneur_final();
+
+    foreach ($list_vh_payplan_without_repreneur_final as $vh) {
+
+        $datas = get_datas_to_update_payplan_repreneur_final($vh['immatriculation']);
+
+        $repreneur_final_id_collaborateur = $datas['Options'];
+        $data = [
+            'id' =>  $vh['payplan_ID'],
+            'repreneur_final_collaborateur_id' =>  $repreneur_final_id_collaborateur
+        ];
+
+        $sql = "UPDATE payplan SET 
+        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id,
+        WHERE ID = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+    }
+}
+
+function get_vh_payplan_without_repreneur_final()
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT payplan.ID as payplan_ID,vh.immatriculation FROM payplan 
+    LEFT JOIN vehicules_payplan as vh ON vh.ID = payplan.vehicule_id 
+    WHERE payplan.repreneur_final_collaborateur_id IS NULL");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    return $result;
+}
+
+
 function get_all_vh_non_vendu()
 {
     $pdo = Connection::getPDO();
@@ -1951,6 +1988,20 @@ function get_datas_to_update_payplan($immatriculation)
     LEFT JOIN destinations ON vehicules.destination_id = destinations.id
     LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
     LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
+    WHERE vehicules.immatriculation = '$immatriculation'");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+
+    return $result;
+}
+
+function get_datas_to_update_payplan_repreneur_final($immatriculation)
+{
+    //portail
+    $pdo2 = Connection::getPDO_2();
+
+    $request = $pdo2->query("SELECT
+    vehicules.options as Options
+    FROM vehicules
     WHERE vehicules.immatriculation = '$immatriculation'");
     $result = $request->fetch(PDO::FETCH_ASSOC);
 

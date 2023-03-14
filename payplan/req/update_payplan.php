@@ -19,10 +19,13 @@ $filtre['mois_precedent'] = array();
 // $filtre = '';
 
 
-$commission = get_commission($filtre);
-define_payplan($commission);
+// $commission = get_commission($filtre);
+// define_payplan($commission);
 
-update_payplan();
+// update_payplan();
+
+update_repreneur_final();
+
 
 
 
