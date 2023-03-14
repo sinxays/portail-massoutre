@@ -13,18 +13,18 @@ ini_set("display_errors", 1);
 // $filtre['date_personnalisee']['fin'] = "2022-12-31";
 
 // mois précédent
-$filtre['mois_precedent'] = array();
+// $filtre['mois_precedent'] = array();
 
 //mois en cours
-// $filtre = '';
+$filtre = '';
 
 
-// $commission = get_commission($filtre);
-// define_payplan($commission);
+$commission = get_commission($filtre);
+define_payplan($commission);
 
-// update_payplan();
+update_payplan();
 
-update_repreneur_final();
+// update_repreneur_final();
 
 
 
