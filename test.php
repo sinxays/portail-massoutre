@@ -47,7 +47,15 @@
     include "include.php";
 
 
-    update_payplan();
+
+    $test =  strtotime("");
+
+    var_dump($test);
+
+    $test_time =  date("m", $test);
+
+    var_dump($test_time);
+
 
 
 

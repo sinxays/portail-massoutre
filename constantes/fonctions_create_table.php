@@ -342,7 +342,10 @@ function create_table_commission($header, $array)
         $frais_remise_etat = define_frais_remise_etat($payplan['Montant_Revision'], $payplan['Montant_Carrosserie'], $payplan['Montant_Preparation'], $payplan['Montant_Ct']);
         $pdtcomplementaire = define_pdt_complementaire_total($payplan['Marge_Financement'], $payplan['Montant_Garantie'], $payplan['Marge_Pack'], $payplan['Montant_Pack_Livraison'], $payplan['Marges_diverses']);
         $date_facturation = strtotime($payplan['Date_facturation']);
-        $mois_vente = date("m", $date_facturation);
+        $mois_vente = "";
+        if ($date_facturation) {
+            $mois_vente = date("m", $date_facturation);
+        }
 
 
 
@@ -463,7 +466,7 @@ function create_table_payplan_achat_by_collaborateur($header, $array_collaborate
 
     $table_collaborateur_payplan .= "<tr>";
     $table_collaborateur_payplan .= "<td>" . $array_collaborateur["nom_collaborateur"] . " </td>";
-    $table_collaborateur_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $array_collaborateur['id_collaborateur'] . "'>" . $array_collaborateur['nb_reprise'] . " </a> </td>";
+    $table_collaborateur_payplan .= "<td> <a href='/payplan/payplan_detail_collaborateur.php?id_collaborateur_payplan=" . $array_collaborateur['id_collaborateur'] . "'>" . $array_collaborateur['nb_achat'] . " </a> </td>";
     $table_collaborateur_payplan .= "</tr>";
 
     return $table_collaborateur_payplan;
@@ -520,12 +523,11 @@ function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all
         } elseif (isset($filtre['date_personnalisee'])) {
             $filtre_date = "&filtre=date&value=" . $filtre['date_personnalisee']['debut'] . "_" . $filtre['date_personnalisee']['fin'];
         }
-    }
-    else{
+    } else {
         $filtre_date = "&filtre=date&value=mois_en_cours";
     }
 
-    
+
 
     $filtre = (isset($filtre_date) && $filtre_date !== '') ? $filtre_date : $filtre_initial;
 
