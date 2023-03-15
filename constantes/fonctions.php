@@ -1075,33 +1075,6 @@ function get_reprise_achat_collaborateurs($filtre = '')
 }
 
 
-function get_payplan_reprise_achat_by_collaborateur($id)
-{
-
-    $return = array();
-    $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT COUNT(*) FROM payplan_reprise
-    LEFT JOIN collaborateurs_payplan ON collaborateurs_payplan.ID = payplan_reprise.collaborateur_payplan_ID 
-    WHERE payplan_reprise.collaborateur_payplan_ID = $id");
-    $nb_reprise = $request->fetchColumn();
-    $return['nb_reprise'] = $nb_reprise;
-
-    $request = $pdo->query("SELECT COUNT(*) FROM payplan_achat
-    LEFT JOIN collaborateurs_payplan ON collaborateurs_payplan.ID = payplan_achat.collaborateur_payplan_ID 
-    WHERE payplan_achat.collaborateur_payplan_ID = $id");
-    $nb_achat = $request->fetchColumn();
-    $return['nb_achat'] = $nb_achat;
-
-    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet_collaborateur,ID,identifiant_payplan 
-    FROM collaborateurs_payplan
-    WHERE ID = $id");
-    $nom_collaborateur = $request->fetch(PDO::FETCH_ASSOC);
-    $return['nom_complet_collaborateur'] = $nom_collaborateur['nom_complet_collaborateur'];
-    $return['id_collaborateur'] = $nom_collaborateur['ID'];
-
-    return $return;
-}
-
 function get_all_collaborateurs_cvo_for_select()
 {
     $pdo = Connection::getPDO();
