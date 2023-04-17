@@ -1277,9 +1277,9 @@ function define_payplan($payplan)
                 /**** on alimente la table payplan *****/
                 alimenter_payplan($vehicule_transaction);
             }
-            else {
-                update_payplan($vehicule_transaction);
-            }
+            // else {
+            //     update_payplan($vehicule_transaction);
+            // }
 
 
         }
