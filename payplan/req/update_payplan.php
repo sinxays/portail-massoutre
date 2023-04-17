@@ -13,10 +13,10 @@ ini_set("display_errors", 1);
 // $filtre['date_personnalisee']['fin'] = "2022-05-31";
 
 // mois précédent
-$filtre['mois_precedent'] = array();
+// $filtre['mois_precedent'] = array();
 
 //mois en cours
-// $filtre = '';
+$filtre = '';
 
 
 $commission = get_commission($filtre);
