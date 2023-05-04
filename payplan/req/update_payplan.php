@@ -9,14 +9,14 @@ ini_set("display_errors", 1);
 // truncate_before_update();
 
 //dates personnalisées
-$filtre['date_personnalisee']['debut'] = "2022-06-01";
+$filtre['date_personnalisee']['debut'] = "2022-04-01";
 $filtre['date_personnalisee']['fin'] = "2022-12-31";
 
 // mois précédent
 // $filtre['mois_precedent'] = array();
 
 //mois en cours
-$filtre = '';
+// $filtre = '';
 
 
 $commission = get_commission($filtre);
