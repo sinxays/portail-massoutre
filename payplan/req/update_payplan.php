@@ -9,8 +9,8 @@ ini_set("display_errors", 1);
 // truncate_before_update();
 
 //dates personnalisées
-// $filtre['date_personnalisee']['debut'] = "2023-02-01";
-// $filtre['date_personnalisee']['fin'] = "2023-02-28";
+$filtre['date_personnalisee']['debut'] = "2023-01-01";
+$filtre['date_personnalisee']['fin'] = "2023-01-31";
 
 // mois précédent
 // $filtre['mois_precedent'] = array();

@@ -48,13 +48,11 @@
 
 
 
-    $test =  strtotime("");
+
+    $test =  get_id_vh_payplan_by_immat('FS703VM');
+    // $test =  check_if_immatriculation_exist('FS703VM');
 
     var_dump($test);
-
-    $test_time =  date("m", $test);
-
-    var_dump($test_time);
 
 
 

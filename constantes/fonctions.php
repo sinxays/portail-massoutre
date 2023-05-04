@@ -1278,7 +1278,7 @@ function define_payplan($payplan)
                 alimenter_payplan($vehicule_transaction);
             }
             // else {
-            //     update_payplan($vehicule_transaction);
+            //     update_payplan_by_immat($immatriculation);
             // }
 
 
@@ -1863,6 +1863,72 @@ function update_payplan()
             $stmt->execute($data);
         }
     }
+}
+
+function update_payplan_by_immat($vh_immat)
+{
+
+    $pdo = Connection::getPDO();
+    $commissionable = 1;
+
+
+    //pour chaque véhicule non vendu on va chercher si il ya une date de facturation, en résumé si elle est vendue.
+    $datas = get_datas_to_update_payplan($vh_immat);
+    $id = get_id_vh_payplan_by_immat($vh_immat);
+    $date_facturation = $datas['Date_facturation'];
+
+    //si on trouve une date de facturation alors on met à jour la table payplan
+    if (!is_null($date_facturation)) {
+        // echo $vh_non_vendu['immatriculation'] . " ==> " . $date_facturation . "<br/>";
+
+        //comme le véhicule est vendu maitenant, il faut redéfibir la marge nette finale
+        $marge = define_marge($datas, $commissionable);
+        //par rapport à la marge on fait le calcul pour les collaborateurs
+        $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $datas['Parc_Achat']);
+        $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas['Options']);
+        $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($datas['Vendeur']);
+        $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $datas['Parc_Achat']);
+        // $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $datas['Parc_Achat'], $vh_non_vendu['acheteur_collaborateur_id'], $vendeur_id_collaborateur);
+
+        $data = [
+            'id' =>  $id,
+            'marge' => $marge,
+            'valeur_com_acheteur' => $type_com_and_valeur_acheteur['valeur'],
+            'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
+            // 'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
+            // 'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
+            'repreneur_final_collaborateur_id' =>  $repreneur_final_id_collaborateur,
+            'type_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['type_com'],
+            'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
+            'date_facturation' => $date_facturation,
+        ];
+
+        // var_dump($data);
+
+
+        $sql = "UPDATE payplan SET 
+        date_facturation = :date_facturation,
+        marge = :marge,
+        valeur_com_acheteur = :valeur_com_acheteur,
+        vendeur_collaborateur_id = :vendeur_collaborateur_id,
+        type_com_vendeur = :type_com_vendeur,
+        valeur_com_vendeur = :valeur_com_vendeur,
+        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id,
+        type_com_repreneur_final = :type_com_repreneur_final,
+        valeur_com_repreneur_final = :valeur_com_repreneur_final
+        WHERE ID = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+    }
+}
+
+function get_id_vh_payplan_by_immat($immat)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT ID FROM vehicules_payplan  WHERE immatriculation = '$immat'");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+
+    return $result;
 }
 
 function update_repreneur_final()
