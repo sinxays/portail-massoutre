@@ -1888,15 +1888,15 @@ function update_payplan_by_immat($vh_immat)
         $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas['Options']);
         $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($datas['Vendeur']);
         $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $datas['Parc_Achat']);
-        $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $datas['Parc_Achat'], $vh_non_vendu['acheteur_collaborateur_id'], $vendeur_id_collaborateur);
+        // $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $datas['Parc_Achat'], $vh_non_vendu['acheteur_collaborateur_id'], $vendeur_id_collaborateur);
 
         $data = [
             'id' =>  $id,
             'marge' => $marge,
             'valeur_com_acheteur' => $type_com_and_valeur_acheteur['valeur'],
             'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
-            'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
-            'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
+            // 'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
+            // 'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
             'repreneur_final_collaborateur_id' =>  $repreneur_final_id_collaborateur,
             'type_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['type_com'],
             'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
