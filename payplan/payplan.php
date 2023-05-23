@@ -138,6 +138,8 @@
                         echo "<option value=" . $type_achat['id'] . "> " . $type_achat['libelle'] . " </option>";
                     }
                     ?>
+
+                    
                 </select>
             </div>
 

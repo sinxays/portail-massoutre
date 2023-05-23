@@ -76,7 +76,7 @@
                         <span class="nav__name">Marges</span>
                     </a>
 
-                    <a href="/payplan/payplan.php" class="nav__link">
+                    <a href=/payplan/payplan.php class="nav__link">
                         <i class='bx bx-money-withdraw'></i>
                         <span class="nav__name">Payplan</span>
                     </a>
