@@ -59,6 +59,12 @@
 
         <div class="div_payplan_update">
             <div class="div_payplan_update1">
+                <select id="select_update" class="form-select" style="width: 180px;   ">
+                    <?php
+                    echo "<option value=0> mois en cours </option>";
+                    echo "<option value=1> mois précédent </option>";
+                    ?>
+                </select>
                 <button type="button" class="btn btn-success" style="text-align: center;" id="bouton_update_payplan"><span>Update</span> <i class='bx bx-refresh bx-sm bx-tada'></i></button>
                 <span id="text_chargement_update"></span>
             </div>
@@ -139,7 +145,7 @@
                     }
                     ?>
 
-                    
+
                 </select>
             </div>
 

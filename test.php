@@ -49,10 +49,11 @@
 
 
 
-    $test =  get_id_vh_payplan_by_immat('FS703VM');
-    // $test =  check_if_immatriculation_exist('FS703VM');
+    $payplan = get_commission();
+    $table = create_table_commission($commission_table_header_row, $payplan);
+    echo $table;
 
-    var_dump($test);
+    // var_dump($test);
 
 
 

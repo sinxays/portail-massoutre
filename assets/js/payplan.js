@@ -383,9 +383,11 @@ $(document).ready(function () {
     $("#bouton_update_payplan").click(function (e) {
         $("#table_commission").fadeOut(0);
         $("#text_chargement_update").text("Update en cours...");
+        choix_update_selected = $("#select_update").val();
         $.ajax({
             url: "/payplan/req/update_payplan.php",
-            data: {},
+            type:"POST",
+            data: {choix_update : choix_update_selected },
             success: function (data) {
                 $("#table_commission").html(data);
                 $("#table_commission").fadeIn(300);
@@ -462,6 +464,7 @@ function reset_filtre() {
     $("#select_type_achat_payplan").val(0);
     $("#select_destination_payplan").val(0);
     $("#select_collaborateur_payplan").val(0);
+    $("#select_update").val(0);
 }
 
 function hide_tables() {
