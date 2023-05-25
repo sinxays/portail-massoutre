@@ -2212,7 +2212,7 @@ function get_nom_complet_collaborateur_by_id($id)
     }
 }
 
-function truncate_before_update()
+function truncate_before_update($filtre = '')
 {
 
     $pdo = Connection::getPDO();
