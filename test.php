@@ -48,13 +48,10 @@
 
 
 
+    update_payplan_by_immat('EY408PY');
 
-    $payplan = get_commission();
-    $table = create_table_commission($commission_table_header_row, $payplan);
-    echo $table;
 
-    // var_dump($test);
-
+    
 
 
 

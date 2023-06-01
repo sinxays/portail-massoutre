@@ -1236,7 +1236,9 @@ function get_payplan($filtre = '')
 
     // var_dump($where);
 
-    $request = $pdo->query("SELECT * FROM payplan WHERE $where");
+    $request = $pdo->query("SELECT * FROM payplan 
+    LEFT JOIN vehicules_payplan as vp ON payplan.vehicule_id = vp.ID 
+    WHERE $where");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
@@ -1254,16 +1256,15 @@ function test2()
 
 
 
-function define_payplan($payplan)
+function define_payplan($payplan,$filtre)
 {
 
     $pdo = Connection::getPDO();
 
     foreach ($payplan as $vehicule_transaction) {
+        $immatriculation = $vehicule_transaction['Immatriculation'];
         /*** alimenter seulement si on rentre dans une reprise ***/
         if ($vehicule_transaction['Type_Achat'] == 'Reprise') {
-
-            $immatriculation = $vehicule_transaction['Immatriculation'];
 
             /****** Avant d'alienter la table on vérifie si l'immat n'est pas déja dans payplan */
             $result = check_if_immatriculation_exist($immatriculation);
@@ -1277,13 +1278,15 @@ function define_payplan($payplan)
                 /**** on alimente la table payplan *****/
                 alimenter_payplan($vehicule_transaction);
             }
-            // else {
-            //     update_payplan_by_immat($immatriculation);
-            // }
-
-
         }
     }
+
+    // on update ce qui existe déja
+    $datas_payplan = get_payplan($filtre);
+    foreach($datas_payplan as $vie_vh){
+        update_payplan_by_immat($vie_vh['immatriculation']);
+    }
+    
 }
 
 
@@ -1823,7 +1826,7 @@ function update_payplan()
         if (!is_null($date_facturation)) {
             // echo $vh_non_vendu['immatriculation'] . " ==> " . $date_facturation . "<br/>";
 
-            //comme le véhicule est vendu maitenant, il faut redéfibir la marge nette finale
+            //comme le véhicule est vendu maitenant, il faut redéfinir la marge nette finale
             $marge = define_marge($datas, $commissionable);
             //par rapport à la marge on fait le calcul pour les collaborateurs
             $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $datas['Parc_Achat']);
@@ -1869,57 +1872,68 @@ function update_payplan_by_immat($vh_immat)
 {
 
     $pdo = Connection::getPDO();
+
+
+    $datas_commission = get_commission_by_immat($vh_immat);
+
+
+    // var_dump($datas_commission);
+    // die();
+
+
     $commissionable = 1;
+    $parc_achat = strtolower($datas_commission['Parc_Achat']);
+    $id = get_id_payplan_by_immat($vh_immat);
+    $marge = define_marge($datas_commission, $commissionable);
+    $acheteur_id_collaborateur = get_id_collaborateur_payplan_by_name($datas_commission['Nom_Acheteur']);
+    $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas_commission['Options']);
+    $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($datas_commission['Vendeur']);
+    $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $datas_commission['Parc_Achat']);
+    $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $datas_commission['Parc_Achat']);
+    $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $parc_achat, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
+    $date_achat = define_date_achat_by_type_achat($datas_commission);
 
 
-    //pour chaque véhicule non vendu on va chercher si il ya une date de facturation, en résumé si elle est vendue.
-    $datas = get_datas_to_update_payplan($vh_immat);
-    $id = get_id_vh_payplan_by_immat($vh_immat);
-    $date_facturation = $datas['Date_facturation'];
 
-    //si on trouve une date de facturation alors on met à jour la table payplan
-    if (!is_null($date_facturation)) {
-        // echo $vh_non_vendu['immatriculation'] . " ==> " . $date_facturation . "<br/>";
+    $data = [
+        'id' =>  $id,
+        'parc_achat' => $datas_commission['Parc_Achat'],
+        'marge' => $marge,
+        'acheteur_collaborateur_id' => $acheteur_id_collaborateur,
+        'type_com_acheteur' =>  $type_com_and_valeur_acheteur['type_com'],
+        'valeur_com_acheteur' => $type_com_and_valeur_acheteur['valeur'],
+        'repreneur_final_collaborateur_id' =>  $repreneur_final_id_collaborateur,
+        'type_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['type_com'],
+        'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
+        'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
+        'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
+        'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
+        'date_facturation' => $datas_commission['Date_facturation'],
+        'date_achat' => $date_achat
 
-        //comme le véhicule est vendu maitenant, il faut redéfibir la marge nette finale
-        $marge = define_marge($datas, $commissionable);
-        //par rapport à la marge on fait le calcul pour les collaborateurs
-        $type_com_and_valeur_acheteur = define_type_com_and_valeur_acheteur($marge, $datas['Parc_Achat']);
-        $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas['Options']);
-        $vendeur_id_collaborateur = get_id_collaborateur_payplan_by_name($datas['Vendeur']);
-        $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $datas['Parc_Achat']);
-        // $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $datas['Parc_Achat'], $vh_non_vendu['acheteur_collaborateur_id'], $vendeur_id_collaborateur);
+    ];
 
-        $data = [
-            'id' =>  $id,
-            'marge' => $marge,
-            'valeur_com_acheteur' => $type_com_and_valeur_acheteur['valeur'],
-            'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
-            // 'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
-            // 'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
-            'repreneur_final_collaborateur_id' =>  $repreneur_final_id_collaborateur,
-            'type_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['type_com'],
-            'valeur_com_repreneur_final' =>  $type_com_and_valeur_repreneur_final['valeur'],
-            'date_facturation' => $date_facturation,
-        ];
-
-        // var_dump($data);
+    // var_dump($data);
 
 
-        $sql = "UPDATE payplan SET 
-        date_facturation = :date_facturation,
+    $sql = "UPDATE payplan SET 
+        parc_achat = :parc_achat,
         marge = :marge,
+        acheteur_collaborateur_id = :acheteur_collaborateur_id,
+        type_com_acheteur = :type_com_acheteur,
         valeur_com_acheteur = :valeur_com_acheteur,
+        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id,
+        type_com_repreneur_final = :type_com_repreneur_final,
+        valeur_com_repreneur_final = :valeur_com_repreneur_final,
         vendeur_collaborateur_id = :vendeur_collaborateur_id,
         type_com_vendeur = :type_com_vendeur,
         valeur_com_vendeur = :valeur_com_vendeur,
-        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id,
-        type_com_repreneur_final = :type_com_repreneur_final,
-        valeur_com_repreneur_final = :valeur_com_repreneur_final
+        date_facturation = :date_facturation,
+        date_achat = :date_achat
         WHERE ID = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($data);
-    }
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
 }
 
 function get_id_vh_payplan_by_immat($immat)
@@ -2223,4 +2237,84 @@ function truncate_before_update($filtre = '')
     $sql = "TRUNCATE TABLE `payplan`";
     $statement = $pdo->prepare($sql);
     $statement->execute();
+}
+
+
+function get_id_payplan_by_immat($immat)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT payplan.ID 
+    FROM payplan
+    LEFT JOIN vehicules_payplan as vp ON payplan.vehicule_id = vp.ID
+     WHERE vp.immatriculation = '$immat' ");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($result);
+}
+
+
+function get_commission_by_immat($immat)
+{
+
+    $pdo = Connection::getPDO_2();
+
+    $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
+    destinations.libelle AS Destination,
+    typeachats.libelle AS Type_Achat,
+    typevehicules.libelle AS Type_Vehicule,
+    categoriesvu.libelle AS Categorie_VU,
+    modelescommerciaux.libelle AS Modele,
+    vehicules.reference_lot AS Reference_lot,
+    finitions.libelle AS Finition,
+    vehicules.parc_achat AS Parc_Achat,
+    vehicules.nom_acheteur_massoutre AS Nom_Acheteur,
+    vehicules.date_vente AS Date_Vente,
+    vehicules.date_achat AS Date_Achat,
+    vehicules.prix_achat_net_remise AS Prix_achat_net_remise,
+    vehicules.duree_stock AS Duree_stock,
+    vehicules.date_premiere_location AS Date_premiere_location,
+    vehicules.date_derniere_location AS Date_derniere_location,
+    vehicules.date_stock AS Date_stock,
+    vehicules.prix_carte_grise AS Prix_carte_grise,
+    vehicules.prix_transport AS Prix_transport,
+    vehicules.montant_bonus_malus AS Montant_Bonus_Malus,
+    vehicules.commission_gca AS Commission_GCA,
+    vehicules.commission_achat AS Commission_Achat,
+    factureventes.marge_nette AS Marge_nette,
+    CONCAT(utilisateurs.prenom,' ',utilisateurs.nom) AS Vendeur,
+    factureventes.destination_sortie AS Destination_sortie,
+    factureventes.prix_reserve AS Prix_reserve,
+    factureventes.montant AS Montant,
+    factureventes.nom_client AS Client,
+    factureventes.marge_financement AS Marge_Financement,
+    factureventes.montant_garantie AS Montant_Garantie,
+    factureventes.marge_pack AS Marge_Pack,
+    factureventes.montant_pack_livraison AS Montant_Pack_Livraison,
+    factureventes.marges_diverses AS Marges_diverses,
+    factureventes.commission_massoutre AS Commissions_Massoutre,
+    factureventes.montant_publicite AS Montant_Publicite,
+    factureventes.montant_revision AS Montant_Revision, 
+    factureventes.montant_carrosserie AS Montant_Carrosserie,
+    factureventes.montant_preparation AS Montant_Preparation,
+    factureventes.montant_ct AS Montant_Ct,
+    factureventes.prix_transport_CVO AS Prix_Transport_CVO,
+    factureventes.date_facturation AS Date_facturation,
+    vehicules.options as Options
+    
+    FROM vehicules
+    LEFT JOIN destinations ON vehicules.destination_id = destinations.id
+    LEFT JOIN typeachats ON vehicules.typeachat_id = typeachats.id
+    LEFT JOIN typevehicules ON vehicules.typevehicule_id = typevehicules.id
+    LEFT JOIN categoriesvu ON vehicules.categorievu_id = categoriesvu.id
+    LEFT JOIN modelescommerciaux ON vehicules.modelecommercial_id = modelescommerciaux.id
+    LEFT JOIN finitions ON vehicules.finition_id = finitions.id
+    LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
+    LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
+    WHERE vehicules.immatriculation = '$immat'");
+
+    // var_dump($where);
+    // die();
+
+    $commission = $request->fetch(PDO::FETCH_ASSOC);
+
+    return $commission;
 }

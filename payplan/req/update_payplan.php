@@ -10,7 +10,7 @@ if (isset($_POST['choix_update']) && $_POST['choix_update'] !== '') {
     switch ($_POST['choix_update']) {
             //mois en cours
         case 0:
-            $filtre = '';
+            $filtre = ['mois_en_cours'];
             break;
             // mois précédent
         case 1:
@@ -28,11 +28,7 @@ if (isset($_POST['choix_update']) && $_POST['choix_update'] !== '') {
 
 
 $commission = get_commission($filtre);
-define_payplan($commission);
-
-update_payplan();
-
-// update_repreneur_final();
+define_payplan($commission, $filtre);
 
 $table = create_table_commission($commission_table_header_row, $commission);
 
