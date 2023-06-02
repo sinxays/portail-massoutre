@@ -40,6 +40,11 @@ if (isset($_POST['id_collaborateur']) && $_POST['id_collaborateur'] !== '') {
                 $payplan_detail_collaborateur = get_payplan_detail_achat_collaborateur($id_collaborateur, $filtre);
                 $table = create_table_payplan_detail_achat_collaborateur($payplan_detail_achat_collaborateur_table_header_row, $payplan_detail_collaborateur);
                 break;
+            case 'achat_mvc':
+                $id_collaborateur = $_POST['id_collaborateur'];
+                $payplan_detail_collaborateur = get_payplan_detail_achat_mvc_collaborateur($id_collaborateur, $filtre);
+                $table = create_table_payplan_detail_achat_collaborateur($payplan_detail_achat_collaborateur_table_header_row, $payplan_detail_collaborateur);
+                break;
         }
     }
 }
