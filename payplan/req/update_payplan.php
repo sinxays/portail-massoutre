@@ -23,13 +23,12 @@ if (isset($_POST['choix_update']) && $_POST['choix_update'] !== '') {
 // truncate_before_update();
 
 //dates personnalisées
-// $filtre['date_personnalisee']['debut'] = "2022-04-01";
-// $filtre['date_personnalisee']['fin'] = "2022-12-31";
+$filtre['date_personnalisee']['debut'] = "2023-04-01";
+$filtre['date_personnalisee']['fin'] = "2023-04-30";
 
 
 $commission = get_commission($filtre);
 define_payplan($commission, $filtre);
 
 $table = create_table_commission($commission_table_header_row, $commission);
-
 echo $table;

@@ -1258,15 +1258,19 @@ function test2()
 
 function define_payplan($payplan,$filtre)
 {
+    // on commence pa update ce qui existe déja
+    $datas_payplan = get_payplan($filtre);
+    foreach($datas_payplan as $vie_vh){
+        update_payplan_by_immat($vie_vh['immatriculation']);
+    }
 
-    $pdo = Connection::getPDO();
-
+    // ensuite on ajoute dans le payplan
     foreach ($payplan as $vehicule_transaction) {
         $immatriculation = $vehicule_transaction['Immatriculation'];
         /*** alimenter seulement si on rentre dans une reprise ***/
         if ($vehicule_transaction['Type_Achat'] == 'Reprise') {
 
-            /****** Avant d'alienter la table on vérifie si l'immat n'est pas déja dans payplan */
+            /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
             $result = check_if_immatriculation_exist($immatriculation);
 
             //si rien trouvé alors création nouveau véhicule
@@ -1279,12 +1283,6 @@ function define_payplan($payplan,$filtre)
                 alimenter_payplan($vehicule_transaction);
             }
         }
-    }
-
-    // on update ce qui existe déja
-    $datas_payplan = get_payplan($filtre);
-    foreach($datas_payplan as $vie_vh){
-        update_payplan_by_immat($vie_vh['immatriculation']);
     }
     
 }
