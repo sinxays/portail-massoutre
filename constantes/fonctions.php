@@ -1064,8 +1064,10 @@ function get_reprise_achat_collaborateurs($filtre = '')
         $id_collaborateur = $collaborateur['ID'];
         $nb_reprise = get_reprise_by_collaborateur($id_collaborateur, $filtre);
         $nb_achat = get_achat_by_collaborateur($id_collaborateur, $filtre);
+        $nb_achat_mvc = get_achat_mvc_by_collaborateur($id_collaborateur, $filtre);
         $liste_collaborateurs_payplan[$index]['nb_reprise'] = $nb_reprise;
         $liste_collaborateurs_payplan[$index]['nb_achat'] = $nb_achat;
+        $liste_collaborateurs_payplan[$index]['nb_achat_mvc'] = $nb_achat_mvc;
         $liste_collaborateurs_payplan[$index]['nom_complet_collaborateur'] = $collaborateur['nom_complet_collaborateur'];
         $liste_collaborateurs_payplan[$index]['id_collaborateur'] = $id_collaborateur;
     }
@@ -1256,11 +1258,11 @@ function test2()
 
 
 
-function define_payplan($payplan,$filtre)
+function define_payplan($payplan, $filtre)
 {
     // on commence pa update ce qui existe déja
     $datas_payplan = get_payplan($filtre);
-    foreach($datas_payplan as $vie_vh){
+    foreach ($datas_payplan as $vie_vh) {
         update_payplan_by_immat($vie_vh['immatriculation']);
     }
 
@@ -1284,7 +1286,6 @@ function define_payplan($payplan,$filtre)
             }
         }
     }
-    
 }
 
 
@@ -1369,6 +1370,45 @@ function get_achat_by_collaborateur($id_collaborateur, $filtre = '')
 
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE acheteur_collaborateur_id = $id_collaborateur $where_date");
+    $result = $request->fetchColumn();
+    return $result;
+}
+
+function get_achat_mvc_by_collaborateur($id_collaborateur, $filtre = '')
+{
+    $where_date = '';
+
+
+    if (isset($filtre) && $filtre !== '') {
+        //mois en cours par select
+        if (isset($filtre["mois_en_cours"])) {
+            $first = date("Y-m-01");
+            $last = date("Y-m-t");
+            $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
+        }
+        //mois précédent
+        if (isset($filtre["mois_precedent"])) {
+            $mois_en_cours = get_mois_en_cours();
+            $mois_precedent = get_previous_month_and_his_last_day();
+            $first = $mois_precedent['first'];
+            $last = $mois_precedent['last'];
+            $where_date = "AND date_achat BETWEEN '$first' AND '$last' ";
+        }
+        //dates personnalisées
+        if (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== '') {
+            $date_debut = $filtre['date_personnalisee']['debut'];
+            $date_fin = $filtre['date_personnalisee']['fin'];
+            $where_date = "AND date_achat BETWEEN '$date_debut' AND '$date_fin' ";
+        }
+    }
+    //mois en cours
+    else {
+        $mois_en_cours = get_mois_en_cours();
+        $where_date = "AND date_achat >= '$mois_en_cours'";
+    }
+
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE acheteur_collaborateur_id = $id_collaborateur AND parc_achat = 'MVC' $where_date");
     $result = $request->fetchColumn();
     return $result;
 }
