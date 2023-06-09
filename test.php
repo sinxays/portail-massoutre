@@ -50,11 +50,9 @@
 
 
 
-    $datas_facturation = get_facturation($filtre);
+    $marge = update_payplan_by_immat('EM710VZ');
 
-    foreach ($datas_facturation as $facturation) {
-        update_date_facturation_by_immat($facturation['immatriculation'],$facturation['date_facturation']);
-    }
+
 
 
     

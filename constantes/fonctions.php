@@ -1594,7 +1594,7 @@ function define_marge($array, $commissionable)
     if ($destination == 'Location') {
         $marge = ($montant - $prix_reserve2 - $prix_cg - $prix_transport - $montant_bonus_malus - $commission_GCA - $commission_achat + $marge_financement + $montant_garanti + $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier);
     } else {
-        $marge = (($montant - $prix_achat_net_remise - $prix_cg - $prix_transport - $montant_bonus_malus - $commission_GCA - $commission_achat - $marge_financement - $montant_garanti - $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier) * $commissionable);
+        $marge = (($montant - $prix_achat_net_remise - $prix_cg - $prix_transport + $montant_bonus_malus - $commission_GCA - $commission_achat + $marge_financement + $montant_garanti + $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier) * $commissionable);
     }
 
     return $marge;
