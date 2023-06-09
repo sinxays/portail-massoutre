@@ -2156,7 +2156,7 @@ function update_repreneur_by_immat($vh_immat){
     ];
 
     $sql = "UPDATE payplan SET 
-        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id,
+        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id
         WHERE ID = :id";
 
     $stmt = $pdo->prepare($sql);
