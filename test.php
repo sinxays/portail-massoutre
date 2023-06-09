@@ -46,9 +46,15 @@
     include "right_menubar.php";
     include "include.php";
 
+    $filtre['mois_precedent'] = array();
 
 
-    update_payplan_by_immat('EY408PY');
+
+    $datas_facturation = get_facturation($filtre);
+
+    foreach ($datas_facturation as $facturation) {
+        update_date_facturation_by_immat($facturation['immatriculation'],$facturation['date_facturation']);
+    }
 
 
     

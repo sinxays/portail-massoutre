@@ -1197,6 +1197,60 @@ function get_commission($filtre = '')
 }
 
 
+function get_facturation($filtre = '')
+{
+    $pdo = Connection::getPDO_2();
+
+    // var_dump($filtre);
+
+    if (isset($filtre) && $filtre !== '') {
+
+        switch (true) {
+            case (isset($filtre['mois_en_cours'])):
+                $mois_en_cours = date("Y-m-01");
+                $date = "WHERE factureventes.date_facturation >= '$mois_en_cours'";
+                // $date = "WHERE factureventes.date_facturation >= '$mois_en_cours'";
+                $where_filtre = $date;
+                break;
+            case (isset($filtre['mois_precedent'])):
+                $mois_precedent = get_previous_month_and_his_last_day();
+                $first = $mois_precedent['first'];
+                $last = $mois_precedent['last'];
+                // $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
+                $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
+                $where_filtre = $date;
+                break;
+            case (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== ''):
+                $date_debut = $filtre['date_personnalisee']['debut'];
+                $date_fin = $filtre['date_personnalisee']['fin'];
+                // $date = "WHERE factureventes.date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+                $date = "WHERE factureventes.date_facturation BETWEEN '$date_debut' AND '$date_fin'";
+                $where_filtre = $date;
+                break;
+        }
+    } else {
+        $mois_en_cours = date("Y-m-01");
+        $where_initial = "WHERE factureventes.date_facturation >= '$mois_en_cours'";
+        // $date = "WHERE factureventes.date_facturation >= '$mois_en_cours'";
+    }
+
+    $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
+
+    $request = $pdo->query("SELECT vehicules.immatriculation AS immatriculation,
+    factureventes.date_facturation AS date_facturation
+    FROM vehicules
+    LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
+    $where");
+
+    $facturation = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    return $facturation;
+}
+
+
+
+
+
 function get_payplan($filtre = '')
 {
 
@@ -1260,11 +1314,22 @@ function test2()
 
 function define_payplan($payplan, $filtre)
 {
-    // on commence pa update ce qui existe déja
+
+      // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )
+      $datas_facturation = get_facturation($filtre);
+      foreach ($datas_facturation as $facturation) {
+          update_date_facturation_by_immat($facturation['immatriculation'],$facturation['date_facturation']);
+      }
+
+    // ensuite on update ce qui existe déja 
     $datas_payplan = get_payplan($filtre);
     foreach ($datas_payplan as $vie_vh) {
         update_payplan_by_immat($vie_vh['immatriculation']);
     }
+
+  
+
+
 
     // ensuite on ajoute dans le payplan
     foreach ($payplan as $vehicule_transaction) {
@@ -1942,6 +2007,27 @@ function update_payplan()
     }
 }
 
+function update_date_facturation_by_immat($vh_immat,$date_facturation){
+    $pdo = Connection::getPDO();
+
+    $data = [
+        'immatriculation' =>  $vh_immat,
+        'date_facturation' => $date_facturation
+    ];
+
+
+    $sql = "UPDATE payplan 
+    LEFT JOIN vehicules_payplan
+    ON vehicules_payplan.ID = payplan.vehicule_ID
+    SET payplan.date_facturation = :date_facturation
+    WHERE vehicules_payplan.immatriculation = :immatriculation";
+
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
+
+}
+
 function update_payplan_by_immat($vh_immat)
 {
 
@@ -1982,7 +2068,6 @@ function update_payplan_by_immat($vh_immat)
         'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
         'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
         'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
-        'date_facturation' => $datas_commission['Date_facturation'],
         'date_achat' => $date_achat
 
     ];
@@ -2002,7 +2087,6 @@ function update_payplan_by_immat($vh_immat)
         vendeur_collaborateur_id = :vendeur_collaborateur_id,
         type_com_vendeur = :type_com_vendeur,
         valeur_com_vendeur = :valeur_com_vendeur,
-        date_facturation = :date_facturation,
         date_achat = :date_achat
         WHERE ID = :id";
 
