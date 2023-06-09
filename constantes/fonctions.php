@@ -1354,10 +1354,6 @@ function define_payplan($payplan, $filtre)
 }
 
 
-
-
-
-
 function get_reprise_by_collaborateur($id_collaborateur, $filtre = '')
 {
     $where_date = '';
@@ -1592,7 +1588,7 @@ function define_marge($array, $commissionable)
 
     // possibilité plus tard de mettre un switch case
     if ($destination == 'Location') {
-        $marge = ($montant - $prix_reserve2 - $prix_cg - $prix_transport - $montant_bonus_malus - $commission_GCA - $commission_achat + $marge_financement + $montant_garanti + $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier);
+        $marge = ($montant - $prix_reserve2 - $prix_cg - $prix_transport + $montant_bonus_malus - $commission_GCA - $commission_achat + $marge_financement + $montant_garanti + $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier);
     } else {
         $marge = (($montant - $prix_achat_net_remise - $prix_cg - $prix_transport + $montant_bonus_malus - $commission_GCA - $commission_achat + $marge_financement + $montant_garanti + $marge_pack + $montant_pack_livraison + $marges_diverses - $commision_massoutre - $montant_publicite - $montant_revision - $montant_carrosserie - $montant_preparation - $montant_ct - $prix_transport_cvo - $frais_financier) * $commissionable);
     }

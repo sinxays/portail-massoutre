@@ -50,7 +50,9 @@
 
 
 
-    $marge = update_payplan_by_immat('EM710VZ');
+    $nb_reprise = get_reprise_by_collaborateur($id_collaborateur, $filtre);
+    
+
 
 
 

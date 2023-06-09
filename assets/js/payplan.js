@@ -268,6 +268,7 @@ $(document).ready(function () {
                         $("#table_commission").html(data);
                         $("#select_destination_payplan").val(0);
                         $("#select_type_achat_payplan").val(0);
+                        $("#span_load_date").text("");
                     }
                 });
                 break;
@@ -279,6 +280,7 @@ $(document).ready(function () {
                     success: function (data) {
                         $("#table_achat_reprise").html();
                         $("#table_achat_reprise").html(data);
+                        $("#span_load_date").text("");
                     }
                 });
                 break;
@@ -289,10 +291,12 @@ $(document).ready(function () {
                     data: { date_perso: value_dates_perso },
                     success: function (data) {
                         $("#table_payplan").html(data);
+                        $("#span_load_date").text("");
                     }
                 });
                 break;
         }
+        
     });
 
 
@@ -386,8 +390,8 @@ $(document).ready(function () {
         choix_update_selected = $("#select_update").val();
         $.ajax({
             url: "/payplan/req/update_payplan.php",
-            type:"POST",
-            data: {choix_update : choix_update_selected },
+            type: "POST",
+            data: { choix_update: choix_update_selected },
             success: function (data) {
                 $("#table_commission").html(data);
                 $("#table_commission").fadeIn(300);
