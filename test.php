@@ -48,10 +48,14 @@
 
     $filtre['mois_precedent'] = array();
 
+    $vh_immat = 'FL879ES';
 
 
-    $nb_reprise = get_reprise_by_collaborateur($id_collaborateur, $filtre);
-    
+
+    update_payplan_by_immat($vh_immat);
+
+
+
 
 
 
