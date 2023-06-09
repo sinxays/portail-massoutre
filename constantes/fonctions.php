@@ -1299,6 +1299,52 @@ function get_payplan($filtre = '')
     return $result;
 }
 
+function get_vh_non_vendu_from_payplan($filtre=''){
+    $pdo = Connection::getPDO();
+
+    if (isset($filtre) && $filtre !== '') {
+
+        switch (true) {
+            case (isset($filtre['mois_en_cours'])):
+                $mois_en_cours = date("Y-m-01");
+                // $date = "date_achat BETWEEN '$first' AND '$last'";
+                $date = "date_achat >='$mois_en_cours'";
+                $where_filtre = $date;
+                break;
+            case (isset($filtre['mois_precedent'])):
+                $mois_precedent = get_previous_month_and_his_last_day();
+                $first = $mois_precedent['first'];
+                $last = $mois_precedent['last'];
+                // $date = "date_achat BETWEEN '$first' AND '$last'";
+                $date = "date_achat BETWEEN '$first' AND '$last'";
+                $where_filtre = $date;
+                break;
+            case (isset($filtre['date_personnalisee'])):
+                $date_debut = $filtre['date_personnalisee']['debut'];
+                $date_fin = $filtre['date_personnalisee']['fin'];
+                // $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
+                $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
+                $where_filtre = $date;
+                break;
+        }
+    }
+    //premiere arrivée sur la page 
+    else {
+        $mois_en_cours = date("Y-m-01");
+        $where_initial = "date_achat >='$mois_en_cours'";
+    }
+
+    $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
+
+    // var_dump($where);
+
+    $request = $pdo->query("SELECT * FROM payplan 
+    LEFT JOIN vehicules_payplan as vp ON payplan.vehicule_id = vp.ID 
+    WHERE $where");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
+
 
 
 
@@ -1325,6 +1371,12 @@ function define_payplan($payplan, $filtre)
     $datas_payplan = get_payplan($filtre);
     foreach ($datas_payplan as $vie_vh) {
         update_payplan_by_immat($vie_vh['immatriculation']);
+    }
+
+    //on update les repreneurs finaux ou les vh ne sont pas encore vendus
+    $datas_vh_non_vendus = get_vh_non_vendu_from_payplan();
+    foreach ($datas_vh_non_vendus as $vh_non_vendu) {
+        update_repreneur_by_immat($vh_non_vendu['immatriculation']);
     }
 
   
@@ -2088,6 +2140,28 @@ function update_payplan_by_immat($vh_immat)
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
+}
+
+function update_repreneur_by_immat($vh_immat){
+
+    $pdo = Connection::getPDO();
+
+    $datas_commission = get_commission_by_immat($vh_immat);
+    $id = get_id_payplan_by_immat($vh_immat);
+    $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas_commission['Options']);
+
+    $data = [
+        'id' =>  $id,
+        'repreneur_final_collaborateur_id' =>  $repreneur_final_id_collaborateur,
+    ];
+
+    $sql = "UPDATE payplan SET 
+        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id,
+        WHERE ID = :id";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
+
 }
 
 function get_id_vh_payplan_by_immat($immat)
