@@ -1100,27 +1100,25 @@ function get_commission($filtre = '')
 
     // var_dump($filtre);
 
+
     if (isset($filtre) && $filtre !== '') {
 
-        switch (true) {
+        switch ($filtre) {
             case (isset($filtre['mois_en_cours'])):
                 $mois_en_cours = date("Y-m-01");
                 $date = "WHERE vehicules.date_stock >= '$mois_en_cours'";
-                // $date = "WHERE factureventes.date_facturation >= '$mois_en_cours'";
                 $where_filtre = $date;
                 break;
             case (isset($filtre['mois_precedent'])):
                 $mois_precedent = get_previous_month_and_his_last_day();
                 $first = $mois_precedent['first'];
                 $last = $mois_precedent['last'];
-                // $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
                 $date = "WHERE vehicules.date_stock BETWEEN '$first' AND '$last'";
                 $where_filtre = $date;
                 break;
             case (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== ''):
                 $date_debut = $filtre['date_personnalisee']['debut'];
                 $date_fin = $filtre['date_personnalisee']['fin'];
-                // $date = "WHERE factureventes.date_facturation BETWEEN '$date_debut' AND '$date_fin'";
                 $date = "WHERE vehicules.date_stock BETWEEN '$date_debut' AND '$date_fin'";
                 $where_filtre = $date;
                 break;
@@ -1336,7 +1334,7 @@ function get_vh_non_vendu_from_payplan($filtre=''){
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
 
-    var_dump($where);
+    // var_dump($where);
 
     $request = $pdo->query("SELECT vp.immatriculation FROM payplan 
     LEFT JOIN vehicules_payplan as vp ON payplan.vehicule_id = vp.ID 
@@ -1380,10 +1378,7 @@ function define_payplan($payplan, $filtre)
     }
 
   
-
-
-
-    // ensuite on ajoute dans le payplan
+    // ensuite on ajoute dans le payplan les nouveaux éléments
     foreach ($payplan as $vehicule_transaction) {
         $immatriculation = $vehicule_transaction['Immatriculation'];
         /*** alimenter seulement si on rentre dans une reprise ***/
@@ -2146,7 +2141,7 @@ function update_repreneur_by_immat($vh_immat){
 
     $pdo = Connection::getPDO();
 
-    $datas_commission = get_commission_by_immat($vh_immat);
+    $datas_commission = get_repreneur_by_immat($vh_immat);
     $id = get_id_payplan_by_immat($vh_immat);
     $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas_commission['Options']);
 
@@ -2538,6 +2533,24 @@ function get_commission_by_immat($immat)
     LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
     LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
     WHERE vehicules.immatriculation = '$immat'");
+
+    // var_dump($where);
+    // die();
+
+    $commission = $request->fetch(PDO::FETCH_ASSOC);
+
+    return $commission;
+}
+
+
+function get_repreneur_by_immat($immat)
+{
+
+    $pdo = Connection::getPDO_2();
+
+    $request = $pdo->query("SELECT options as Options
+    FROM vehicules
+    WHERE immatriculation = '$immat'");
 
     // var_dump($where);
     // die();

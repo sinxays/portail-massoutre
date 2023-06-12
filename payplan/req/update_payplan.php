@@ -10,7 +10,7 @@ if (isset($_POST['choix_update']) && $_POST['choix_update'] !== '') {
     switch ($_POST['choix_update']) {
             //mois en cours
         case 0:
-            $filtre = ['mois_en_cours'];
+            $filtre['mois_en_cours'] = array();
             break;
             // mois précédent
         case 1:
