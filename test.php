@@ -48,11 +48,10 @@
 
     $filtre['mois_precedent'] = array();
 
-    $vh_immat = 'FL879ES';
 
+    $datas_vh_non_vendus = get_vh_non_vendu_from_payplan($filtre);
 
-
-    update_payplan_by_immat($vh_immat);
+    var_dump($datas_vh_non_vendus);
 
 
 

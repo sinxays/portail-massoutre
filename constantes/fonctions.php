@@ -1336,9 +1336,9 @@ function get_vh_non_vendu_from_payplan($filtre=''){
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
 
-    // var_dump($where);
+    var_dump($where);
 
-    $request = $pdo->query("SELECT * FROM payplan 
+    $request = $pdo->query("SELECT vp.immatriculation FROM payplan 
     LEFT JOIN vehicules_payplan as vp ON payplan.vehicule_id = vp.ID 
     WHERE $where");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
@@ -1374,7 +1374,7 @@ function define_payplan($payplan, $filtre)
     }
 
     //on update les repreneurs finaux ou les vh ne sont pas encore vendus
-    $datas_vh_non_vendus = get_vh_non_vendu_from_payplan();
+    $datas_vh_non_vendus = get_vh_non_vendu_from_payplan($filtre);
     foreach ($datas_vh_non_vendus as $vh_non_vendu) {
         update_repreneur_by_immat($vh_non_vendu['immatriculation']);
     }
