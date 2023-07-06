@@ -23,8 +23,8 @@ if (isset($_POST['choix_update']) && $_POST['choix_update'] !== '') {
 // truncate_before_update();
 
 //dates personnalisées
-// $filtre['date_personnalisee']['debut'] = "2023-01-01";
-// $filtre['date_personnalisee']['fin'] = "2023-06-09";
+$filtre['date_personnalisee']['debut'] = "2023-05-01";
+$filtre['date_personnalisee']['fin'] = "2023-05-31";
 
 
 $commission = get_commission($filtre);
