@@ -75,6 +75,11 @@
                     <button type="button" class="btn btn-warning" id="bouton_tableau_commision" value="commission">Tableau Commission Total</button>
                 </div>
             </div>
+            <!--<div class="div_payplan_update3">
+                    <input type="text" class="form-control" id="input_immat_to_import" placeholder="immatriculation">
+                    <button type="button" class="btn btn-success" id="bouton_immat_to_import"><span>importer</span></button>
+                    <span id="text_chargement_import_immat"></span>
+            </div>-->
         </div>
 
         <span id="tableau_selected" style="visibility: hidden;">commission</span>

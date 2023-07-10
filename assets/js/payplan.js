@@ -296,7 +296,7 @@ $(document).ready(function () {
                 });
                 break;
         }
-        
+
     });
 
 
@@ -455,6 +455,29 @@ $(document).ready(function () {
     });
 
 
+    $("#bouton_immat_to_import").click(function (e) {
+        $("#text_chargement_import_immat").text("Import en cours...");
+        // l'immat à importer de force
+        var immat_to_import = $("#input_immat_to_import").val();
+
+        $.ajax({
+            url: "/payplan/req/import_immat.php",
+            type: "POST",
+            data: { immat_to_import: immat_to_import},
+            // success: function () {
+            //     $("#label_export").text("Export");
+            //     $('#toast_export').toast('show');
+            // }
+
+            success: function (result) {
+                $("#text_chargement_import_immat").text("importé");
+            },
+            error: function (error) {
+                $("#text_chargement_import_immat").text("erreur : non importé");
+            }
+        });
+
+    });
 
 
 });

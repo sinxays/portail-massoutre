@@ -1195,6 +1195,7 @@ function get_commission($filtre = '')
 }
 
 
+
 function get_facturation($filtre = '')
 {
     $pdo = Connection::getPDO_2();
@@ -1356,7 +1357,7 @@ function test2()
 
 
 
-function define_payplan($payplan, $filtre)
+function define_payplan($commission, $filtre)
 {
 
       // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )
@@ -1379,7 +1380,7 @@ function define_payplan($payplan, $filtre)
 
   
     // ensuite on ajoute dans le payplan les nouveaux éléments
-    foreach ($payplan as $vehicule_transaction) {
+    foreach ($commission as $vehicule_transaction) {
         $immatriculation = $vehicule_transaction['Immatriculation'];
         /*** alimenter seulement si on rentre dans une reprise ***/
         if ($vehicule_transaction['Type_Achat'] == 'Reprise') {

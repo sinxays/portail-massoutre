@@ -46,21 +46,26 @@
     include "right_menubar.php";
     include "include.php";
 
-    $filtre['mois_precedent'] = array();
+    $filtre = '';
 
 
-    $datas_vh_non_vendus = get_vh_non_vendu_from_payplan($filtre);
+    $test = get_commission_by_immat("cw011fq");
 
-    var_dump($datas_vh_non_vendus);
+    $commission = array($test);
 
-
-
-
-
-
-
+    var_dump($commission);
 
     
+
+    define_payplan($commission, $filtre);
+
+
+
+
+
+
+
+
 
 
 
