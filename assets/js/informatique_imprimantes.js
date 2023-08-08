@@ -63,6 +63,9 @@ $(document).ready(function () {
 
     })
 
+
+
+
     $("#alert_imprimante_ajoutee").click(function (e) {
         e.preventDefault();
         alert_imprimante_ajoutee_var.fadeOut(300);
@@ -89,7 +92,7 @@ $(document).ready(function () {
     });
 
 
-    // au select de l'infrastructure
+    // au type du numéro de série
     $("#input_num_serie").keyup(function (e) {
         $.ajax({
             url: "/Informatique/req/onSelect_imprimantes.php",
@@ -154,6 +157,12 @@ $(document).ready(function () {
 
 
 });
+
+
+function modifier_imprimante(id){
+    console.log(id);
+    document.location.href="modif_imprimante.php?id="+id;
+}
 
 
 

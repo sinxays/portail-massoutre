@@ -813,6 +813,21 @@ function get_imprimante_by_num_serie($num_serie)
     return $result;
 }
 
+function get_imprimante_by_ID($id)
+{
+    $pdo = Connection::getPDO();
+    // $request = $pdo->query("SELECT * FROM imprimantes ORDER BY ID ASC");
+    $request = $pdo->query("SELECT i.ID,i.num_serie,i.id_infrastructure_imprimante,i.emplacement,i.prestataire,i.marque,i.modele,i.ip_vpn,i.ip_locale,s.nom_infrastructure
+    FROM imprimantes as i 
+    LEFT JOIN infrastructure as s
+    ON i.id_infrastructure_imprimante = s.ID 
+    WHERE i.ID = $id");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+
+
+    return $result;
+}
+
 
 function get_all_infrastructure()
 {

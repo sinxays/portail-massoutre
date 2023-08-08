@@ -52,33 +52,46 @@
 
         <H2> AJOUT IMPRIMANTES </H2>
 
+        <?php
+
+        if (isset($_GET['id']) && $_GET['id'] !== '') {
+            echo $_GET['id'];
+            $imprimante = get_imprimante_by_ID($_GET['id']);
+            var_dump($imprimante);
+        }
+
+        ?>
+
         <div class="container_form_ajout">
 
             <form id="ajout_imprimante_form">
                 <div class="div_form_ajout">
-                    <input type="text" class="form-control" id="num_serie" placeholder="numéro de serie" name="num_serie">
+                    <input type="text" class="form-control" id="num_serie" placeholder="numéro de serie" name="num_serie" value="<?php echo $imprimante['num_serie']; ?>">
                 </div>
 
 
                 <?php
 
-                $agences = get_all_agences();
-
+                $infrastructures = get_all_infrastructure();
                 ?>
 
                 <div class="div_form_ajout">
-                    <label for="agence">Agence</label>
+                    <label for="agence">Infrastructure</label>
                     <select class="form-select" id="agence" style="width: 150px;" name="agence">
                         <?php
-                        foreach ($agences as $agence) {
-                            echo  "<option value='" . $agence['ID'] . "'>" . $agence['nom_agence'] . "</option>";
+                        foreach ($infrastructures as $infrastructure) {
+                            if ($infrastructure['ID'] == $imprimante['id_infrastructure_imprimante']) {
+                                echo  "<option value='" . $infrastructure['ID'] . "' selected='selected'>" . $infrastructure['nom_infrastructure'] . "</option>";
+                            } else {
+                                echo  "<option value='" . $infrastructure['ID'] . "'>" . $infrastructure['nom_infrastructure'] . "</option>";
+                            }
                         }
                         ?>
                     </select>
                 </div>
 
                 <div class="div_form_ajout">
-                    <input type="text" class="form-control" id="emplacement" placeholder="emplacement" name="emplacement">
+                    <input type="text" class="form-control" id="emplacement" placeholder="emplacement" name="emplacement" value="<?php echo $imprimante['emplacement']; ?>">
                 </div>
 
 
@@ -131,26 +144,26 @@
             </div>
 
             <form id="upload_csv_form" class="form-horizontal" method="post" name="upload_csv_form" enctype="multipart/form-data">
-                        <!--<form id="upload_csv_form" class="form-horizontal" action="import_csv_stats_journalieres.php" method="post" name="upload_csv_form" enctype="multipart/form-data">-->
-                        <fieldset style="margin-top: 20px;">
-                            <div class="form-group">
-                                <div class="col-md-4">
-                                    <label class="col-md-4 control-label" for="csv_file">Importer csv imprimantes</label>
-                                    <input type="file" name="csv_file" id="csv_file" class="input-large">
-                                </div>
-                                <div class="col-md-4" id="bloc_date_import_csv">
-                                    <button style="margin-left: 20px;" type="submit" id="submit" name="Import" class="btn btn-primary button-loading" data-loading-text="Loading...">Import</button>
-                                    <div class="lds-ellipsis" id="loader_import_csv_imprimantes">
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                    </div>
-                                </div>
+                <!--<form id="upload_csv_form" class="form-horizontal" action="import_csv_stats_journalieres.php" method="post" name="upload_csv_form" enctype="multipart/form-data">-->
+                <fieldset style="margin-top: 20px;">
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <label class="col-md-4 control-label" for="csv_file">Importer csv imprimantes</label>
+                            <input type="file" name="csv_file" id="csv_file" class="input-large">
+                        </div>
+                        <div class="col-md-4" id="bloc_date_import_csv">
+                            <button style="margin-left: 20px;" type="submit" id="submit" name="Import" class="btn btn-primary button-loading" data-loading-text="Loading...">Import</button>
+                            <div class="lds-ellipsis" id="loader_import_csv_imprimantes">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
                             </div>
-                            <br />
-                        </fieldset>
-                    </form>
+                        </div>
+                    </div>
+                    <br />
+                </fieldset>
+            </form>
 
         </div>
 
