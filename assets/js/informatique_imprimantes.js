@@ -63,6 +63,41 @@ $(document).ready(function () {
 
     })
 
+    $("#btn_modif_imprimante").click(function (e) {
+        e.preventDefault();
+        loader_ajout_imprimante.show();
+        $.ajax({
+            url: "/Informatique/req/req_modifier_imprimante.php",
+            type: "POST",
+            data: $("#ajout_imprimante_form").serialize(),
+            success: function () {
+                // alert("imprimante ajoutée");
+                loader_ajout_imprimante.hide();
+                input_num_serie.val('');
+                input_agence.val('');
+                input_emplacement.val('');
+                input_marque.val('');
+                input_prestataire.val('');
+                input_modele.val('');
+                input_ip_vpn.val('');
+                input_ip_locale.val('');
+
+                alert_imprimante_ajoutee_var.show(300);
+
+                window.location.replace("/Informatique/imprimantes.php");
+
+
+            },
+            error: function () {
+                alert("imprimante non ajoutée");
+            }
+        });
+
+
+
+
+    })
+
 
 
 
@@ -159,9 +194,9 @@ $(document).ready(function () {
 });
 
 
-function modifier_imprimante(id){
+function modifier_imprimante(id) {
     console.log(id);
-    document.location.href="modif_imprimante.php?id="+id;
+    document.location.href = "modif_imprimante.php?id=" + id;
 }
 
 

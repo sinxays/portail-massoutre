@@ -651,6 +651,40 @@ function ajouter_imprimante($imprimante)
     $stmt->execute($data);
 }
 
+function modifier_imprimante($imprimante)
+{
+    $pdo = Connection::getPDO();
+
+    // INSERTION des données dans VP
+    $data = [
+        "id" => $imprimante['id'],
+        "num_serie" => $imprimante["num_serie"],
+        "infrastructure" => $imprimante["agence"],
+        "emplacement" => $imprimante["emplacement"],
+        "prestataire" => $imprimante["prestataire"],
+        "marque" => $imprimante["marque"],
+        "modele" => $imprimante["modele"],
+        "ip_vpn" => $imprimante["ip_vpn"],
+        "ip_locale" => $imprimante["ip_locale"]
+    ];
+
+    $sql = "UPDATE imprimantes
+     SET num_serie = :num_serie, 
+            id_infrastructure_imprimante = :infrastructure, 
+            emplacement = :emplacement,
+            prestataire = :prestataire,
+            marque = :marque,
+            modele = :modele,
+            ip_vpn = :ip_vpn,
+            ip_locale = :ip_locale 
+            WHERE ID = :id";
+
+
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
+}
+
 function get_ca_tmi_n($code_agence)
 {
     $pdo = Connection::getPDO();
@@ -1313,7 +1347,8 @@ function get_payplan($filtre = '')
     return $result;
 }
 
-function get_vh_non_vendu_from_payplan($filtre=''){
+function get_vh_non_vendu_from_payplan($filtre = '')
+{
     $pdo = Connection::getPDO();
 
     if (isset($filtre) && $filtre !== '') {
@@ -1375,11 +1410,11 @@ function test2()
 function define_payplan($commission, $filtre)
 {
 
-      // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )
-      $datas_facturation = get_facturation($filtre);
-      foreach ($datas_facturation as $facturation) {
-          update_date_facturation_by_immat($facturation['immatriculation'],$facturation['date_facturation']);
-      }
+    // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )
+    $datas_facturation = get_facturation($filtre);
+    foreach ($datas_facturation as $facturation) {
+        update_date_facturation_by_immat($facturation['immatriculation'], $facturation['date_facturation']);
+    }
 
     // ensuite on update ce qui existe déja 
     $datas_payplan = get_payplan($filtre);
@@ -1393,7 +1428,7 @@ function define_payplan($commission, $filtre)
         update_repreneur_by_immat($vh_non_vendu['immatriculation']);
     }
 
-  
+
     // ensuite on ajoute dans le payplan les nouveaux éléments
     foreach ($commission as $vehicule_transaction) {
         $immatriculation = $vehicule_transaction['Immatriculation'];
@@ -2066,7 +2101,8 @@ function update_payplan()
     }
 }
 
-function update_date_facturation_by_immat($vh_immat,$date_facturation){
+function update_date_facturation_by_immat($vh_immat, $date_facturation)
+{
     $pdo = Connection::getPDO();
 
     $data = [
@@ -2081,10 +2117,9 @@ function update_date_facturation_by_immat($vh_immat,$date_facturation){
     SET payplan.date_facturation = :date_facturation
     WHERE vehicules_payplan.immatriculation = :immatriculation";
 
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
-
 }
 
 function update_payplan_by_immat($vh_immat)
@@ -2153,7 +2188,8 @@ function update_payplan_by_immat($vh_immat)
     $stmt->execute($data);
 }
 
-function update_repreneur_by_immat($vh_immat){
+function update_repreneur_by_immat($vh_immat)
+{
 
     $pdo = Connection::getPDO();
 
@@ -2172,7 +2208,6 @@ function update_repreneur_by_immat($vh_immat){
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
-
 }
 
 function get_id_vh_payplan_by_immat($immat)

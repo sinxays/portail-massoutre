@@ -58,6 +58,9 @@
             echo $_GET['id'];
             $imprimante = get_imprimante_by_ID($_GET['id']);
             var_dump($imprimante);
+
+            $array_prestataire = array("CONCEPTA", "AE");
+            $array_marques_imprimantes = array("KONICA MINOLTA", "KYOCERA");
         }
 
         ?>
@@ -65,6 +68,7 @@
         <div class="container_form_ajout">
 
             <form id="ajout_imprimante_form">
+                <input type="hidden"  id="id_imprimante"  name="id_imprimante" value="<?php echo $imprimante['ID']; ?>" >
                 <div class="div_form_ajout">
                     <input type="text" class="form-control" id="num_serie" placeholder="numéro de serie" name="num_serie" value="<?php echo $imprimante['num_serie']; ?>">
                 </div>
@@ -98,36 +102,59 @@
                 <div class="div_form_ajout">
                     <label for="prestataire">Prestataire</label>
                     <select class="form-select" id="prestataire" style="width: 150px;" name="prestataire">
-                        <option selected value="AE">AE</option>
-                        <option value="ASI">ASI</option>
-                        <option value="ESUS">ESUS</option>
+                        <?php
 
+                        if (!in_array($imprimante['prestataire'], $array_prestataire)) {
+                            echo  "<option value='" . $imprimante['prestataire'] . "'>" . $imprimante['prestataire'] . "</option>";
+                        }
+
+                        foreach ($array_prestataire as $prestataire) {
+                            if ($imprimante['prestataire'] == $prestataire) {
+                                echo  "<option selected ='selected' value='" . $prestataire . "'>" . $prestataire . "</option>";
+                            } else {
+                                echo  "<option value='" . $prestataire . "'>" . $prestataire . "</option>";
+                            }
+                        }
+                        ?>
                     </select>
                 </div>
 
                 <div class="div_form_ajout">
                     <label for="marque">Marque</label>
                     <select class="form-select" id="marque" style="width: 150px;" name="marque">
-                        <option selected value="KYOCERA">KYOCERA</option>
-                        <option value="KONICA MINOLTA">KONICA MINOLTA</option>
-                        <option value="HP">HP</option>
-                        <option value="autre">AUTRE</option>
+
+                        <?php
+
+                        if (!in_array($imprimante['marque'], $array_marques_imprimantes)) {
+                            echo  "<option value='" . $imprimante['marque'] . "'>" . $imprimante['marque'] . "</option>";
+                        }
+
+                        foreach ($array_marques_imprimantes as $marque_imprimante) {
+                            if ($imprimante['marque'] == $marque_imprimante) {
+                                echo  "<option selected ='selected' value='" . $marque_imprimante . "'>" . $marque_imprimante . "</option>";
+                            } else {
+                                echo  "<option value='" . $marque_imprimante . "'>" . $marque_imprimante . "</option>";
+                            }
+                        }
+                        ?>
+
+
                     </select>
                 </div>
 
                 <div class="div_form_ajout">
-                    <input type="text" class="form-control" id="modele" placeholder="Modèle" name="modele">
+                    <?php echo "<input type='text' class='form-control' id='modele' placeholder='" . $imprimante['modele'] . "' name='modele' value='" . $imprimante['modele'] . "'>" ?>
                 </div>
 
                 <div class="div_form_ajout">
-                    <input type="text" class="form-control" id="ip_vpn" placeholder="IP VPN" name="ip_vpn">
+                    <?php echo "<input type='text' class='form-control' id='ip_vpn' placeholder='" . $imprimante['ip_vpn'] . "' name='ip_vpn' value='" . $imprimante['ip_vpn'] . "'>" ?>
                 </div>
 
                 <div class="div_form_ajout">
-                    <input type="text" class="form-control" id="ip_locale" placeholder="IP Locale" name="ip_locale">
+                    <?php echo "<input type='text' class='form-control' id='ip_locale' placeholder='" . $imprimante['ip_locale'] . "' name='ip_locale' value='" . $imprimante['ip_locale'] . "'>" ?>
                 </div>
 
-                <button type="button" class="btn btn-success" id="btn_ajout_imprimante">Ajouter Imprimante</button>
+                <button type="button" class="btn btn-success" id="btn_modif_imprimante">Modifier Imprimante</button>
 
                 <div class="lds-ellipsis" id="loader_ajout_imprimante" style="display:none;">
                     <div></div>
@@ -140,30 +167,8 @@
             </br>
 
             <div class="alert alert-success" role="alert" id="alert_imprimante_ajoutee" style="display:none;">
-                Imprimante ajoutée
+                Imprimante mise à jour
             </div>
-
-            <form id="upload_csv_form" class="form-horizontal" method="post" name="upload_csv_form" enctype="multipart/form-data">
-                <!--<form id="upload_csv_form" class="form-horizontal" action="import_csv_stats_journalieres.php" method="post" name="upload_csv_form" enctype="multipart/form-data">-->
-                <fieldset style="margin-top: 20px;">
-                    <div class="form-group">
-                        <div class="col-md-4">
-                            <label class="col-md-4 control-label" for="csv_file">Importer csv imprimantes</label>
-                            <input type="file" name="csv_file" id="csv_file" class="input-large">
-                        </div>
-                        <div class="col-md-4" id="bloc_date_import_csv">
-                            <button style="margin-left: 20px;" type="submit" id="submit" name="Import" class="btn btn-primary button-loading" data-loading-text="Loading...">Import</button>
-                            <div class="lds-ellipsis" id="loader_import_csv_imprimantes">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <br />
-                </fieldset>
-            </form>
 
         </div>
 
