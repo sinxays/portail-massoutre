@@ -55,7 +55,7 @@
         <?php
 
         if (isset($_GET['id']) && $_GET['id'] !== '') {
-            echo $_GET['id'];
+            // echo $_GET['id'];
             $imprimante = get_imprimante_by_ID($_GET['id']);
             // var_dump($imprimante);
 
