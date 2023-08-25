@@ -57,7 +57,7 @@
         if (isset($_GET['id']) && $_GET['id'] !== '') {
             echo $_GET['id'];
             $imprimante = get_imprimante_by_ID($_GET['id']);
-            var_dump($imprimante);
+            // var_dump($imprimante);
 
             $array_prestataire = array("CONCEPTA", "AE");
             $array_marques_imprimantes = array("KONICA MINOLTA", "KYOCERA");
