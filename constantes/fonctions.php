@@ -1428,6 +1428,8 @@ function define_payplan($commission, $filtre)
         update_repreneur_by_immat($vh_non_vendu['immatriculation']);
     }
 
+    //update des pack first livraison
+
 
     // ensuite on ajoute dans le payplan les nouveaux éléments
     foreach ($commission as $vehicule_transaction) {

@@ -68,8 +68,9 @@
         <div class="container_form_ajout">
 
             <form id="ajout_imprimante_form">
-                <input type="hidden"  id="id_imprimante"  name="id_imprimante" value="<?php echo $imprimante['ID']; ?>" >
+                <input type="hidden" id="id_imprimante" name="id_imprimante" value="<?php echo $imprimante['ID']; ?>">
                 <div class="div_form_ajout">
+                    <label for="num_serie">Numéro de série</label>
                     <input type="text" class="form-control" id="num_serie" placeholder="numéro de serie" name="num_serie" value="<?php echo $imprimante['num_serie']; ?>">
                 </div>
 
