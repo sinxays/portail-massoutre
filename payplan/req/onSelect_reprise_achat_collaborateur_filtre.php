@@ -32,7 +32,7 @@ if (isset($_POST['date_perso'])) {
 }
 
 
-$collaborateurs = get_reprise_achat_collaborateurs($filtre);
+$collaborateurs = get_reprise_achat_pack_collaborateurs($filtre);
 $table_reprise_achat = create_table_payplan_reprise_achat($table_payplan_reprise_achat_header_row, $collaborateurs, true, $filtre);
 
 

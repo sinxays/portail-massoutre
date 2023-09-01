@@ -46,18 +46,13 @@
     include "right_menubar.php";
     include "include.php";
 
-    $filtre = '';
 
 
-    $test = get_commission_by_immat("cw011fq");
+    $test = update_pack_first("FZ653HT");
 
-    $commission = array($test);
-
-    var_dump($commission);
 
     
 
-    define_payplan($commission, $filtre);
 
 
 
@@ -76,7 +71,7 @@
 
 
 
-    // get_reprise_achat_collaborateurs();
+    // get_reprise_achat_pack_collaborateurs();
 
 
 

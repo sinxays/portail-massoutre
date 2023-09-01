@@ -42,7 +42,7 @@ $payplan_detail_achat_collaborateur_table_header_row = array("Immatriculation", 
 
 $collaborateurs_payplan_header_row = array("Collaborateur", "Reprise");
 
-$table_payplan_reprise_achat_header_row = array("Collaborateur", "Repreneur final", "Achat", "Achat MVC");
+$table_payplan_reprise_achat_header_row = array("Collaborateur", "Repreneur final", "Achat", "Achat MVC","PACK_FIRST");
 
 
 $imprimantes_table_header_row = array(

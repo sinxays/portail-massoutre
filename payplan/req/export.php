@@ -26,7 +26,7 @@ if (isset($_POST['tableau_selected']) && isset($_POST['date_selected'])) {
 
     switch ($tableau_selected) {
         case 'collaborateur':
-            $array_export = get_reprise_achat_collaborateurs($filtre);
+            $array_export = get_reprise_achat_pack_collaborateurs($filtre);
             $filename = "reprise_achat_$date";
             break;
         case 'payplan':

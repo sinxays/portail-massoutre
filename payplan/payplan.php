@@ -70,9 +70,9 @@
             </div>
             <div class="div_payplan_update2">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary" id="bouton_tableau_reprise_achat_collaborateur" value="collaborateurs">Tableau reprise/achat collaborateurs</button>
+                    <button type="button" class="btn btn-primary" id="bouton_tableau_reprise_achat_collaborateur" value="collaborateurs">Reprise/Achat/Pack collaborateurs</button>
                     <button type="button" class="btn btn-success" id="bouton_tableau_payplan" value="payplan">Payplan</button>
-                    <button type="button" class="btn btn-warning" id="bouton_tableau_commision" value="commission">Tableau Commission Total</button>
+                    <button type="button" class="btn btn-warning" id="bouton_tableau_commision" value="commission">Commission Total</button>
                 </div>
             </div>
             <!--<div class="div_payplan_update3">
