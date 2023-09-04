@@ -49,6 +49,8 @@
 
     $nb_final = 0;
 
+    $filtre = array('mois_precedent');
+
 
 
     // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )
