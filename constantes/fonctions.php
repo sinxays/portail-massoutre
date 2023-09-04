@@ -1311,24 +1311,24 @@ function update_pack_first($immatriculation)
 
     $infos_marges = $request->fetch(PDO::FETCH_ASSOC);
 
-    var_dump($infos_marges);
-
     if ($infos_marges['Marge_Pack'] && $infos_marges['Montant_Pack_Livraison']) {
 
+        return 1;
+
         //si il ya des valeurs alors on update le payplan pour ajouter le pack au vendeur en allant chercher l'immat
-        $pdo = Connection::getPDO();
+        // $pdo = Connection::getPDO();
 
-        $data = [
-            'immatriculation' =>  $infos_marges['Immatriculation']
-        ];
+        // $data = [
+        //     'immatriculation' =>  $infos_marges['Immatriculation']
+        // ];
 
-        $sql = "UPDATE payplan 
-        LEFT JOIN vehicules_payplan ON vehicules_payplan.ID = payplan.vehicule_id 
-        SET payplan.pack_first = 1
-        WHERE vehicules_payplan.immatriculation = :immatriculation";
+        // $sql = "UPDATE payplan 
+        // LEFT JOIN vehicules_payplan ON vehicules_payplan.ID = payplan.vehicule_id 
+        // SET payplan.pack_first = 1
+        // WHERE vehicules_payplan.immatriculation = :immatriculation";
 
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($data);
+        // $stmt = $pdo->prepare($sql);
+        // $stmt->execute($data);
     }
 }
 

@@ -47,16 +47,19 @@
     include "include.php";
 
 
-
-    $test = update_pack_first("FZ653HT");
-
-
-    
+    $nb_final = 0;
 
 
 
+    // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )
+    $datas_facturation = get_facturation($filtre);
+    foreach ($datas_facturation as $facturation) {
+        // update_date_facturation_by_immat($facturation['immatriculation'], $facturation['date_facturation']);
+        $nb_test = update_pack_first($facturation['immatriculation']);
+        $nb_final = $nb_test + $nb_final;
+    }
 
-
+    echo $nb_final;
 
 
 
