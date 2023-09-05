@@ -1313,7 +1313,7 @@ function update_pack_first($immatriculation)
 
     if ($infos_marges['Marge_Pack'] && $infos_marges['Montant_Pack_Livraison']) {
 
-         return $infos_marges['Immatriculation']." pack first";
+        return $infos_marges['Immatriculation'] . "<br/>";
 
         //si il ya des valeurs alors on update le payplan pour ajouter le pack au vendeur en allant chercher l'immat
         // $pdo = Connection::getPDO();
@@ -1329,9 +1329,6 @@ function update_pack_first($immatriculation)
 
         // $stmt = $pdo->prepare($sql);
         // $stmt->execute($data);
-    }
-    else{
-        return $infos_marges['Immatriculation']." NO pack first";
     }
 }
 

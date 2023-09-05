@@ -48,7 +48,10 @@
 
 
 
-    $filtre['mois_precedent'] = array();
+    // $filtre['mois_precedent'] = array();
+    $filtre['date_personnalisee']['debut'] = "2023-08-01";
+    $filtre['date_personnalisee']['fin'] = "2023-08-31";
+
 
 
     // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )
@@ -56,7 +59,7 @@
     foreach ($datas_facturation as $facturation) {
         update_date_facturation_by_immat($facturation['immatriculation'], $facturation['date_facturation']);
         $immatriculation = update_pack_first($facturation['immatriculation']);
-        echo $immatriculation . "<br/>";
+        echo $immatriculation;
     }
 
 
