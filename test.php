@@ -64,7 +64,7 @@
     }
     */
 
-    update_pack_first_by_immatriculation("EF480BV");
+    update_payplan_by_immat("GB317WB");
 
 
     // $test = get_pack_first_from_payplan($filtre);
