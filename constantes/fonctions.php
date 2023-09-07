@@ -1468,7 +1468,7 @@ function check_if_comptabilisation_pack_first($datas_vh)
                     //1 : Négoce
                 case 1:
                     switch (strtolower(trim($datas_vh['Parc_Achat']))) {
-                        case "MVC":
+                        case "mvc":
                             $pack_first = TRUE;
                             break;
 
