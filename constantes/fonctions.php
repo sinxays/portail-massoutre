@@ -2755,11 +2755,11 @@ function define_date_achat_by_type_achat($data_payplan)
             $date_achat = $data_payplan['Date_stock'];
             break;
         case 'occasion':
-            // if (isset($data_payplan['Date_Achat']) && (!is_null($data_payplan['Date_Achat']) || $data_payplan['Date_achat'] !== '')) {
+            if (isset($data_payplan['Date_Achat']) && (!is_null($data_payplan['Date_Achat']) || $data_payplan['Date_achat'] !== '')) {
             $date_achat = $data_payplan['Date_Achat'];
-            // } else {
-            //     $date_achat = $data_payplan['Date_stock'];
-            // }
+            } else {
+                $date_achat = $data_payplan['Date_stock'];
+            }
             break;
         case 'neuf':
             $date_achat = $data_payplan['Date_Achat'];
