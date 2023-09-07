@@ -64,15 +64,15 @@
     }
     */
 
-    update_pack_first_by_immatriculation("EE589QW");
+    // update_pack_first_by_immatriculation("EE589QW");
 
     
 
 
-    // $test = get_pack_first_from_payplan($filtre);
-    // foreach ($test as $test_) {
-    //     echo $test_['immatriculation'] . "<br/>";
-    // }
+    $test = get_pack_first_from_payplan($filtre);
+    foreach ($test as $test_) {
+        echo $test_['immatriculation'] . "<br/>";
+    }
 
 
 
