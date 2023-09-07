@@ -2876,7 +2876,7 @@ function get_commission_by_immat($immat)
     LEFT JOIN finitions ON vehicules.finition_id = finitions.id
     LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
     LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
-    WHERE vehicules.immatriculation = '$immat'");
+    WHERE vehicules.immatriculation = '$immat' AND vehicules.deleted = 0 ");
 
     // var_dump($where);
     // die();
