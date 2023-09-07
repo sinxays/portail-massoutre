@@ -64,7 +64,9 @@
     }
     */
 
-    update_payplan_by_immat("GB317WB");
+    // update_payplan_by_immat("GB317WB");
+
+    var_dump(get_commission_by_immat("GB317WB"));
 
 
     // $test = get_pack_first_from_payplan($filtre);
