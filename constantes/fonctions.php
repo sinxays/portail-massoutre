@@ -2298,7 +2298,10 @@ function alimenter_payplan($data_payplan)
         // var_dump($vehicule_id);
 
         // Insertion pack first
-        $pack_first = check_if_comptabilisation_pack_first($data_payplan);
+        // $pack_first = check_if_comptabilisation_pack_first($data_payplan);
+
+        //au début de la vie du vh il est pas vendu donc pas de pack first
+        $pack_first = 0;
 
         $data = [
             'vehicule_id' => $vehicule_id,
@@ -2315,7 +2318,7 @@ function alimenter_payplan($data_payplan)
             'valeur_com_vendeur' =>  $type_com_and_valeur_vendeur['valeur'],
             'date_facturation' =>  $data_payplan['Date_facturation'],
             'date_achat' => $date_achat,
-            'pack_first' => ($pack_first == TRUE) ? 1 : 0,
+            'pack_first' =>  $pack_first,
         ];
 
         $sql = "INSERT INTO payplan (vehicule_id, parc_achat, marge,acheteur_collaborateur_id,type_com_acheteur,valeur_com_acheteur, 
