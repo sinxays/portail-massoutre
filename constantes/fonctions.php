@@ -1330,7 +1330,7 @@ function update_pack_first_by_immatriculation($immatriculation)
 
     $infos_vh = $request->fetch(PDO::FETCH_ASSOC);
 
-    //si les deux valeurs ci dessous sont on nulles alors on va comptabiliser un pack first
+    // on va checker si on doit comptabiliser le pack first ou non.
     $pack_first = check_if_comptabilisation_pack_first($infos_vh);
 
     // var_dump($pack_first);
@@ -1474,7 +1474,7 @@ function check_if_comptabilisation_pack_first($datas_vh)
 
                         case "rachat cash":
                         case "reprise sur vente":
-                            if ($datas_vh['Nom_Acheteur'] !== $datas_vh['Vendeur'])
+                            if (strtolower(trim($datas_vh['Nom_Acheteur'])) !== strtolower(trim($datas_vh['Vendeur'])))
                                 $pack_first = TRUE;
                             break;
                             // si il n'y a rien dans parc achat
@@ -2756,7 +2756,7 @@ function define_date_achat_by_type_achat($data_payplan)
             break;
         case 'occasion':
             if (isset($data_payplan['Date_Achat']) && (!is_null($data_payplan['Date_Achat']) || $data_payplan['Date_achat'] !== '')) {
-            $date_achat = $data_payplan['Date_Achat'];
+                $date_achat = $data_payplan['Date_Achat'];
             } else {
                 $date_achat = $data_payplan['Date_stock'];
             }
