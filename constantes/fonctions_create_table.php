@@ -556,13 +556,14 @@ function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all
             $table_collaborateurs_payplan .= "</tr>";
         }
 
+        $collaborateur = 0;
         //afficher le total
         $table_collaborateurs_payplan .= "<tr>";
         $table_collaborateurs_payplan .= "<td class='td_label_total'> TOTAL </td>";
-        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> " . $nb_repreneur_total . "</a></td>";
-        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> " . $nb_achat_total . "</a></td>";
-        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> " . $nb_achat_mvc_total . "</a></td>";
-        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> " . $nb_pack_first_total . "</a></td>";
+        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $collaborateur . "&type=reprise" . $filtre . "'>" . $nb_repreneur_total . "</a></td>";
+        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $collaborateur . "&type=achat" . $filtre . "'>" . $nb_achat_total . "</a></td>";
+        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $collaborateur . "&type=achat_mvc" . $filtre . "'>" . $nb_achat_mvc_total . "</a></td>";
+        $table_collaborateurs_payplan .= "<td class='td_total_payplan'> <a href='/payplan/payplan_detail_collaborateur.php?id_detail_collaborateur_payplan_reprise_achat=" . $collaborateur . "&type=pack_first" . $filtre . "'>" . $nb_pack_first_total . "</a></td>";
         $table_collaborateurs_payplan .= "</tr>";
     }
     //si on affiche que un seul collaborateur

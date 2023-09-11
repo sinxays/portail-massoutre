@@ -2082,10 +2082,20 @@ function get_payplan_detail_reprise_collaborateur($collaborateur_id, $filtre = '
     $filtre_final = (isset($filtre_date) && $filtre_date !== '') ? $filtre_date : $filtre_initial;
 
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan 
-     LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
-     WHERE payplan.repreneur_final_collaborateur_id = $collaborateur_id $filtre_final");
-    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    if ($collaborateur_id !== 0) {
+        $request = $pdo->query("SELECT * FROM payplan 
+        LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
+        WHERE payplan.repreneur_final_collaborateur_id = $collaborateur_id $filtre_final");
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //si on selectionne le total de tous les collaborateurs
+    else {
+        $request = $pdo->query("SELECT * FROM payplan 
+        LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
+        WHERE payplan.repreneur_final_collaborateur_id != $collaborateur_id $filtre_final");
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     return $result;
 }
 
@@ -2118,10 +2128,18 @@ function get_payplan_detail_achat_collaborateur($collaborateur_id, $filtre = '')
 
     $filtre_final = (isset($filtre_date) && $filtre_date !== '') ? $filtre_date : $filtre_initial;
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan 
+    if ($collaborateur_id !== 0) {
+
+        $request = $pdo->query("SELECT * FROM payplan 
      LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
      WHERE payplan.acheteur_collaborateur_id = $collaborateur_id $filtre_final");
-    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $request = $pdo->query("SELECT * FROM payplan 
+        LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
+        WHERE payplan.acheteur_collaborateur_id != $collaborateur_id $filtre_final");
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    }
     return $result;
 }
 
@@ -2153,11 +2171,19 @@ function get_payplan_detail_achat_mvc_collaborateur($collaborateur_id, $filtre =
     }
 
     $filtre_final = (isset($filtre_date) && $filtre_date !== '') ? $filtre_date : $filtre_initial;
+
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan 
+    if ($collaborateur_id !== 0) {
+        $request = $pdo->query("SELECT * FROM payplan 
      LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
      WHERE payplan.acheteur_collaborateur_id = $collaborateur_id AND parc_achat = 'MVC' $filtre_final");
-    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $request = $pdo->query("SELECT * FROM payplan 
+     LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
+     WHERE payplan.acheteur_collaborateur_id != $collaborateur_id AND parc_achat = 'MVC' $filtre_final");
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    }
     return $result;
 }
 
@@ -2190,10 +2216,17 @@ function get_payplan_detail_pack_first_collaborateur($collaborateur_id, $filtre 
 
     $filtre_final = (isset($filtre_date) && $filtre_date !== '') ? $filtre_date : $filtre_initial;
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan 
+    if ($collaborateur_id !== 0) {
+        $request = $pdo->query("SELECT * FROM payplan 
      LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
      WHERE payplan.vendeur_collaborateur_id = $collaborateur_id AND pack_first = 1 $filtre_final");
-    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $request = $pdo->query("SELECT * FROM payplan 
+        LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
+        WHERE payplan.vendeur_collaborateur_id != $collaborateur_id AND pack_first = 1 $filtre_final");
+        $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    }
     return $result;
 }
 
