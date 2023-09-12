@@ -2181,7 +2181,7 @@ function get_payplan_detail_achat_collaborateur($collaborateur_id, $filtre = '')
 
     $filtre_final = (isset($filtre_date) && $filtre_date !== '') ? $filtre_date : $filtre_initial;
     $pdo = Connection::getPDO();
-    
+
     if ($collaborateur_id !== 0) {
         $request = $pdo->query("SELECT * FROM payplan 
      LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
@@ -2190,7 +2190,7 @@ function get_payplan_detail_achat_collaborateur($collaborateur_id, $filtre = '')
     } else {
         $request = $pdo->query("SELECT * FROM payplan 
         LEFT JOIN vehicules_payplan on vehicules_payplan.ID = payplan.vehicule_id
-        WHERE payplan.acheteur_collaborateur_id != $collaborateur_id $filtre_final payplan.type_achat = 1");
+        WHERE payplan.acheteur_collaborateur_id != $collaborateur_id $filtre_final AND payplan.type_achat = 1");
         $result = $request->fetchAll(PDO::FETCH_ASSOC);
     }
     return $result;
