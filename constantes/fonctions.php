@@ -1660,17 +1660,17 @@ function define_payplan($commission, $filtre)
 {
 
     // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )
-    // $datas_facturation = get_facturation($filtre);
-    // foreach ($datas_facturation as $facturation) {
-    //     update_date_facturation_by_immat($facturation['immatriculation'], $facturation['date_facturation']);
-    //     update_pack_first_by_immatriculation($facturation['immatriculation']);
-    // }
+    $datas_facturation = get_facturation($filtre);
+    foreach ($datas_facturation as $facturation) {
+        update_date_facturation_by_immat($facturation['immatriculation'], $facturation['date_facturation']);
+        update_pack_first_by_immatriculation($facturation['immatriculation']);
+    }
 
     // ensuite on update ce qui existe déja 
-    // $datas_payplan_facturation = get_payplan_date_facturation($filtre);
-    // foreach ($datas_payplan_facturation as $vie_vh) {
-    //     update_payplan_by_immat($vie_vh['immatriculation']);
-    // }
+    $datas_payplan_facturation = get_payplan_date_facturation($filtre);
+    foreach ($datas_payplan_facturation as $vie_vh) {
+        update_payplan_by_immat($vie_vh['immatriculation']);
+    }
 
     $datas_payplan_achat = get_payplan_date_stock($filtre);
     foreach ($datas_payplan_achat as $vie_vh) {
@@ -1678,10 +1678,10 @@ function define_payplan($commission, $filtre)
     }
 
     //on update les repreneurs finaux ou les vh ne sont pas encore vendus
-    // $datas_vh_non_vendus = get_vh_non_vendu_from_payplan($filtre);
-    // foreach ($datas_vh_non_vendus as $vh_non_vendu) {
-    //     update_repreneur_by_immat($vh_non_vendu['immatriculation']);
-    // }
+    $datas_vh_non_vendus = get_vh_non_vendu_from_payplan($filtre);
+    foreach ($datas_vh_non_vendus as $vh_non_vendu) {
+        update_repreneur_by_immat($vh_non_vendu['immatriculation']);
+    }
 
     //update des pack first livraison
 
