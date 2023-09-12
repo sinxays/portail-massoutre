@@ -1543,7 +1543,7 @@ function get_payplan_date_facturation($filtre = '')
 
     $request = $pdo->query("SELECT * FROM payplan 
     LEFT JOIN vehicules_payplan as vp ON payplan.vehicule_id = vp.ID 
-    WHERE $where");
+    WHERE $where AND payplan.type_achat = 1");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
