@@ -2473,6 +2473,9 @@ function update_payplan_by_immat($vh_immat)
     $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $parc_achat, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
     $date_achat = define_date_achat_by_type_achat($datas_commission);
 
+    $type_achat = get_type_achat($datas_commission['Type_Achat']);   
+    $destination = get_destination($datas_commission['Destination']);
+
 
 
     $data = [
@@ -2488,7 +2491,9 @@ function update_payplan_by_immat($vh_immat)
         'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
         'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
         'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
-        'date_achat' => $date_achat
+        'date_achat' => $date_achat,
+        'type_achat' => $type_achat,
+        'destination' => $destination
 
     ];
 
@@ -2507,7 +2512,9 @@ function update_payplan_by_immat($vh_immat)
         vendeur_collaborateur_id = :vendeur_collaborateur_id,
         type_com_vendeur = :type_com_vendeur,
         valeur_com_vendeur = :valeur_com_vendeur,
-        date_achat = :date_achat
+        date_achat = :date_achat,
+        type_achat = :type_achat,
+        destination = :destination 
         WHERE ID = :id";
 
     $stmt = $pdo->prepare($sql);
@@ -2848,6 +2855,36 @@ function get_id_payplan_by_immat($immat)
     LEFT JOIN vehicules_payplan as vp ON payplan.vehicule_id = vp.ID
      WHERE vp.immatriculation = '$immat' ");
     $result = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($result);
+}
+
+
+function get_type_achat($libelle_type_achat)
+{
+    $libelle_type_achat = strtolower(trim($libelle_type_achat));
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT ID 
+    FROM type_achat
+     WHERE libelle = '$libelle_type_achat' ");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($result);
+}
+
+
+function get_destination($libelle_destination)
+{
+    $libelle_destination_tmp = trim($libelle_destination);
+
+    $libelle_destination_tmp = lcfirst($libelle_destination_tmp);
+
+    $libelle_destination = str_replace("é","e",$libelle_destination_tmp);
+
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT ID
+    FROM destination 
+    WHERE libelle = '$libelle_destination' ");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+
     return intval($result);
 }
 

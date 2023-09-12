@@ -64,7 +64,9 @@
     }
     */
 
-    update_pack_first_by_immatriculation("EK388YN");
+    // update_pack_first_by_immatriculation("EK388YN");
+
+    // update_payplan_by_immat('FG176FQ');
 
     
 
