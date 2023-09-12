@@ -30,7 +30,7 @@ if (isset($_POST['tableau_selected']) && isset($_POST['date_selected'])) {
             $filename = "reprise_achat_$date";
             break;
         case 'payplan':
-            $array_export = get_payplan($filtre);
+            $array_export = get_payplan_date_facturation($filtre);
             $filename = "payplan_$date";
             break;
         case 'commission':
