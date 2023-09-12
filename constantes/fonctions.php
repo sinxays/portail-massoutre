@@ -1785,7 +1785,7 @@ function get_achat_by_collaborateur($id_collaborateur, $filtre = '')
     }
 
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE acheteur_collaborateur_id = $id_collaborateur $where_date");
+    $request = $pdo->query("SELECT COUNT(*) FROM payplan WHERE acheteur_collaborateur_id = $id_collaborateur $where_date AND type_achat = 1");
     $result = $request->fetchColumn();
     return $result;
 }
