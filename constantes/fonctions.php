@@ -1546,8 +1546,6 @@ function get_payplan_date_facturation($filtre = '')
     WHERE $where AND payplan.type_achat = 1");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
 
-    var_dump($request);
-    die();
     return $result;
 }
 
