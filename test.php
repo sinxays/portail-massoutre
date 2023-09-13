@@ -46,11 +46,13 @@
     include "right_menubar.php";
     include "include.php";
 
+    ini_set('max_execution_time', 0);
 
 
 
-    $filtre['mois_precedent'] = array();
-    $filtre['date_personnalisee']['debut'] = "2023-08-01";
+
+    // $filtre['mois_precedent'] = array();
+    $filtre['date_personnalisee']['debut'] = "2016-01-01";
     $filtre['date_personnalisee']['fin'] = "2023-08-31";
 
 
@@ -64,9 +66,10 @@
     }
     */
 
-    update_pack_first_by_immatriculation("EK388YN");
-
-    update_payplan_by_immat('FG176FQ');
+    $datas_payplan_achat = get_payplan_date_stock($filtre);
+    foreach ($datas_payplan_achat as $vie_vh) {
+        update_type_achat_by_immat($vie_vh['immatriculation']);
+    }
 
     
 

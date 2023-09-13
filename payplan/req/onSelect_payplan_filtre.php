@@ -22,7 +22,6 @@ if (isset($_POST['date_perso'])) {
     $filtre['date_personnalisee'] = $_POST['date_perso'];
 }
 
-
 $payplan = get_payplan_date_facturation($filtre);
 // var_dump($payplan);
 $table = create_table_payplan($payplan, $payplan_table_header_row);

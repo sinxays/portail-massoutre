@@ -1545,6 +1545,9 @@ function get_payplan_date_facturation($filtre = '')
     LEFT JOIN vehicules_payplan as vp ON payplan.vehicule_id = vp.ID 
     WHERE $where AND payplan.type_achat = 1");
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    var_dump($request);
+    die();
     return $result;
 }
 
@@ -2526,7 +2529,7 @@ function update_payplan_by_immat($vh_immat)
     $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $parc_achat, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
     $date_achat = define_date_achat_by_type_achat($datas_commission);
 
-    $type_achat = get_type_achat($datas_commission['Type_Achat']);   
+    $type_achat = get_type_achat($datas_commission['Type_Achat']);
     $destination = get_destination($datas_commission['Destination']);
 
 
@@ -2572,6 +2575,41 @@ function update_payplan_by_immat($vh_immat)
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
+}
+
+function update_type_achat_by_immat($vh_immat)
+{
+
+    $pdo = Connection::getPDO();
+
+
+    $datas_commission = get_commission_by_immat($vh_immat);
+
+    if ($datas_commission) {
+
+        $id = get_id_payplan_by_immat($vh_immat);
+        $type_achat = get_type_achat($datas_commission['Type_Achat']);
+        $destination = get_destination($datas_commission['Destination']);
+
+
+
+        $data = [
+            'id' =>  $id,
+            'type_achat' => $type_achat,
+            'destination' => $destination
+
+        ];
+
+        // var_dump($data);
+
+        $sql = "UPDATE payplan SET 
+        type_achat = :type_achat,
+        destination = :destination 
+        WHERE ID = :id";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+    }
 }
 
 function update_repreneur_by_immat($vh_immat)
@@ -2930,7 +2968,7 @@ function get_destination($libelle_destination)
 
     $libelle_destination_tmp = lcfirst($libelle_destination_tmp);
 
-    $libelle_destination = str_replace("é","e",$libelle_destination_tmp);
+    $libelle_destination = str_replace("é", "e", $libelle_destination_tmp);
 
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT ID
