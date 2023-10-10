@@ -1690,8 +1690,7 @@ function define_payplan($commission, $filtre)
     // ensuite on ajoute dans le payplan les nouveaux éléments
     foreach ($commission as $vehicule_transaction) {
         $immatriculation = $vehicule_transaction['Immatriculation'];
-        /*** alimenter seulement si on rentre dans une reprise ***/
-        if ($vehicule_transaction['Type_Achat'] == 'Reprise') {
+        // if ($vehicule_transaction['Type_Achat'] == 'Reprise') {
 
             /****** Avant d'alimenter la table on vérifie si l'immat n'est pas déja dans payplan */
             $result = check_if_immatriculation_exist($immatriculation);
@@ -1705,7 +1704,7 @@ function define_payplan($commission, $filtre)
                 /**** on alimente la table payplan *****/
                 alimenter_payplan($vehicule_transaction);
             }
-        }
+        // }
     }
 }
 
@@ -2374,6 +2373,8 @@ function alimenter_payplan($data_payplan)
         $type_com_and_valeur_repreneur_final = define_type_com_and_valeur_repreneur_final($marge, $parc_achat);
         $type_com_and_valeur_vendeur = define_type_com_and_valeur_vendeur($marge, $parc_achat, $acheteur_id_collaborateur, $vendeur_id_collaborateur);
         $date_achat = define_date_achat_by_type_achat($data_payplan);
+        $type_achat = get_type_achat($data_payplan['Type_Achat']);
+        $destination = get_destination($data_payplan['Destination']);
 
         // var_dump($marge);
         // var_dump($acheteur_id_collaborateur);
@@ -2406,12 +2407,14 @@ function alimenter_payplan($data_payplan)
             'date_facturation' =>  $data_payplan['Date_facturation'],
             'date_achat' => $date_achat,
             'pack_first' =>  $pack_first,
+            'type_achat' =>  $type_achat,
+            'destination' =>  $destination
         ];
 
         $sql = "INSERT INTO payplan (vehicule_id, parc_achat, marge,acheteur_collaborateur_id,type_com_acheteur,valeur_com_acheteur, 
-                    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation,date_achat,pack_first) 
+                    repreneur_final_collaborateur_id,type_com_repreneur_final,valeur_com_repreneur_final,vendeur_collaborateur_id,type_com_vendeur,valeur_com_vendeur,date_facturation,date_achat,pack_first,type_achat,destination) 
                     VALUES (:vehicule_id, :parc_achat, :marge, :acheteur_collaborateur_id, :type_com_acheteur, :valeur_com_acheteur, 
-                    :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation, :date_achat, :pack_first)";
+                    :repreneur_final_collaborateur_id, :type_com_repreneur_final, :valeur_com_repreneur_final, :vendeur_collaborateur_id, :type_com_vendeur, :valeur_com_vendeur, :date_facturation, :date_achat, :pack_first,:type_achat,:destination)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
     } else {
