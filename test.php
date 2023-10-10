@@ -66,10 +66,15 @@
     }
     */
 
-    $datas_payplan_achat = get_payplan_date_stock($filtre);
-    foreach ($datas_payplan_achat as $vie_vh) {
-        update_type_achat_by_immat($vie_vh['immatriculation']);
-    }
+    // $datas_payplan_achat = get_payplan_date_stock($filtre);
+    // foreach ($datas_payplan_achat as $vie_vh) {
+    //     update_type_achat_by_immat($vie_vh['immatriculation']);
+    // }
+
+    //update payplan pay un immat
+    $vh_immat = 'GA689LP';
+    update_payplan_by_immat($vh_immat);
+    
 
     
 
