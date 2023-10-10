@@ -72,7 +72,7 @@
     // }
 
     //update payplan pay un immat
-    $vh_immat = 'GA689LP';
+    $vh_immat = 'EX719MK';
     update_payplan_by_immat($vh_immat);
     
 
