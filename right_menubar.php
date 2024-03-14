@@ -47,7 +47,8 @@
                                 <a href="/Informatique/imprimantes.php" class="nav__dropdown-item">Imprimantes</a>
                                 <a href="/Informatique/reseau.php" class="nav__dropdown-item">Réseau</a>
                                 <a href="#" class="nav__dropdown-item">Inventaire</a>
-                                <a href="/Informatique/interessement_test.php" class="nav__dropdown-item">interessement_test</a>
+                                <a href="/Informatique/interessement_test.php"
+                                    class="nav__dropdown-item">interessement_test</a>
                             </div>
                         </div>
                     </div>
@@ -62,8 +63,10 @@
 
                         <div class="nav__dropdown-collapse">
                             <div class="nav__dropdown-content">
-                                <a href="/pages_stats/Locations.php" class="nav__dropdown-item" id="bouton_stats_loc">Stats</a>
-                                <a href="/pages_stats/Departs.php" class="nav__dropdown-item" id="bouton_departs_loc">Départs</a>
+                                <a href="/pages_stats/Locations.php" class="nav__dropdown-item"
+                                    id="bouton_stats_loc">Stats</a>
+                                <a href="/pages_stats/suivi_bdc.php" class="nav__dropdown-item"
+                                    id="bouton_departs_loc">Suivi BDC</a>
                                 <a href="#" class="nav__dropdown-item">Les Grandes Occasions</a>
                                 <a href="#" class="nav__dropdown-item">RUPL</a>
                                 <a href="#" class="nav__dropdown-item">VD2L</a>
@@ -83,17 +86,14 @@
 
                     <div class="nav__dropdown">
                         <a href="#" class="nav__link" id="bouton_planning">
-                            <i class='bx bxs-calendar'></i>
-                            <span class="nav__name">Planning</span>
+                            <i class='bx bxs-car'></i>
+                            <span class="nav__name">Lease & GO</span>
                             <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
                         </a>
                         <div class="nav__dropdown-collapse">
                             <div class="nav__dropdown-content">
-                                <a href="#" class="nav__dropdown-item">Frigo</a>
-                                <a href="#" class="nav__dropdown-item">15m3</a>
-                                <a href="#" class="nav__dropdown-item">PL</a>
-                                <a href="#" class="nav__dropdown-item">Minibus</a>
-                                <a href="#" class="nav__dropdown-item">K et O</a>
+                                <a href="#" class="nav__dropdown-item">Cout par VH</a>
+                                <a href="#" class="nav__dropdown-item">Marges par VH</a>
                             </div>
                         </div>
                     </div>
@@ -113,7 +113,8 @@
                     </a>
                     <div class="nav__dropdown-collapse">
                         <div class="nav__dropdown-content">
-                            <a href="/Infos/agences.php" class="nav__dropdown-item" id="menu_infos_agence">Agences Locations</a>
+                            <a href="/Infos/agences.php" class="nav__dropdown-item" id="menu_infos_agence">Agences
+                                Locations</a>
                             <a href="/Infos/cvo.php" class="nav__dropdown-item" id="menu_infos_cvo">CVO</a>
                         </div>
                     </div>

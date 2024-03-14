@@ -77,7 +77,7 @@ function create_table_stats_loc_date($header, $requete, $date)
     $requete_array = explode(" ", $requete);
     //la date sera toujours au 18
     $requete_array[26] = "'" . $date . "'";
-    $requete  = implode(" ", $requete_array);
+    $requete = implode(" ", $requete_array);
 
     $pdo = Connection::getPDO();
     $request = $pdo->query("$requete");
@@ -397,7 +397,7 @@ function create_table_commission($header, $array)
             $table_payplan .= "<td></td>";
         }
         $table_payplan .= "<td>" . $type_de_com . " </td>";
-        $table_payplan .= "<td>" . $frais_financier  . " </td>";
+        $table_payplan .= "<td>" . $frais_financier . " </td>";
         $table_payplan .= "<td>" . $marge . " </td>";
         $table_payplan .= "<td>" . $commission . " </td>";
         $table_payplan .= "<td>" . $taux_com_reprise . " </td>";
@@ -541,7 +541,7 @@ function create_table_payplan_reprise_achat($header, $array_collaborateurs, $all
     if (isset($all) && $all == true) {
         foreach ($array_collaborateurs as $collaborateur) {
 
-            $nb_repreneur_total =  $nb_repreneur_total + $collaborateur['nb_reprise'];
+            $nb_repreneur_total = $nb_repreneur_total + $collaborateur['nb_reprise'];
             $nb_achat_total = $nb_achat_total + $collaborateur['nb_achat'];
             $nb_achat_mvc_total = $nb_achat_mvc_total + $collaborateur['nb_achat_mvc'];
             $nb_pack_first_total = $nb_pack_first_total + $collaborateur['nb_pack_first'];
@@ -644,5 +644,125 @@ function create_header_row($header)
         $return .= "<th class='th1'> $title_header </th>";
     }
     $return .= "</tr>";
+    return $return;
+}
+
+
+
+function create_table_suivi_bdc($header, $type_provenance, $destination_vente)
+{
+
+
+    $cvos = get_cvo_actif();
+
+
+    $table_suivi_bdc = "";
+
+    switch ($type_provenance) {
+
+        /******** TABLEAUX PROVENANCE LOCATIONS **************/
+        case 1:
+
+            $table_suivi_bdc .= "<table class='my_tab_perso'>";
+
+            //header
+            $table_suivi_bdc .= create_header_row($header);
+            //fin header
+
+            //contenu
+            foreach ($cvos as $cvo) {
+
+                //données
+                $nbre_bdc_mois_en_cours = get_nbre_bdc_by_site_by_destination_vente($cvo['ID'], $destination_vente,$type_provenance);
+
+
+                //remplissage tableau
+                $table_suivi_bdc .= "<tr>";
+                $table_suivi_bdc .= "<td class='td_n'> " . $cvo['nom_cvo'] . " </td>";
+                $table_suivi_bdc .= "<td class='td_n'>" . $nbre_bdc_mois_en_cours . " </td>";
+                //si tableau destination particulier
+                if($destination_vente == 1){
+                    $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                }
+                //si destination marchands
+                else{
+                    $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                }
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+
+                $table_suivi_bdc .= "</tr>";
+            }
+
+            //fin contenu
+
+            $table_suivi_bdc .= "</table> ";
+
+            break;
+
+        /******** TABLEAUX PROVENANCE NEGOCE **************/
+        case 2:
+
+            $table_suivi_bdc .= "<table class='my_tab_perso'>";
+
+            //header
+            $table_suivi_bdc .= create_header_row($header);
+            //fin header
+
+
+            //contenu
+            foreach ($cvos as $cvo) {
+
+
+                //données 
+                $nbre_bdc_mois_en_cours = get_nbre_bdc_by_site_by_destination_vente($cvo['ID'], $destination_vente,$type_provenance);
+
+
+                //remplissage tableau
+                $table_suivi_bdc .= "<tr>";
+                $table_suivi_bdc .= "<td class='td_n'> " . $cvo['nom_cvo'] . " </td>";
+                $table_suivi_bdc .= "<td class='td_n'>" . $nbre_bdc_mois_en_cours . " </td>";
+                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "</tr>";
+            }
+
+            //fin contenu
+
+            $table_suivi_bdc .= "</table> ";
+
+            break;
+    }
+
+
+
+
+
+
+    $return = $table_suivi_bdc;
+
+    // var_dump($return);
+
     return $return;
 }

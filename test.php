@@ -10,8 +10,11 @@
 
     <!--========== CSS ==========-->
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../assets/css/styles.css">
 
 
@@ -46,6 +49,7 @@
     include "right_menubar.php";
     include "include.php";
 
+
     ini_set('max_execution_time', 0);
 
 
@@ -70,25 +74,28 @@
     // foreach ($datas_payplan_achat as $vie_vh) {
     //     update_type_achat_by_immat($vie_vh['immatriculation']);
     // }
-
-    //update payplan pay un immat
-    $vh_immat = 'FC932KR';
-    update_payplan_by_immat($vh_immat);
-
+    
+    //update payplan par un immat
+    // $vh_immat = 'EB335TN';
+    // update_payplan_by_immat($vh_immat);
     
 
-    
+
+
+
+
+    $test = "FAYCAL BENHAMMOU";
+    $nom_vendeur_tmp = explode("<", $test);
+    $nom_vendeur = $nom_vendeur_tmp[0];
+
+    echo $nom_vendeur;
 
 
     // $test = get_pack_first_from_payplan($filtre);
     // foreach ($test as $test_) {
     //     echo $test_['immatriculation'] . "<br/>";
     // }
-
-
-
-
-
+    
 
 
 
@@ -100,7 +107,7 @@
 
 
     // get_reprise_achat_pack_collaborateurs();
-
+    
 
 
 
