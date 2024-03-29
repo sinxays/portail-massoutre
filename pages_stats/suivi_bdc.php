@@ -101,11 +101,21 @@
 
         <br />
 
+
+            <div id="div_recup_date_bdc">
         <label for="date_recup_bdc">Date BDC à récupérer</label>
         <input type="date" id="date_recup_bdc" style="border-radius: 5px;" placeholder="Date BDC à récupérer" />
 
         <button disabled type="button" class="btn btn-success" style="text-align: center;margin-left: 10px;"
-            id="btn_alimenter_suivi_ventes" ><span>Alimenter Suivi ventes</span> </button>
+            id="btn_alimenter_suivi_ventes_bdc"><span>Recup BDC</span> </button>
+
+
+
+        <label for="date_recup_factures">Date Factures à récupérer</label>
+        <input type="date" id="date_recup_factures" style="border-radius: 5px;" placeholder="Date factures à récupérer" />
+
+        <button disabled type="button" class="btn btn-success" style="text-align: center;margin-left: 10px;"
+            id="btn_alimenter_suivi_ventes_factures"><span>Recup Factures</span> </button>
 
 
         <?php

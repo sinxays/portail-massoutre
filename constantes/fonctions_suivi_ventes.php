@@ -3,7 +3,7 @@
 
 use app\Connection;
 
-function alimenter_suivi_ventes($date_bdc_selected)
+function alimenter_suivi_ventes_bdc($date_bdc_selected)
 {
 
 
@@ -15,20 +15,13 @@ function alimenter_suivi_ventes($date_bdc_selected)
 
 
     set_time_limit(0);
-
-    // recup valeur token seulement
-    $url_token = "https://www.kepler-soft.net/api/v3.0/auth-token/";
-    //$valeur_token_first = $valeur_token;
-
     // recup données
 
     $request_bon_de_commande = "v3.1/order-form/";
-    $request_vehicule = "v3.7/vehicles/";
 
     $url = "https://www.kepler-soft.net/api/";
 
     $req_url_BC = $url . "" . $request_bon_de_commande;
-    $req_url_vehicule = $url . "" . $request_vehicule;
 
 
     $j = 1;
@@ -61,13 +54,13 @@ function alimenter_suivi_ventes($date_bdc_selected)
             $datas_find = false;
         }
         //recupere la requete !!!!
-        $valeur_token = goCurlToken($url_token);
-        $obj = GoCurl_Recup_BDC($valeur_token, $req_url_BC, $j, $num_BDC, $date_bdc);
+        $valeur_token = goCurlToken();
+        $obj = GoCurl_Recup_BDC($valeur_token, $j, $num_BDC, $date_bdc);
 
         //a ce niveau obj est un object
 
         //on prends le tableau datas dans obj et ce qui nous fait un array sur obj_final
-        if (!empty($obj)) {
+        if (!empty ($obj)) {
             $obj_final = $obj->datas;
         } else {
             $obj_final = '';
@@ -78,7 +71,7 @@ function alimenter_suivi_ventes($date_bdc_selected)
 
         $infos_bdc = array();
 
-        if (!empty($obj_final)) {
+        if (!empty ($obj_final)) {
 
 
             /*****************    BOUCLE du tableau de données récupérés *****************/
@@ -88,7 +81,7 @@ function alimenter_suivi_ventes($date_bdc_selected)
             foreach ($obj_final as $keydatas => $keyvalue) {
 
                 // on récupere le state du bon de commande 
-                if (isset($keyvalue->state)) {
+                if (isset ($keyvalue->state)) {
                     $state_bdc = html_entity_decode($keyvalue->state);
 
                     $infos_bdc['uuid'] = $keyvalue->uuid;
@@ -112,9 +105,9 @@ function alimenter_suivi_ventes($date_bdc_selected)
                     echo "bon de commande numéro :" . $infos_bdc['bdc'];
 
                     //get nom acheteur
-                    if (isset($keyvalue->owner->firstname)) {
+                    if (isset ($keyvalue->owner->firstname)) {
                         $nom_acheteur_tmp = $keyvalue->owner->firstname . " " . $keyvalue->owner->lastname;
-                    } else if (isset($keyvalue->customer->firstname)) {
+                    } else if (isset ($keyvalue->customer->firstname)) {
                         $nom_acheteur_tmp = $keyvalue->customer->firstname . " " . $keyvalue->customer->lastname;
                     } else {
                         $nom_acheteur_tmp = $keyvalue->customer->corporateName;
@@ -140,7 +133,7 @@ function alimenter_suivi_ventes($date_bdc_selected)
 
 
                     //get destination sortie
-                    if (empty($keyvalue->destination)) {
+                    if (empty ($keyvalue->destination)) {
                         $destination_sortie = '';
                     } else {
                         $destination_sortie = $keyvalue->destination;
@@ -159,7 +152,7 @@ function alimenter_suivi_ventes($date_bdc_selected)
                         // echo "<span style='color:red'>" . $erreur_vehicule_sorti . "</span>";
 
                         //Si il y a des items
-                        if (isset($keyvalue->items)) {
+                        if (isset ($keyvalue->items)) {
 
                             //ON BOUCLE DANS LES ITEMS
                             foreach ($keyvalue->items as $key_item => $value_item) {
@@ -169,12 +162,17 @@ function alimenter_suivi_ventes($date_bdc_selected)
                                     $reference_item = $value_item->reference;
 
                                     //  recup infos du véhicule
-                                    $valeur_token = goCurlToken($url_token);
+                                    $valeur_token = goCurlToken();
                                     $state_vh = '';
                                     //on prend le vehicule qu'il soit sorti ou non
-                                    $obj_vehicule = getvehiculeInfo($reference_item, $valeur_token, $req_url_vehicule, $state_vh);
+                                    $obj_vehicule = getvehiculeInfo($reference_item, $valeur_token, $state_vh, FALSE);
 
-                                    $type = gettype($obj_vehicule);
+                                    if (empty ($obj_vehicule)) {
+                                        $result = getvehiculeInfo($reference_item, $valeur_token, $state_vh, TRUE);
+                                        $obj_vehicule = json_decode($result);
+                                    }
+
+                                    $type = gettype($obj);
 
                                     sautdeligne();
 
@@ -185,7 +183,7 @@ function alimenter_suivi_ventes($date_bdc_selected)
                                     if ($type == 'object') {
 
                                         // si le résultat n'est pas vide
-                                        if (!empty($obj_vehicule)) {
+                                        if (!empty ($obj_vehicule)) {
 
                                             //on recupère les infos du vehicule
                                             $infos_vh = get_infos_vehicule_for_suivi_ventes($obj_vehicule);
@@ -227,7 +225,7 @@ function alimenter_suivi_ventes($date_bdc_selected)
                                     $array_datas[$i]['dateBC'] = $date_BC;
                                     $array_datas[$i]['Destination_sortie'] = $destination_sortie;
                                     $array_datas[$i]['VIN'] = $infos_vh['vin'];
-
+                                    $array_datas[$i]['reference_kepler'] = $infos_vh['reference_kepler'];
                                     $array_datas[$i]['provenance_vh'] = $infos_vh['provenance'];
                                     $array_datas[$i]['marque'] = $infos_vh['marque'];
                                     $array_datas[$i]['modele'] = $infos_vh['modele'];
@@ -250,7 +248,7 @@ function alimenter_suivi_ventes($date_bdc_selected)
                         $erreur_vehicule_sorti = false;
 
                         //Si il y a des items
-                        if (isset($keyvalue->items)) {
+                        if (isset ($keyvalue->items)) {
 
                             //on boucle dans les items
                             foreach ($keyvalue->items as $key_item => $value_item) {
@@ -263,17 +261,22 @@ function alimenter_suivi_ventes($date_bdc_selected)
                                     $reference_item = $value_item->reference;
 
                                     //  recup infos du véhicule
-                                    $valeur_token = goCurlToken($url_token);
+                                    $valeur_token = goCurlToken();
                                     $state_vh = '';
-                                    $obj_vehicule = getvehiculeInfo($reference_item, $valeur_token, $req_url_vehicule, $state_vh);
+                                    $obj_vehicule = getvehiculeInfo($reference_item, $valeur_token, $state_vh, FALSE);
 
-                                    $type = gettype($obj_vehicule);
+                                    if (empty ($obj_vehicule)) {
+                                        $result = getvehiculeInfo($reference_item, $valeur_token, $state_vh, TRUE);
+                                        $obj_vehicule = json_decode($result);
+                                    }
+
+                                    $type = gettype($obj);
 
                                     //si on obtient un object.
                                     if ($type == 'object') {
 
                                         // si le résultat n'est pas vide
-                                        if (!empty($obj_vehicule)) {
+                                        if (!empty ($obj_vehicule)) {
 
                                             //on recupère les infos du vehicule
                                             $infos_vh = get_infos_vehicule_for_suivi_ventes($obj_vehicule);
@@ -308,7 +311,7 @@ function alimenter_suivi_ventes($date_bdc_selected)
                                                 }
                                                 $array_datas[$i]['Destination_sortie'] = $destination_sortie;
                                                 $array_datas[$i]['VIN'] = $infos_vh['vin'];
-
+                                                $array_datas[$i]['reference_kepler'] = $infos_vh['reference_kepler'];
                                                 $array_datas[$i]['provenance_vh'] = $infos_vh['provenance'];
                                                 $array_datas[$i]['marque'] = $infos_vh['marque'];
                                                 $array_datas[$i]['modele'] = $infos_vh['modele'];
@@ -355,17 +358,113 @@ function alimenter_suivi_ventes($date_bdc_selected)
     }
 
 
+
+}
+
+function alimenter_suivi_ventes_factures($date_recup_facture)
+{
+
+    // recup valeur token seulement
+    $valeur_token = goCurlToken();
+
+    // recup données
+    $request_facture = "v3.1/invoice/";
+    $request_vehicule = "v3.7/vehicles/";
+
+    $url = "https://www.kepler-soft.net/api/";
+
+    $req_url = $url . "" . $request_facture;
+    $req_url_vehicule = $url . "" . $request_vehicule;
+
+
+    $datas_find = true;
+    $array_datas = array();
+    $nb_factures = 0;
+    $nb_lignes = 0;
+    $i = 0;
+    $j = 1;
+
+    while ($datas_find == true) {
+
+        //recupere la requete !!!!
+        $obj = GoCurl_Facture($valeur_token, $req_url, $j, $date_recup_facture);
+        $obj_final = $obj->datas;
+
+        if (!empty ($obj_final)) {
+            $datas_find = true;
+
+            $i++;
+
+            /*****************    BOUCLE du tableau de données récupérés *****************/
+            foreach ($obj_final as $keydatas => $keyvalue) {
+
+                $infos_facture = get_infos_facture($keyvalue);
+
+                if (isset ($keyvalue->items)) {
+                    foreach ($keyvalue->items as $key_item => $value_item) {
+                        if ($value_item->type == 'vehicle_selling') {
+
+                            $reference_kepler = $value_item->reference;
+
+                            // on ne prend que les facture VO, car il peut y avoir des AV ( avoir )
+                            if (strpos($infos_facture['numero_facture'], 'VO') !== FALSE) {
+
+                                $prix_vehicule_HT = $value_item->sellPriceWithoutTaxWithoutDiscount;
+
+                                $array_datas[$i]['date_facture'] = $infos_facture['date_facture'];
+                                $array_datas[$i]['numero_facture'] = $infos_facture['numero_facture'];
+                                $array_datas[$i]['montant_total_facture_HT'] = $infos_facture['montant_total_facture_HT'];
+                                $array_datas[$i]['prix_vente_vehicule_HT'] = $prix_vehicule_HT;
+                                $array_datas[$i]['nom_acheteur'] = $infos_facture['nom_acheteur'];
+                                $array_datas[$i]['adresse_client'] = $infos_facture['adresse_client'];
+                                $array_datas[$i]['cp_client'] = $infos_facture['cp_client'];
+                                $array_datas[$i]['ville_client'] = $infos_facture['ville_client'];
+                                $array_datas[$i]['pays_client'] = $infos_facture['pays_client'];
+                                $array_datas[$i]['email_client'] = $infos_facture['email_client'];
+                                $array_datas[$i]['telmobile_client'] = $infos_facture['telmobile_client'];
+                                $array_datas[$i]['vendeur'] = $infos_facture['nom_vendeur'];
+                                $array_datas[$i]['parc'] = get_CVO_by_vendeur($infos_facture['nom_vendeur']);
+                                $array_datas[$i]['destination_sortie'] = get_destination_sortie($infos_facture['destination_sortie']);
+                                $array_datas[$i]['source_client'] = $infos_facture['source_client'];
+                                $array_datas[$i]['bdc_liee'] = $infos_facture['bdc_liee'];
+                                $array_datas[$i]['reference_kepler'] = $reference_kepler;
+
+                                upload_suivi_ventes_factures($array_datas[$i]);
+
+                                $nb_lignes++;
+                                $i++;
+
+                            }
+                        }
+                    }
+                }
+
+                $nb_factures++;
+            }
+        } else {
+            $datas_find = false;
+        }
+        $j++;
+    }
+
+
     sautdeligne();
 
+    echo 'nombre de Factures : ' . $nb_factures;
 
-    /*************************************  FIN CODE MAIN ************************************************************/
+    sautdeligne();
+
+    echo 'nombre de lignes : ' . $nb_lignes;
 
 
 }
 
 
-function goCurlToken($url)
+function goCurlToken()
 {
+
+    $url = "https://www.kepler-soft.net/api/v3.0/auth-token/";
+
     $ch2 = curl_init();
 
     curl_setopt($ch2, CURLOPT_URL, $url);
@@ -381,12 +480,13 @@ function goCurlToken($url)
 
     $data = json_decode($result, true);
 
+
     return $data['value'];
 }
 
 
 
-function GoCurl_Recup_BDC($token, $url, $page, $num_bdc = '', $date_bdc = '')
+function GoCurl_Recup_BDC($token, $page, $num_bdc = '', $date_bdc = '')
 {
 
     $ch = curl_init();
@@ -397,7 +497,7 @@ function GoCurl_Recup_BDC($token, $url, $page, $num_bdc = '', $date_bdc = '')
     $header[] = 'Content-Type:text/html;charset=utf-8';
 
     // choper un BC spécifique
-    if (isset($num_bdc) && $num_bdc != '') {
+    if (isset ($num_bdc) && $num_bdc != '') {
         $dataArray = array(
             /* 'state' => array(
             //     'administrative_selling.state.invoiced_edit',
@@ -411,7 +511,7 @@ function GoCurl_Recup_BDC($token, $url, $page, $num_bdc = '', $date_bdc = '')
     //sinon par date
     else {
 
-        if (isset($date_bdc) && $date_bdc != '') {
+        if (isset ($date_bdc) && $date_bdc != '') {
 
             $dataArray = array(
                 // "state" => array(
@@ -445,8 +545,12 @@ function GoCurl_Recup_BDC($token, $url, $page, $num_bdc = '', $date_bdc = '')
         }
     }
 
+    $url = "https://www.kepler-soft.net/api/";
+    $request_bon_de_commande = "v3.1/order-form/";
 
-    $getURL = $url . '?' . http_build_query($dataArray);
+    $url_bdc = $url . "" . $request_bon_de_commande;
+
+    $getURL = $url_bdc . '?' . http_build_query($dataArray);
 
     print_r($getURL);
 
@@ -488,7 +592,7 @@ function GoCurl_Recup_BDC($token, $url, $page, $num_bdc = '', $date_bdc = '')
 
     // echo '<pre>' . print_r($obj) . '</pre>';
 
-    if (!isset($num_bdc) && $num_bdc == '') {
+    if (!isset ($num_bdc) && $num_bdc == '') {
         echo '<pre> nombre total de BDC : ' . $obj->total . '</pre>';
         echo '<pre> page actuelle :' . $obj->currentPage . '</pre>';
         echo '<pre> BDC par page :' . $obj->perPage . '</pre>';
@@ -497,7 +601,75 @@ function GoCurl_Recup_BDC($token, $url, $page, $num_bdc = '', $date_bdc = '')
     return $obj;
 }
 
-function getvehiculeInfo($reference, $token, $url_vehicule, $state, $is_not_available_for_sell = '')
+
+
+function GoCurl_Facture($token, $url, $page, $date = '')
+{
+
+    $ch = curl_init();
+
+    // le token
+    //$token = '7MLGvf689hlSPeWXYGwZUi\/t2mpcKrvVr\/fKORXMc+9BFxmYPqq4vOZtcRjVes9DBLM=';
+    $header = array();
+    $header[] = 'X-Auth-Token:' . $token;
+    $header[] = 'Content-Type:text/html;charset=utf-8';
+
+    if (isset ($date) && $date !== '') {
+        //sur une date
+        $dataArray = array(
+            "state" => 'invoice.state.edit',
+            "invoiceDateFrom" => $date,
+            "invoiceDateTo" => $date,
+            "count" => "100",
+            "page" => $page
+        );
+    } else {
+        //sinon on prend à J-1
+        $date = date('Y-m-d', strtotime('-1 day'));
+        $dataArray = array(
+            "state" => 'invoice.state.edit',
+            "invoiceDateFrom" => $date,
+            "invoiceDateTo" => $date,
+            "count" => "100",
+            "page" => $page
+        );
+    }
+
+    $data = http_build_query($dataArray);
+
+    $getURL = $url . '?' . $data;
+
+    print_r($getURL);
+
+    sautdeligne();
+
+    curl_setopt($ch, CURLOPT_URL, $getURL);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+    $result = curl_exec($ch);
+
+    if (curl_error($ch)) {
+        $result = curl_error($ch);
+        print_r($result);
+        echo "<br/> erreur";
+    }
+
+    curl_close($ch);
+
+    echo "<pre>";
+    print_r($result);
+    echo "</pre>";
+
+    $obj = json_decode($result);
+
+    return $obj;
+
+}
+
+function getvehiculeInfo($reference, $token, $state, $is_not_available_for_sell = '')
 {
 
     $ch = curl_init();
@@ -510,9 +682,10 @@ function getvehiculeInfo($reference, $token, $url_vehicule, $state, $is_not_avai
     switch ($is_not_available_for_sell) {
         case TRUE:
 
-            if (isset($state) && $state == 'arrivage_or_parc') {
+            if (isset ($state) && $state == 'arrivage_or_parc') {
                 $dataArray = array(
                     "reference" => $reference,
+                    "state" => 'vehicle.state.on_arrival,vehicle.state.parc',
                     "isNotAvailableForSelling" => TRUE
                 );
             }
@@ -527,27 +700,32 @@ function getvehiculeInfo($reference, $token, $url_vehicule, $state, $is_not_avai
 
             break;
 
-        case '':
-            if (isset($state) && $state == 'arrivage_or_parc') {
+        case FALSE:
+            if (isset ($state) && $state == 'arrivage_or_parc') {
                 $dataArray = array(
-                    "reference" => $reference
+                    "reference" => $reference,
+                    "state" => 'vehicle.state.on_arrival,vehicle.state.parc',
+                    "isNotAvailableForSelling" => FALSE
                 );
             }
             // !!!! si le vh est vendu, vendu AR, en cours, sorti, sorti AR ou annulé alors il faudra mettre l'état obligatoirement si tu veux un retour 
             else {
                 $dataArray = array(
                     "reference" => $reference,
-                    "state" => 'vehicle.state.sold,vehicle.state.sold_ar,vehicle.state.pending,vehicle.state.out,vehicle.state.out_ar,vehicle.state.canceled'
+                    "state" => 'vehicle.state.sold,vehicle.state.sold_ar,vehicle.state.pending,vehicle.state.out,vehicle.state.out_ar,vehicle.state.canceled',
+                    "isNotAvailableForSelling" => FALSE
                 );
             }
             break;
 
     }
 
-
-
-
     $data = http_build_query($dataArray);
+
+    $url = "https://www.kepler-soft.net/api/";
+    $request_vehicule = "v3.7/vehicles/";
+
+    $url_vehicule = $url . "" . $request_vehicule;
 
     $getURL = $url_vehicule . '?' . $data;
 
@@ -577,20 +755,120 @@ function getvehiculeInfo($reference, $token, $url_vehicule, $state, $is_not_avai
     // créer un objet à partir du retour qui est un string
     $obj_vehicule = json_decode($result);
 
-    if (empty($obj_vehicule)) {
-        $result = getvehiculeInfo($reference, $token, $url_vehicule, $state, true);
-        $obj_vehicule = json_decode($result);
+    // var_dump($obj_vehicule);
+
+    // la on a un array
+    //si on a l'erreur de token authentification alors on relance un token
+    if (isset ($obj_vehicule->code) && $obj_vehicule->code == 401) {
+        $valeur_token = goCurlToken();
+
+        $obj = getvehiculeInfo($reference, $valeur_token, $state,TRUE);
+
+        $return = $obj;
+
     }
+    //sinon on continue normal
+    else {
+
+        //on prend l'object qui est dans l'array
+        $return = $obj_vehicule[0];
+
+        // on retourne un objet
+
+    }
+    // var_dump($return);
+    return $return;
+
+
+
+}
+
+function get_reference_vehiculeInfo_by_immatriculation($immatriculation, $token, $url_vehicule, $state, $is_not_available_for_sell = '')
+{
+
+    $ch = curl_init();
+
+    // le token
+    $header = array();
+    $header[] = 'X-Auth-Token:' . $token;
+    $header[] = 'Content-Type:text/html;charset=utf-8';
+
+    switch ($is_not_available_for_sell) {
+        case TRUE:
+
+            if (isset ($state) && $state == 'arrivage_or_parc') {
+                $dataArray = array(
+                    "licenseeNumber" => $immatriculation,
+                    "state" => 'vehicle.state.on_arrival,vehicle.state.parc',
+                    "isNotAvailableForSelling" => TRUE
+                );
+            }
+            // !!!! si le vh est vendu, vendu AR, en cours, sorti, sorti AR ou annulé alors il faudra mettre l'état obligatoirement si tu veux un retour 
+            else {
+                $dataArray = array(
+                    "licenseeNumber" => $immatriculation,
+                    "state" => 'vehicle.state.sold,vehicle.state.sold_ar,vehicle.state.pending,vehicle.state.out,vehicle.state.out_ar,vehicle.state.canceled',
+                    "isNotAvailableForSelling" => TRUE
+                );
+            }
+
+            break;
+
+        case FALSE:
+            if (isset ($state) && $state == 'arrivage_or_parc') {
+                $dataArray = array(
+                    "licenseeNumber" => $immatriculation,
+                    "state" => 'vehicle.state.on_arrival,vehicle.state.parc',
+                    "isNotAvailableForSelling" => FALSE
+                );
+            }
+            // !!!! si le vh est vendu, vendu AR, en cours, sorti, sorti AR ou annulé alors il faudra mettre l'état obligatoirement si tu veux un retour 
+            else {
+                $dataArray = array(
+                    "licenseeNumber" => $immatriculation,
+                    "state" => 'vehicle.state.sold,vehicle.state.sold_ar,vehicle.state.pending,vehicle.state.out,vehicle.state.out_ar,vehicle.state.canceled',
+                    "isNotAvailableForSelling" => FALSE
+                );
+            }
+            break;
+
+    }
+
+    $data = http_build_query($dataArray);
+
+    $getURL = $url_vehicule . '?' . $data;
+
+    print_r($getURL);
+
+    sautdeligne();
+
+    curl_setopt($ch, CURLOPT_URL, $getURL);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+    $result = curl_exec($ch);
+
+    if (curl_error($ch)) {
+        $result = curl_error($ch);
+        print_r($result);
+        echo "<br/> erreur";
+    }
+
+    curl_close($ch);
+
+    // créer un objet à partir du retour qui est un string
+    $obj_vehicule = json_decode($result);
 
     // var_dump($obj_vehicule);
 
     // la on a un array
     //si on a l'erreur de token authentification alors on relance un token
-    if (isset($obj_vehicule->code) && $obj_vehicule->code == 401) {
-        $url = "https://www.kepler-soft.net/api/v3.0/auth-token/";
-        $valeur_token = goCurlToken($url);
+    if (isset ($obj_vehicule->code) && $obj_vehicule->code == 401) {
+        $valeur_token = goCurlToken();
 
-        $obj = getvehiculeInfo($reference, $valeur_token, $url_vehicule, $state);
+        $obj = get_reference_vehiculeInfo_by_immatriculation($immatriculation, $valeur_token, $url_vehicule, $state);
 
         $return = $obj;
 
@@ -638,10 +916,11 @@ function upload_suivi_ventes_bdc($bdc, $uuid)
                 'marque' => $bdc['marque'],
                 'modele' => $bdc['modele'],
                 'version_vh' => $bdc['version_vh'],
-                'bdc_id' => $bdc_check['id']
+                'bdc_id' => $bdc_check['id'],
+                'reference_kepler' => $bdc['reference_kepler']
             ];
-            $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id) 
-            VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id)";
+            $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler) 
+            VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($data_vh);
         }
@@ -681,14 +960,91 @@ function upload_suivi_ventes_bdc($bdc, $uuid)
             'marque' => $bdc['marque'],
             'modele' => $bdc['modele'],
             'version_vh' => $bdc['version_vh'],
-            'bdc_id' => $id_bdc_last_inserted
+            'bdc_id' => $id_bdc_last_inserted,
+            'reference_kepler' => $bdc['reference_kepler']
+
         ];
-        $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id) 
-        VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id)";
+        $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler) 
+        VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data_vh);
 
     }
+
+}
+
+function upload_suivi_ventes_factures($facture)
+{
+    $pdo = Connection::getPDO();
+
+    $num_facture = $facture['numero_facture'];
+
+    // on check deja si il existe un numéro de facture identique pour éviter les doublons
+    $request = $pdo->query("SELECT numero_facture FROM suivi_ventes_factures WHERE numero_facture = '$num_facture'");
+    $facture_check = $request->fetch(PDO::FETCH_ASSOC);
+
+    //si il n'existe pas déja cette facture 
+    if (!$facture_check) {
+
+        $id_vendeur = get_id_collaborateur_payplan_by_name($facture['vendeur']);
+        $id_cvo = get_id_cvo_by_id_collaborateur($id_vendeur);
+        $id_bdc = get_id_bdc_liee($facture['bdc_liee']);
+
+
+        //ajout facture dans base
+        $data_facture = [
+            'numero_facture' => $facture['numero_facture'],
+            'date_facture' => format_date_FR_TO_US($facture['date_facture']),
+            'prix_vente_total_ht' => $facture['montant_total_facture_HT'],
+            'prix_vente_vehicule_HT' => $facture['prix_vente_vehicule_HT'],
+            'nom_acheteur' => $facture['nom_acheteur'],
+            'adresse_acheteur' => $facture['adresse_client'],
+            'cp_acheteur' => $facture['cp_client'],
+            'ville_acheteur' => $facture['ville_client'],
+            'pays_acheteur' => $facture['pays_client'],
+            'email_acheteur' => $facture['email_client'],
+            'tel_acheteur' => $facture['telmobile_client'],
+            'id_vendeur' => $id_vendeur,
+            'id_cvo_vente' => $id_cvo,
+            'id_destination_vente' => $facture['destination_sortie'],
+            'source' => $facture['source_client'],
+            'id_bdc' => $id_bdc,
+        ];
+
+        var_dump($data_facture);
+
+        $sql = "INSERT INTO suivi_ventes_factures (numero_facture,date_facture,prix_vente_total_ht,prix_vente_vehicule_HT,nom_acheteur,adresse_acheteur,cp_acheteur,ville_acheteur,pays_acheteur,email_acheteur,tel_acheteur,id_vendeur,id_cvo_vente,id_destination_vente,source,id_bdc) 
+            VALUES (:numero_facture, :date_facture,:prix_vente_total_ht, :prix_vente_vehicule_HT,:nom_acheteur, :adresse_acheteur,:cp_acheteur, :ville_acheteur,:pays_acheteur,:email_acheteur,:tel_acheteur,:id_vendeur,:id_cvo_vente,:id_destination_vente,:source,:id_bdc)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data_facture);
+        $id_facture_last_inserted = intval($pdo->lastInsertId());
+
+        // si la facture a un bdc lié
+        if (!is_null($id_bdc)) {
+            //upload du BDC pour le passer à facturé
+            $data = [
+                'id_facture' => $id_facture_last_inserted,
+                'id_bdc' => $id_bdc
+            ];
+            $sql = "UPDATE suivi_ventes_bdc SET is_invoiced = 1 , id_facture = :id_facture WHERE ID = :id_bdc";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data);
+            $stmt->debugDumpParams();
+        }
+
+        //Upload le vehicule associé pour le passer à facturé
+        $data = [
+            'reference_kepler' => $facture['reference_kepler'],
+            'facture_id' => $id_facture_last_inserted
+        ];
+        $sql = "UPDATE vehicules_suivi_ventes SET facture_id = :facture_id WHERE reference_kepler = :reference_kepler";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+        $stmt->debugDumpParams();
+
+    }
+
+
 
 }
 
@@ -769,14 +1125,14 @@ function get_infos_vehicule_for_suivi_ventes($obj)
     $infos_vh['version'] = $obj->version->name;
 
     // get VIN
-    if (isset($obj->vin) || !empty($obj->vin)) {
+    if (isset ($obj->vin) || !empty ($obj->vin)) {
         $infos_vh['vin'] = $obj->vin;
     } else {
         $infos_vh['vin'] = "";
     }
 
     //get IMMATRICULATION
-    if (empty($obj->licenseNumber)) {
+    if (empty ($obj->licenseNumber)) {
         $immat_tmp = 'N/C';
     } else {
         $immat_tmp = $obj->licenseNumber;
@@ -784,5 +1140,148 @@ function get_infos_vehicule_for_suivi_ventes($obj)
 
     $infos_vh['immatriculation'] = str_replace("-", "", $immat_tmp);
 
+    $infos_vh['reference_kepler'] = $obj->reference;
+
     return $infos_vh;
+}
+
+
+function get_infos_facture($obj_facture)
+{
+
+    //get date facture
+    $date_facture_tmp = substr($obj_facture->invoiceDate, 0, 10);
+    $date_facture_tmp2 = str_replace("-", "/", $date_facture_tmp);
+    $return['date_facture'] = date('d/m/Y', strtotime($date_facture_tmp2));
+
+    //get numéro de facture
+    $return['numero_facture'] = $obj_facture->number;
+
+    //get nom acheteur
+    if (isset ($obj_facture->owner->firstname)) {
+        $return['nom_acheteur'] = $obj_facture->owner->firstname . " " . $obj_facture->owner->lastname;
+    } else {
+        $return['nom_acheteur'] = $obj_facture->owner->corporateNameContact;
+    }
+
+    //adresse du client
+    $return['adresse_client'] = $obj_facture->customer->addressAddress;
+
+    // Code postal du client
+    $return['cp_client'] = $obj_facture->customer->addressPostalCode;
+
+    // ville du client
+    $return['ville_client'] = $obj_facture->customer->addressCity;
+
+    // pays du client
+    $return['pays_client'] = $obj_facture->customer->addressCountry;
+
+
+    // email du client
+    if (isset ($obj_facture->customer->email) && !empty ($obj_facture->customer->email)) {
+        $return['email_client'] = $obj_facture->customer->email;
+    } else {
+        $return['email_client'] = '';
+    }
+
+    //tel fixe du client
+    if (isset ($obj_facture->customer->phoneNumber) && !empty ($obj_facture->customer->phoneNumber)) {
+        $return['telfixe_client'] = $obj_facture->customer->phoneNumber;
+    } else {
+        $return['telfixe_client'] = '';
+    }
+
+    //tel mobile du client
+    if (isset ($obj_facture->customer->cellPhoneNumber) && !empty ($obj_facture->customer->cellPhoneNumber)) {
+        $return['telmobile_client'] = $obj_facture->customer->cellPhoneNumber;
+    } else {
+        $return['telmobile_client'] = '';
+    }
+
+    //get nom vendeur
+    $nom_vendeur = $obj_facture->seller;
+    $nom_vendeur = explode("<", $nom_vendeur);
+    $nom_vendeur = $nom_vendeur[0];
+    $return['nom_vendeur'] = trim($nom_vendeur);
+
+
+    //get destination sortie
+    if (isset ($obj_facture->destination) && !empty ($obj_facture->destination)) {
+        $return['destination_sortie'] = $obj_facture->destination;
+    } else {
+        $return['destination_sortie'] = '';
+    }
+
+
+    // source du client
+    if (isset ($obj_facture->customer->knownFrom) && !empty ($obj_facture->customer->knownFrom)) {
+        $return['source_client'] = $obj_facture->customer->knownFrom;
+    } else {
+        $return['source_client'] = '';
+    }
+
+    // prix total facture
+    $return['montant_total_facture_HT'] = $obj_facture->sellPriceWithoutTax;
+
+    //recup BDC lié
+    if (isset ($obj_facture->orderForm->number) && !empty ($obj_facture->orderForm->number)) {
+        $return['bdc_liee'] = $obj_facture->orderForm->number;
+    }
+
+    return $return;
+
+}
+
+function get_vh_from_suivi_ventes($limite)
+{
+    $pdo = Connection::getPDO();
+
+    // on check deja si il existe un numéro de facture identique pour éviter les doublons
+    $request = $pdo->query("SELECT immatriculation FROM vehicules_suivi_ventes WHERE reference_kepler IS NULL LIMIT $limite ");
+    $liste_vhs = $request->fetchAll(PDO::FETCH_COLUMN);
+
+    return $liste_vhs;
+
+}
+
+function update_reference_kepler($liste_immatriculation)
+{
+
+    $request_vehicule = "v3.7/vehicles/";
+    $url = "https://www.kepler-soft.net/api/";
+    $req_url_vehicule = $url . "" . $request_vehicule;
+
+    $valeur_token = goCurlToken();
+
+    $state_vh = '';
+
+    foreach ($liste_immatriculation as $immatriculation) {
+        $obj_vehicule = get_reference_vehiculeInfo_by_immatriculation($immatriculation, $valeur_token, $req_url_vehicule, $state_vh, FALSE);
+        if (empty ($obj_vehicule)) {
+            $result = get_reference_vehiculeInfo_by_immatriculation($immatriculation, $valeur_token, $req_url_vehicule, $state_vh, TRUE);
+            $obj_vehicule = json_decode($result);
+        }
+
+        if (!empty ($obj_vehicule)) {
+
+            $reference_kepler = $obj_vehicule->reference;
+
+            //retransformer l'immat en format XX123XX
+            $immat_format_xx123xx = str_replace("-", "", $immatriculation);
+
+            $pdo = Connection::getPDO();
+
+            $data = [
+                'reference_kepler' => $reference_kepler,
+                'immatriculation' => $immat_format_xx123xx
+
+            ];
+            $sql = "UPDATE vehicules_suivi_ventes SET reference_kepler = :reference_kepler WHERE immatriculation = :immatriculation";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data);
+        }
+
+
+    }
+
 }

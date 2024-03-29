@@ -79,16 +79,15 @@
     // $vh_immat = 'EB335TN';
     // update_payplan_by_immat($vh_immat);
     
+    //update reference kepler
+    $liste_detail = get_factures_by_site_by_destination_vente(3, 2, 2);
 
+    $nb = get_nbre_factures_by_site_by_destination_vente(3, 2, 2);
 
+    var_dump($liste_detail);
 
+    var_dump($nb);
 
-
-    $test = "FAYCAL BENHAMMOU";
-    $nom_vendeur_tmp = explode("<", $test);
-    $nom_vendeur = $nom_vendeur_tmp[0];
-
-    echo $nom_vendeur;
 
 
     // $test = get_pack_first_from_payplan($filtre);

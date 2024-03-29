@@ -1155,19 +1155,19 @@ function get_commission($filtre = '')
     if (isset($filtre) && $filtre !== '') {
 
         switch ($filtre) {
-            case(isset($filtre['mois_en_cours'])):
+            case (isset($filtre['mois_en_cours'])):
                 $mois_en_cours = date("Y-m-01");
                 $date = "WHERE vehicules.date_stock >= '$mois_en_cours'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['mois_precedent'])):
+            case (isset($filtre['mois_precedent'])):
                 $mois_precedent = get_previous_month_and_his_last_day();
                 $first = $mois_precedent['first'];
                 $last = $mois_precedent['last'];
                 $date = "WHERE vehicules.date_stock BETWEEN '$first' AND '$last'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== ''):
+            case (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== ''):
                 $date_debut = $filtre['date_personnalisee']['debut'];
                 $date_fin = $filtre['date_personnalisee']['fin'];
                 $date = "WHERE vehicules.date_stock BETWEEN '$date_debut' AND '$date_fin'";
@@ -1256,13 +1256,13 @@ function get_facturation($filtre = '')
     if (isset($filtre) && $filtre !== '') {
 
         switch (true) {
-            case(isset($filtre['mois_en_cours'])):
+            case (isset($filtre['mois_en_cours'])):
                 $mois_en_cours = date("Y-m-01");
                 $date = "WHERE factureventes.date_facturation >= '$mois_en_cours'";
                 // $date = "WHERE factureventes.date_facturation >= '$mois_en_cours'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['mois_precedent'])):
+            case (isset($filtre['mois_precedent'])):
                 $mois_precedent = get_previous_month_and_his_last_day();
                 $first = $mois_precedent['first'];
                 $last = $mois_precedent['last'];
@@ -1270,7 +1270,7 @@ function get_facturation($filtre = '')
                 $date = "WHERE factureventes.date_facturation BETWEEN '$first' AND '$last'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== ''):
+            case (isset($filtre['date_personnalisee']) && $filtre['date_personnalisee'] !== ''):
                 $date_debut = $filtre['date_personnalisee']['debut'];
                 $date_fin = $filtre['date_personnalisee']['fin'];
                 // $date = "WHERE factureventes.date_facturation BETWEEN '$date_debut' AND '$date_fin'";
@@ -1422,13 +1422,13 @@ function get_pack_first_from_payplan($filtre)
     if (isset($filtre) && $filtre !== '') {
 
         switch (true) {
-            case(isset($filtre['mois_en_cours'])):
+            case (isset($filtre['mois_en_cours'])):
                 $mois_en_cours = date("Y-m-01");
                 // $date = "date_achat BETWEEN '$first' AND '$last'";
                 $date = "date_facturation >='$mois_en_cours'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['mois_precedent'])):
+            case (isset($filtre['mois_precedent'])):
                 $mois_precedent = get_previous_month_and_his_last_day();
                 $first = $mois_precedent['first'];
                 $last = $mois_precedent['last'];
@@ -1436,7 +1436,7 @@ function get_pack_first_from_payplan($filtre)
                 $date = "date_facturation BETWEEN '$first' AND '$last'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['date_personnalisee'])):
+            case (isset($filtre['date_personnalisee'])):
                 $date_debut = $filtre['date_personnalisee']['debut'];
                 $date_fin = $filtre['date_personnalisee']['fin'];
                 // $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
@@ -1508,13 +1508,13 @@ function get_payplan_date_facturation($filtre = '')
     if (isset($filtre) && $filtre !== '') {
 
         switch (true) {
-            case(isset($filtre['mois_en_cours'])):
+            case (isset($filtre['mois_en_cours'])):
                 $mois_en_cours = date("Y-m-01");
                 // $date = "date_achat BETWEEN '$first' AND '$last'";
                 $date = "date_facturation >='$mois_en_cours'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['mois_precedent'])):
+            case (isset($filtre['mois_precedent'])):
                 $mois_precedent = get_previous_month_and_his_last_day();
                 $first = $mois_precedent['first'];
                 $last = $mois_precedent['last'];
@@ -1522,7 +1522,7 @@ function get_payplan_date_facturation($filtre = '')
                 $date = "date_facturation BETWEEN '$first' AND '$last'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['date_personnalisee'])):
+            case (isset($filtre['date_personnalisee'])):
                 $date_debut = $filtre['date_personnalisee']['debut'];
                 $date_fin = $filtre['date_personnalisee']['fin'];
                 // $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
@@ -1557,13 +1557,13 @@ function get_payplan_date_stock($filtre = '')
     if (isset($filtre) && $filtre !== '') {
 
         switch (true) {
-            case(isset($filtre['mois_en_cours'])):
+            case (isset($filtre['mois_en_cours'])):
                 $mois_en_cours = date("Y-m-01");
                 // $date = "date_achat BETWEEN '$first' AND '$last'";
                 $date = "date_achat >='$mois_en_cours'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['mois_precedent'])):
+            case (isset($filtre['mois_precedent'])):
                 $mois_precedent = get_previous_month_and_his_last_day();
                 $first = $mois_precedent['first'];
                 $last = $mois_precedent['last'];
@@ -1571,7 +1571,7 @@ function get_payplan_date_stock($filtre = '')
                 $date = "date_achat BETWEEN '$first' AND '$last'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['date_personnalisee'])):
+            case (isset($filtre['date_personnalisee'])):
                 $date_debut = $filtre['date_personnalisee']['debut'];
                 $date_fin = $filtre['date_personnalisee']['fin'];
                 // $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
@@ -1604,13 +1604,13 @@ function get_vh_non_vendu_from_payplan($filtre = '')
     if (isset($filtre) && $filtre !== '') {
 
         switch (true) {
-            case(isset($filtre['mois_en_cours'])):
+            case (isset($filtre['mois_en_cours'])):
                 $mois_en_cours = date("Y-m-01");
                 // $date = "date_achat BETWEEN '$first' AND '$last'";
                 $date = "date_achat >='$mois_en_cours'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['mois_precedent'])):
+            case (isset($filtre['mois_precedent'])):
                 $mois_precedent = get_previous_month_and_his_last_day();
                 $first = $mois_precedent['first'];
                 $last = $mois_precedent['last'];
@@ -1618,7 +1618,7 @@ function get_vh_non_vendu_from_payplan($filtre = '')
                 $date = "date_achat BETWEEN '$first' AND '$last'";
                 $where_filtre = $date;
                 break;
-            case(isset($filtre['date_personnalisee'])):
+            case (isset($filtre['date_personnalisee'])):
                 $date_debut = $filtre['date_personnalisee']['debut'];
                 $date_fin = $filtre['date_personnalisee']['fin'];
                 // $date = "date_achat BETWEEN '$date_debut' AND '$date_fin'";
@@ -1925,6 +1925,31 @@ function get_id_collaborateur_payplan_by_name($nom_complet)
     } else {
         return intval($result);
     }
+}
+
+function get_id_cvo_by_id_collaborateur($id_collaborateur)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT cvo.ID FROM cvo 
+    LEFT JOIN collaborateurs_payplan as cp ON cp.id_site = cvo.ID 
+        WHERE cp.ID = $id_collaborateur ");
+    $id_cvo = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($id_cvo);
+
+}
+
+function get_id_bdc_liee($num_bdc)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT suivi_ventes_bdc.ID FROM suivi_ventes_bdc 
+        WHERE suivi_ventes_bdc.numero_bdc = $num_bdc");
+    $id_bdc = $request->fetch(PDO::FETCH_COLUMN);
+    if ($id_bdc) {
+        return intval($id_bdc);
+    } else {
+        return null;
+    }
+
 }
 
 
@@ -3073,7 +3098,7 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
             LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.bdc_id = bdc.id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
             $nbre = $request->fetchColumn();
             break;
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
@@ -3083,7 +3108,7 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
             LEFT JOIN cvo on cvo.ID = cp.id_site
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
             $nbre = $request->fetchColumn();
             break;
     }
@@ -3091,6 +3116,163 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
 
 
     return intval($nbre);
+}
+
+function get_nbre_vh_sur_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+{
+    $pdo = Connection::getPDO();
+
+    switch ($destination_vente) {
+        //tableau particulier 
+        case 1:
+            $request = $pdo->query("SELECT COUNT(bdc.numero_bdc) FROM suivi_ventes_bdc as bdc 
+            LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.bdc_id = bdc.id
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
+            LEFT JOIN cvo on cvo.ID = cp.id_site 
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+            $nbre = $request->fetchColumn();
+            break;
+        //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
+        case 2:
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) 
+            FROM vehicules_suivi_ventes as vsv 
+            LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
+            LEFT JOIN cvo on cvo.ID = cp.id_site
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+            $nbre = $request->fetchColumn();
+            break;
+    }
+
+    return intval($nbre);
+
+}
+
+function get_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+{
+    $pdo = Connection::getPDO();
+
+    switch ($destination_vente) {
+        //tableau particulier 
+        case 1:
+            $request = $pdo->query("SELECT bdc.numero_bdc,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,bdc.date_bdc AS date
+                    FROM suivi_ventes_bdc as bdc 
+                    LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.bdc_id = bdc.id
+                    LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
+                    LEFT JOIN cvo on cvo.ID = cp.id_site 
+                    WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+            $liste = $request->fetchAll(PDO::FETCH_ASSOC);
+            break;
+        //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
+        case 2:
+            $request = $pdo->query("SELECT vsv.immatriculation,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,bdc.date_bdc As date
+                    FROM vehicules_suivi_ventes as vsv 
+                    LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
+                    LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
+                    LEFT JOIN cvo on cvo.ID = cp.id_site
+                    WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+            $liste = $request->fetchAll(PDO::FETCH_ASSOC);
+            break;
+    }
+    return $liste;
+}
+
+
+
+
+function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+{
+    $pdo = Connection::getPDO();
+
+    switch ($destination_vente) {
+        //tableau particulier 
+        case 1:
+            $request = $pdo->query("SELECT COUNT(factures.numero_facture) FROM suivi_ventes_factures as factures 
+            LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
+            LEFT JOIN cvo on cvo.ID = cp.id_site 
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            $nbre = $request->fetchColumn();
+            break;
+        //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
+        case 2:
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) 
+            FROM vehicules_suivi_ventes as vsv 
+            LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
+            LEFT JOIN cvo on cvo.ID = cp.id_site
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            $nbre = $request->fetchColumn();
+            break;
+    }
+
+    return intval($nbre);
+}
+
+function get_factures_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+{
+    $pdo = Connection::getPDO();
+
+    switch ($destination_vente) {
+        //tableau particulier 
+        case 1:
+            $request = $pdo->query("SELECT factures.numero_facture,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,factures.date_facture AS date
+            FROM suivi_ventes_factures as factures 
+            LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
+            LEFT JOIN cvo on cvo.ID = cp.id_site 
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            $liste = $request->fetchAll(PDO::FETCH_ASSOC);
+            break;
+        //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
+        case 2:
+            $request = $pdo->query("SELECT vsv.immatriculation,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,factures.date_facture As date
+            FROM vehicules_suivi_ventes as vsv 
+            LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
+            LEFT JOIN cvo on cvo.ID = cp.id_site
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            $liste = $request->fetchAll(PDO::FETCH_ASSOC);
+            break;
+    }
+
+    return $liste;
+}
+
+function get_nbre_factures_total_N1_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+{
+    $pdo = Connection::getPDO();
+
+    switch ($destination_vente) {
+        //tableau particulier 
+        case 1:
+            $request = $pdo->query("SELECT COUNT(factures.numero_facture) FROM suivi_ventes_factures as factures 
+            LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
+            LEFT JOIN cvo on cvo.ID = cp.id_site 
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            $nbre = $request->fetchColumn();
+            break;
+        //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
+        case 2:
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) 
+            FROM vehicules_suivi_ventes as vsv 
+            LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
+            LEFT JOIN cvo on cvo.ID = cp.id_site
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            $nbre = $request->fetchColumn();
+            break;
+    }
+
+    return intval($nbre);
+}
+
+//TO DO
+function calcul_variation()
+{
+
+    return 0;
 }
 
 
