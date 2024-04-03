@@ -57,50 +57,47 @@
         $cvo = $_GET['cvo'];
         $destination_vente = $_GET['destination_vente'];
         $type_provenance = $_GET['type_provenance'];
+        $type = $_GET['type'];
 
         $table = '';
-        switch ($destination_vente) {
-
-            //destination particulier
-            case 1:
-                $liste_detail = get_bdc_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance);
-                break;
-            //destination marchands
-            case 2:
-                $liste_detail = get_factures_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance);
-                break;
-        }
-
-
-
         $table .= "<table class='my_tab_payplan' id='table_suivi_bdc_detail'>";
         $table .= "<tr>";
-        $table .= "<th class='th1'>BDC ou Immat</th>";
+        $table .= "<th class='th1'>BDC / Immat / Facture</th>";
         $table .= "<th class='th1'>Nom vendeur</th>";
         $table .= "<th class='th1'>Date</th>";
         $table .= "</tr>";
 
+        switch ($type) {
+            case 'bdc':
+                $liste_detail = get_bdc_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance);
+                foreach ($liste_detail as $nb => $bdc) {
+                    $table .= "<tr>";
+                    $table .= "<td>" . (isset($bdc['numero_bdc']) ? $bdc['numero_bdc'] : $bdc['immatriculation']) . "</td>";
+                    $table .= "<td>" . $bdc['nom_complet'] . "</td>";
+                    $table .= "<td>" . $bdc['date'] . "</td>";
+                    $table .= "</tr>";
 
+                }
+                break;
+            case 'facture':
+                $liste_detail = get_factures_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance);
+                foreach ($liste_detail as $nb => $bdc) {
+                    $table .= "<tr>";
+                    $table .= "<td>" . (isset($bdc['numero_facture']) ? $bdc['numero_facture'] : $bdc['immatriculation']) . "</td>";
+                    $table .= "<td>" . $bdc['nom_complet'] . "</td>";
+                    $table .= "<td>" . $bdc['date'] . "</td>";
+                    $table .= "</tr>";
 
-
-        foreach ($liste_detail as $nb => $bdc) {
-            $table .= "<tr>";
-            $table .= "<td>" . (isset($bdc['numero_bdc']) ? $bdc['numero_bdc'] : $bdc['immatriculation']) . "</td>";
-            $table .= "<td>" . $bdc['nom_complet'] . "</td>";
-            $table .= "<td>" . $bdc['date'] . "</td>";
-            $table .= "</tr>";
-
+                }
+                break;
         }
+
 
         $table .= "</table>";
 
         echo $table;
 
         ?>
-
-
-
-
 
 
 

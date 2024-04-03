@@ -683,8 +683,9 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente)
                 //remplissage tableau
                 $table_suivi_bdc .= "<tr>";
                 $table_suivi_bdc .= "<td class='td_n'> " . $cvo['nom_cvo'] . " </td>";
-                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance'>" . $nbre_bdc_mois_en_cours . " </a> </td>";
-                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance'>" . $nbre_factures_mois_en_cours . "</a></td>";
+                //si c'est destination particulier on prend le nombre de BDC en cours
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=bdc'>" . $nbre_bdc_mois_en_cours . " </a> </td>";
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture'>" . $nbre_factures_mois_en_cours . "</a></td>";
                 $table_suivi_bdc .= "<td class='td_n1'>" . $nbre_factures_total_N1 . "</td>";
                 $table_suivi_bdc .= "<td class='td_n'>" . $variation_factures . "</td>";
                 $table_suivi_bdc .= "</tr>";
@@ -715,8 +716,8 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente)
                 //remplissage tableau
                 $table_suivi_bdc .= "<tr>";
                 $table_suivi_bdc .= "<td class='td_n'> " . $cvo['nom_cvo'] . " </td>";
-                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance'>" . $nbre_bdc_mois_en_cours . " </a></td>";
-                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance'>" . $nbre_factures_mois_en_cours . "</a></td>";
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=bdc'>" . $nbre_bdc_mois_en_cours . " </a></td>";
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture'>" . $nbre_factures_mois_en_cours . "</a></td>";
                 $table_suivi_bdc .= "<td class='td_n1'>0</td>";
                 $table_suivi_bdc .= "<td class='td_n'>0</td>";
                 $table_suivi_bdc .= "<td class='td_n'>0</td>";

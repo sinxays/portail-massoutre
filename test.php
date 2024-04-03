@@ -80,9 +80,9 @@
     // update_payplan_by_immat($vh_immat);
     
     //update reference kepler
-    $liste_detail = get_factures_by_site_by_destination_vente(3, 2, 2);
+    $liste_detail = get_factures_by_site_by_destination_vente(1, 1, 2);
 
-    $nb = get_nbre_factures_by_site_by_destination_vente(3, 2, 2);
+    $nb = get_nbre_factures_by_site_by_destination_vente(1, 1, 2);
 
     var_dump($liste_detail);
 
