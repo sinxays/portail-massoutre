@@ -189,54 +189,6 @@ $(document).ready(function () {
         tableau_selected = $("#tableau_selected").text();
 
         $("#btn_valider_date_perso").prop('disabled', false);
-
-        // console.log(date_debut);
-        // console.log(date_fin);
-
-        // // value_dates_perso = Array(date_debut,date_fin);
-
-        // let value_dates_perso = {};
-        // value_dates_perso['debut'] = date_debut;
-        // value_dates_perso['fin'] = date_fin;
-
-        // console.log(value_dates_perso);
-
-        // switch (tableau_selected) {
-
-        //     case 'commission':
-        //         $.ajax({
-        //             url: "/payplan/req/onSelect_commission_filtre.php",
-        //             type: "POST",
-        //             data: { date_perso: value_dates_perso },
-        //             success: function (data) {
-        //                 $("#table_commission").html(data);
-        //                 $("#select_destination_payplan").val(0);
-        //                 $("#select_type_achat_payplan").val(0);
-        //             }
-        //         });
-        //         break;
-        //     case 'collaborateur':
-        //         $.ajax({
-        //             url: "/payplan/req/onSelect_reprise_achat_collaborateur_filtre.php",
-        //             type: "POST",
-        //             data: { date_perso: value_dates_perso },
-        //             success: function (data) {
-        //                 $("#table_achat_reprise").html();
-        //                 $("#table_achat_reprise").html(data);
-        //             }
-        //         });
-        //         break;
-        //     case 'payplan':
-        //         $.ajax({
-        //             url: "/payplan/req/onSelect_payplan_filtre.php",
-        //             type: "POST",
-        //             data: { date_perso: value_dates_perso },
-        //             success: function (data) {
-        //                 $("#table_payplan").html(data);
-        //             }
-        //         });
-        //         break;
-        // }
     });
 
 

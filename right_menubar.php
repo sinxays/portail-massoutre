@@ -67,17 +67,24 @@
                                     id="bouton_stats_loc">Stats</a>
                                 <a href="/pages_stats/suivi_bdc.php" class="nav__dropdown-item"
                                     id="bouton_departs_loc">Suivi BDC</a>
-                                <a href="#" class="nav__dropdown-item">Les Grandes Occasions</a>
-                                <a href="#" class="nav__dropdown-item">RUPL</a>
-                                <a href="#" class="nav__dropdown-item">VD2L</a>
                             </div>
                         </div>
                     </div>
 
-                    <a href="/marge/marge.php" class="nav__link">
-                        <i class='bx bx-money-withdraw'></i>
-                        <span class="nav__name">Marges</span>
-                    </a>
+                    <div class="nav__dropdown">
+                        <a href="#" class="nav__link" id="bouton_statistiques">
+                            <i class='bx bx-spreadsheet'></i>
+                            <span class="nav__name">Opérationnel</span>
+                            <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
+                        </a>
+
+                        <div class="nav__dropdown-collapse">
+                            <div class="nav__dropdown-content">
+                                <a href="/operations/shop_exterieurs/shop_exterieurs.php" class="nav__dropdown-item"
+                                    id="bouton_stats_loc">Shop exterieurs</a>
+                            </div>
+                        </div>
+                    </div>
 
                     <a href=/payplan/payplan.php class="nav__link">
                         <i class='bx bx-money-withdraw'></i>

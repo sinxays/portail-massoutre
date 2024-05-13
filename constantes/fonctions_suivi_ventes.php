@@ -60,7 +60,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
         //a ce niveau obj est un object
 
         //on prends le tableau datas dans obj et ce qui nous fait un array sur obj_final
-        if (!empty ($obj)) {
+        if (!empty($obj)) {
             $obj_final = $obj->datas;
         } else {
             $obj_final = '';
@@ -71,7 +71,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
 
         $infos_bdc = array();
 
-        if (!empty ($obj_final)) {
+        if (!empty($obj_final)) {
 
 
             /*****************    BOUCLE du tableau de données récupérés *****************/
@@ -81,7 +81,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
             foreach ($obj_final as $keydatas => $keyvalue) {
 
                 // on récupere le state du bon de commande 
-                if (isset ($keyvalue->state)) {
+                if (isset($keyvalue->state)) {
                     $state_bdc = html_entity_decode($keyvalue->state);
 
                     $infos_bdc['uuid'] = $keyvalue->uuid;
@@ -105,9 +105,9 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
                     echo "bon de commande numéro :" . $infos_bdc['bdc'];
 
                     //get nom acheteur
-                    if (isset ($keyvalue->owner->firstname)) {
+                    if (isset($keyvalue->owner->firstname)) {
                         $nom_acheteur_tmp = $keyvalue->owner->firstname . " " . $keyvalue->owner->lastname;
-                    } else if (isset ($keyvalue->customer->firstname)) {
+                    } else if (isset($keyvalue->customer->firstname)) {
                         $nom_acheteur_tmp = $keyvalue->customer->firstname . " " . $keyvalue->customer->lastname;
                     } else {
                         $nom_acheteur_tmp = $keyvalue->customer->corporateName;
@@ -133,7 +133,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
 
 
                     //get destination sortie
-                    if (empty ($keyvalue->destination)) {
+                    if (empty($keyvalue->destination)) {
                         $destination_sortie = '';
                     } else {
                         $destination_sortie = $keyvalue->destination;
@@ -152,7 +152,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
                         // echo "<span style='color:red'>" . $erreur_vehicule_sorti . "</span>";
 
                         //Si il y a des items
-                        if (isset ($keyvalue->items)) {
+                        if (isset($keyvalue->items)) {
 
                             //ON BOUCLE DANS LES ITEMS
                             foreach ($keyvalue->items as $key_item => $value_item) {
@@ -167,7 +167,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
                                     //on prend le vehicule qu'il soit sorti ou non
                                     $obj_vehicule = getvehiculeInfo($reference_item, $valeur_token, $state_vh, FALSE);
 
-                                    if (empty ($obj_vehicule)) {
+                                    if (empty($obj_vehicule)) {
                                         $result = getvehiculeInfo($reference_item, $valeur_token, $state_vh, TRUE);
                                         $obj_vehicule = json_decode($result);
                                     }
@@ -183,7 +183,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
                                     if ($type == 'object') {
 
                                         // si le résultat n'est pas vide
-                                        if (!empty ($obj_vehicule)) {
+                                        if (!empty($obj_vehicule)) {
 
                                             //on recupère les infos du vehicule
                                             $infos_vh = get_infos_vehicule_for_suivi_ventes($obj_vehicule);
@@ -248,7 +248,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
                         $erreur_vehicule_sorti = false;
 
                         //Si il y a des items
-                        if (isset ($keyvalue->items)) {
+                        if (isset($keyvalue->items)) {
 
                             //on boucle dans les items
                             foreach ($keyvalue->items as $key_item => $value_item) {
@@ -265,7 +265,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
                                     $state_vh = '';
                                     $obj_vehicule = getvehiculeInfo($reference_item, $valeur_token, $state_vh, FALSE);
 
-                                    if (empty ($obj_vehicule)) {
+                                    if (empty($obj_vehicule)) {
                                         $result = getvehiculeInfo($reference_item, $valeur_token, $state_vh, TRUE);
                                         $obj_vehicule = json_decode($result);
                                     }
@@ -276,7 +276,7 @@ function alimenter_suivi_ventes_bdc($date_bdc_selected)
                                     if ($type == 'object') {
 
                                         // si le résultat n'est pas vide
-                                        if (!empty ($obj_vehicule)) {
+                                        if (!empty($obj_vehicule)) {
 
                                             //on recupère les infos du vehicule
                                             $infos_vh = get_infos_vehicule_for_suivi_ventes($obj_vehicule);
@@ -390,7 +390,7 @@ function alimenter_suivi_ventes_factures($date_recup_facture)
         $obj = GoCurl_Facture($valeur_token, $req_url, $j, $date_recup_facture);
         $obj_final = $obj->datas;
 
-        if (!empty ($obj_final)) {
+        if (!empty($obj_final)) {
             $datas_find = true;
 
             $i++;
@@ -400,7 +400,7 @@ function alimenter_suivi_ventes_factures($date_recup_facture)
 
                 $infos_facture = get_infos_facture($keyvalue);
 
-                if (isset ($keyvalue->items)) {
+                if (isset($keyvalue->items)) {
                     foreach ($keyvalue->items as $key_item => $value_item) {
                         if ($value_item->type == 'vehicle_selling') {
 
@@ -497,7 +497,7 @@ function GoCurl_Recup_BDC($token, $page, $num_bdc = '', $date_bdc = '')
     $header[] = 'Content-Type:text/html;charset=utf-8';
 
     // choper un BC spécifique
-    if (isset ($num_bdc) && $num_bdc != '') {
+    if (isset($num_bdc) && $num_bdc != '') {
         $dataArray = array(
             /* 'state' => array(
             //     'administrative_selling.state.invoiced_edit',
@@ -511,7 +511,7 @@ function GoCurl_Recup_BDC($token, $page, $num_bdc = '', $date_bdc = '')
     //sinon par date
     else {
 
-        if (isset ($date_bdc) && $date_bdc != '') {
+        if (isset($date_bdc) && $date_bdc != '') {
 
             $dataArray = array(
                 // "state" => array(
@@ -592,7 +592,7 @@ function GoCurl_Recup_BDC($token, $page, $num_bdc = '', $date_bdc = '')
 
     // echo '<pre>' . print_r($obj) . '</pre>';
 
-    if (!isset ($num_bdc) && $num_bdc == '') {
+    if (!isset($num_bdc) && $num_bdc == '') {
         echo '<pre> nombre total de BDC : ' . $obj->total . '</pre>';
         echo '<pre> page actuelle :' . $obj->currentPage . '</pre>';
         echo '<pre> BDC par page :' . $obj->perPage . '</pre>';
@@ -614,7 +614,7 @@ function GoCurl_Facture($token, $url, $page, $date = '')
     $header[] = 'X-Auth-Token:' . $token;
     $header[] = 'Content-Type:text/html;charset=utf-8';
 
-    if (isset ($date) && $date !== '') {
+    if (isset($date) && $date !== '') {
         //sur une date
         $dataArray = array(
             "state" => 'invoice.state.edit',
@@ -682,7 +682,7 @@ function getvehiculeInfo($reference, $token, $state, $is_not_available_for_sell 
     switch ($is_not_available_for_sell) {
         case TRUE:
 
-            if (isset ($state) && $state == 'arrivage_or_parc') {
+            if (isset($state) && $state == 'arrivage_or_parc') {
                 $dataArray = array(
                     "reference" => $reference,
                     "state" => 'vehicle.state.on_arrival,vehicle.state.parc',
@@ -701,7 +701,7 @@ function getvehiculeInfo($reference, $token, $state, $is_not_available_for_sell 
             break;
 
         case FALSE:
-            if (isset ($state) && $state == 'arrivage_or_parc') {
+            if (isset($state) && $state == 'arrivage_or_parc') {
                 $dataArray = array(
                     "reference" => $reference,
                     "state" => 'vehicle.state.on_arrival,vehicle.state.parc',
@@ -759,10 +759,10 @@ function getvehiculeInfo($reference, $token, $state, $is_not_available_for_sell 
 
     // la on a un array
     //si on a l'erreur de token authentification alors on relance un token
-    if (isset ($obj_vehicule->code) && $obj_vehicule->code == 401) {
+    if (isset($obj_vehicule->code) && $obj_vehicule->code == 401) {
         $valeur_token = goCurlToken();
 
-        $obj = getvehiculeInfo($reference, $valeur_token, $state,TRUE);
+        $obj = getvehiculeInfo($reference, $valeur_token, $state, TRUE);
 
         $return = $obj;
 
@@ -796,7 +796,7 @@ function get_reference_vehiculeInfo_by_immatriculation($immatriculation, $token,
     switch ($is_not_available_for_sell) {
         case TRUE:
 
-            if (isset ($state) && $state == 'arrivage_or_parc') {
+            if (isset($state) && $state == 'arrivage_or_parc') {
                 $dataArray = array(
                     "licenseeNumber" => $immatriculation,
                     "state" => 'vehicle.state.on_arrival,vehicle.state.parc',
@@ -815,7 +815,7 @@ function get_reference_vehiculeInfo_by_immatriculation($immatriculation, $token,
             break;
 
         case FALSE:
-            if (isset ($state) && $state == 'arrivage_or_parc') {
+            if (isset($state) && $state == 'arrivage_or_parc') {
                 $dataArray = array(
                     "licenseeNumber" => $immatriculation,
                     "state" => 'vehicle.state.on_arrival,vehicle.state.parc',
@@ -865,7 +865,7 @@ function get_reference_vehiculeInfo_by_immatriculation($immatriculation, $token,
 
     // la on a un array
     //si on a l'erreur de token authentification alors on relance un token
-    if (isset ($obj_vehicule->code) && $obj_vehicule->code == 401) {
+    if (isset($obj_vehicule->code) && $obj_vehicule->code == 401) {
         $valeur_token = goCurlToken();
 
         $obj = get_reference_vehiculeInfo_by_immatriculation($immatriculation, $valeur_token, $url_vehicule, $state);
@@ -909,6 +909,9 @@ function upload_suivi_ventes_bdc($bdc, $uuid)
         //si le vh n'existe pas déja bien entendu
         $immat_no_exist = check_if_immatriculation_exist_suivi_ventes($bdc['immatriculation']);
         if (!$immat_no_exist) {
+            //on va chercher son prix d'achat dabord
+            $prix_achat_ht = get_prix_achat_ht($bdc['immatriculation']);
+            // $frais_vo = get_frais_vo_by_immat($bdc['immatriculation']);
             $data_vh = [
                 'immatriculation' => $bdc['immatriculation'],
                 'provenance' => $bdc['provenance_vh'],
@@ -917,10 +920,11 @@ function upload_suivi_ventes_bdc($bdc, $uuid)
                 'modele' => $bdc['modele'],
                 'version_vh' => $bdc['version_vh'],
                 'bdc_id' => $bdc_check['id'],
-                'reference_kepler' => $bdc['reference_kepler']
+                'reference_kepler' => $bdc['reference_kepler'],
+                'prix_achat_ht' => $prix_achat_ht
             ];
-            $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler) 
-            VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler)";
+            $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
+            VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler,:prix_achat_ht)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($data_vh);
         }
@@ -951,24 +955,26 @@ function upload_suivi_ventes_bdc($bdc, $uuid)
         $stmt->execute($data_bdc);
         $id_bdc_last_inserted = $pdo->lastInsertId();
 
+        // on va chercher dans le portil son prix d'achat
+        $prix_achat_ht = get_prix_achat_ht($bdc['immatriculation']);
+        $frais_maintenance_estime =
 
-        //insert du vh dans suivi_ventes_vh
-        $data_vh = [
-            'immatriculation' => $bdc['immatriculation'],
-            'provenance' => $bdc['provenance_vh'],
-            'VIN' => $bdc['VIN'],
-            'marque' => $bdc['marque'],
-            'modele' => $bdc['modele'],
-            'version_vh' => $bdc['version_vh'],
-            'bdc_id' => $id_bdc_last_inserted,
-            'reference_kepler' => $bdc['reference_kepler']
-
-        ];
-        $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler) 
-        VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler)";
+            //insert du vh dans suivi_ventes_vh
+            $data_vh = [
+                'immatriculation' => $bdc['immatriculation'],
+                'provenance' => $bdc['provenance_vh'],
+                'VIN' => $bdc['VIN'],
+                'marque' => $bdc['marque'],
+                'modele' => $bdc['modele'],
+                'version_vh' => $bdc['version_vh'],
+                'bdc_id' => $id_bdc_last_inserted,
+                'reference_kepler' => $bdc['reference_kepler'],
+                'prix_achat_ht' => $prix_achat_ht
+            ];
+        $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
+        VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler,:prix_achat_ht)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data_vh);
-
     }
 
 }
@@ -1125,14 +1131,14 @@ function get_infos_vehicule_for_suivi_ventes($obj)
     $infos_vh['version'] = $obj->version->name;
 
     // get VIN
-    if (isset ($obj->vin) || !empty ($obj->vin)) {
+    if (isset($obj->vin) || !empty($obj->vin)) {
         $infos_vh['vin'] = $obj->vin;
     } else {
         $infos_vh['vin'] = "";
     }
 
     //get IMMATRICULATION
-    if (empty ($obj->licenseNumber)) {
+    if (empty($obj->licenseNumber)) {
         $immat_tmp = 'N/C';
     } else {
         $immat_tmp = $obj->licenseNumber;
@@ -1158,7 +1164,7 @@ function get_infos_facture($obj_facture)
     $return['numero_facture'] = $obj_facture->number;
 
     //get nom acheteur
-    if (isset ($obj_facture->owner->firstname)) {
+    if (isset($obj_facture->owner->firstname)) {
         $return['nom_acheteur'] = $obj_facture->owner->firstname . " " . $obj_facture->owner->lastname;
     } else {
         $return['nom_acheteur'] = $obj_facture->owner->corporateNameContact;
@@ -1178,21 +1184,21 @@ function get_infos_facture($obj_facture)
 
 
     // email du client
-    if (isset ($obj_facture->customer->email) && !empty ($obj_facture->customer->email)) {
+    if (isset($obj_facture->customer->email) && !empty($obj_facture->customer->email)) {
         $return['email_client'] = $obj_facture->customer->email;
     } else {
         $return['email_client'] = '';
     }
 
     //tel fixe du client
-    if (isset ($obj_facture->customer->phoneNumber) && !empty ($obj_facture->customer->phoneNumber)) {
+    if (isset($obj_facture->customer->phoneNumber) && !empty($obj_facture->customer->phoneNumber)) {
         $return['telfixe_client'] = $obj_facture->customer->phoneNumber;
     } else {
         $return['telfixe_client'] = '';
     }
 
     //tel mobile du client
-    if (isset ($obj_facture->customer->cellPhoneNumber) && !empty ($obj_facture->customer->cellPhoneNumber)) {
+    if (isset($obj_facture->customer->cellPhoneNumber) && !empty($obj_facture->customer->cellPhoneNumber)) {
         $return['telmobile_client'] = $obj_facture->customer->cellPhoneNumber;
     } else {
         $return['telmobile_client'] = '';
@@ -1206,7 +1212,7 @@ function get_infos_facture($obj_facture)
 
 
     //get destination sortie
-    if (isset ($obj_facture->destination) && !empty ($obj_facture->destination)) {
+    if (isset($obj_facture->destination) && !empty($obj_facture->destination)) {
         $return['destination_sortie'] = $obj_facture->destination;
     } else {
         $return['destination_sortie'] = '';
@@ -1214,7 +1220,7 @@ function get_infos_facture($obj_facture)
 
 
     // source du client
-    if (isset ($obj_facture->customer->knownFrom) && !empty ($obj_facture->customer->knownFrom)) {
+    if (isset($obj_facture->customer->knownFrom) && !empty($obj_facture->customer->knownFrom)) {
         $return['source_client'] = $obj_facture->customer->knownFrom;
     } else {
         $return['source_client'] = '';
@@ -1224,7 +1230,7 @@ function get_infos_facture($obj_facture)
     $return['montant_total_facture_HT'] = $obj_facture->sellPriceWithoutTax;
 
     //recup BDC lié
-    if (isset ($obj_facture->orderForm->number) && !empty ($obj_facture->orderForm->number)) {
+    if (isset($obj_facture->orderForm->number) && !empty($obj_facture->orderForm->number)) {
         $return['bdc_liee'] = $obj_facture->orderForm->number;
     }
 
@@ -1257,12 +1263,12 @@ function update_reference_kepler($liste_immatriculation)
 
     foreach ($liste_immatriculation as $immatriculation) {
         $obj_vehicule = get_reference_vehiculeInfo_by_immatriculation($immatriculation, $valeur_token, $req_url_vehicule, $state_vh, FALSE);
-        if (empty ($obj_vehicule)) {
+        if (empty($obj_vehicule)) {
             $result = get_reference_vehiculeInfo_by_immatriculation($immatriculation, $valeur_token, $req_url_vehicule, $state_vh, TRUE);
             $obj_vehicule = json_decode($result);
         }
 
-        if (!empty ($obj_vehicule)) {
+        if (!empty($obj_vehicule)) {
 
             $reference_kepler = $obj_vehicule->reference;
 
@@ -1283,5 +1289,111 @@ function update_reference_kepler($liste_immatriculation)
 
 
     }
+
+}
+
+function filtre_date_bdc_factures($filtre_date, $type)
+{
+    $filtre_date_selected = intval($filtre_date['value_selected']);
+
+    switch ($filtre_date_selected) {
+        //mois en cours
+        case 0:
+            $date['date_debut'] = date('Y-m-01');
+            $date['date_fin'] = date('Y-m-t');
+            break;
+        //mois précédent
+        case 1:
+            $date['date_debut'] = date('Y-m-d', strtotime("first day of last month"));
+            $date['date_fin'] = date('Y-m-d', strtotime("last day of last month"));
+            break;
+        //mois personnalisé
+        case 2:
+            $date['date_debut'] = $filtre_date['date']['date_personnalise_debut'];
+            $date['date_fin'] = $filtre_date['date']['date_personnalise_fin'];
+            break;
+    }
+
+    switch ($type) {
+        case 'bdc':
+            $sql_date = " AND bdc.date_bdc BETWEEN '" . $date['date_debut'] . "' AND '" . $date['date_fin'] . "'";
+            break;
+
+        case 'factures':
+            $sql_date = " AND factures.date_facture BETWEEN '" . $date['date_debut'] . "'AND '" . $date['date_fin'] . "'";
+            break;
+
+    }
+    return $sql_date;
+}
+
+function calcul_marge($provenance, $destination_vente, $bdc, $frais_vo)
+{
+    switch ($provenance) {
+        //provenance locations
+        case 1:
+            $marge = get_holding_cost_total($bdc['immatriculation']);
+            break;
+        //provenance Négoce
+        case 2:
+            switch ($destination_vente) {
+                // destination particulier
+                case 1:
+                    $marge = $bdc['prix_vente_vehicule_HT'] - ($bdc['prix_achat_ht'] + $frais_vo);
+                    break;
+                //destination marchands
+                case 2:
+                    $marge = $bdc['prix_vente_vehicule_HT'] - $bdc['prix_achat_ht'];
+                    break;
+
+            }
+            break;
+    }
+
+
+    return $marge;
+
+}
+
+function get_holding_cost_total($immatriculation)
+{
+    //base portail
+    $pdo2 = Connection::getPDO_2();
+
+    $request = $pdo2->query("SELECT factureventes.holding_cost_total FROM factureventes 
+    LEFT JOIN vehicules ON vehicules.id = factureventes.vehicule_id
+    WHERE vehicules.immatriculation = '$immatriculation' AND vehicules.deleted = 0");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    $holding_cost_total = floatval($result['holding_cost_total']);
+    return $holding_cost_total;
+}
+
+function get_header_details($cvo, $destination_vente, $type_provenance, $type)
+{
+    $pdo = Connection::getPDO();
+    $return = array();
+
+    $request = $pdo->query("SELECT nom_cvo FROM cvo 
+    WHERE ID = $cvo");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    $return['nom_cvo'] = $result['nom_cvo'];
+
+    $request = $pdo->query("SELECT libelle FROM destination_vente 
+    WHERE ID = $destination_vente");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    $return['destination_vente'] = $result['libelle'];
+
+    $request = $pdo->query("SELECT libelle FROM provenance_vo_vn 
+    WHERE ID = $type_provenance");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    $return['type_provenance'] = $result['libelle'];
+
+    if ($type == 'facture') {
+        $return['type'] = "FACTURE";
+    } else {
+        $return['type'] = "BDC";
+    }
+
+    return $return;
 
 }

@@ -54,61 +54,11 @@
 
 
 
+    // get_holding_cost_total("GB401HV");
+    // get_test_by_immat("BT953AN");
 
-    // $filtre['mois_precedent'] = array();
-    $filtre['date_personnalisee']['debut'] = "2016-01-01";
-    $filtre['date_personnalisee']['fin'] = "2023-08-31";
-
-
-    /*
-    // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )
-    $datas_facturation = get_facturation($filtre);
-    foreach ($datas_facturation as $facturation) {
-        update_date_facturation_by_immat($facturation['immatriculation'], $facturation['date_facturation']);
-        $immatriculation = update_pack_first_by_immatriculation($facturation['immatriculation']);
-        echo $immatriculation;
-    }
-    */
-
-    // $datas_payplan_achat = get_payplan_date_stock($filtre);
-    // foreach ($datas_payplan_achat as $vie_vh) {
-    //     update_type_achat_by_immat($vie_vh['immatriculation']);
-    // }
     
-    //update payplan par un immat
-    // $vh_immat = 'EB335TN';
-    // update_payplan_by_immat($vh_immat);
-    
-    //update reference kepler
-    $liste_detail = get_factures_by_site_by_destination_vente(1, 1, 2);
-
-    $nb = get_nbre_factures_by_site_by_destination_vente(1, 1, 2);
-
-    var_dump($liste_detail);
-
-    var_dump($nb);
-
-
-
-    // $test = get_pack_first_from_payplan($filtre);
-    // foreach ($test as $test_) {
-    //     echo $test_['immatriculation'] . "<br/>";
-    // }
-    
-
-
-
-
-
-
-
-
-
-
-    // get_reprise_achat_pack_collaborateurs();
-    
-
-
+    update_payplan_by_immat("BT953AN");
 
 
     ?>

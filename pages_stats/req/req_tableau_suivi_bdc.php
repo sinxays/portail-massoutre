@@ -9,20 +9,25 @@ $destination_particulier = 1;
 $destination_marchand = 2;
 $type_all = 0;
 
+if (isset($_POST['type_date'])) {
+    $filtre_date = $_POST['type_date'];
+} else {
+    $filtre_date = '';
+}
 
 if (isset($_POST["type_tableau"])) {
     $type_provenance = intval($_POST["type_tableau"]);
     switch ($type_provenance) {
         //locations
         case 1:
-            $table_particuliers = create_table_suivi_bdc($suivi_bdc_Locations_particuliers_table_header_row, $type_provenance, $destination_particulier);
-            $table_marchands = create_table_suivi_bdc($suivi_bdc_Locations_marchands_table_header_row, $type_provenance, $destination_marchand);
+            $table_particuliers = create_table_suivi_bdc($suivi_bdc_Locations_particuliers_table_header_row, $type_provenance, $destination_particulier, $filtre_date);
+            $table_marchands = create_table_suivi_bdc($suivi_bdc_Locations_marchands_table_header_row, $type_provenance, $destination_marchand, $filtre_date);
             // $table_all = create_table_suivi_bdc($suivi_bdc_Locations_particuliersAndMarchands_table_header_row, $type_provenance, $type_all);
             break;
         //negoce
         case 2:
-            $table_particuliers = create_table_suivi_bdc($suivi_bdc_Negoce_particuliers_tableau_header_row, $type_provenance, $destination_particulier);
-            $table_marchands = create_table_suivi_bdc($suivi_bdc_Negoce_marchands_tableau_header_row, $type_provenance, $destination_marchand);
+            $table_particuliers = create_table_suivi_bdc($suivi_bdc_Negoce_particuliers_tableau_header_row, $type_provenance, $destination_particulier, $filtre_date);
+            $table_marchands = create_table_suivi_bdc($suivi_bdc_Negoce_marchands_tableau_header_row, $type_provenance, $destination_marchand, $filtre_date);
             // $table_all = create_table_suivi_bdc($suivi_bdc_Locations_particuliersAndMarchands_table_header_row, $type_provenance, $type_all);
             break;
     }

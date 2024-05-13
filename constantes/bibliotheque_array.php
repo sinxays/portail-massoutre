@@ -123,7 +123,7 @@ $commission_table_header_row = array(
     "Mois Vente"
 );
 
-$suivi_bdc_Locations_particuliers_table_header_row = array("Particuliers", "BDC en cours", "BDC facturés", "BDC facturés total N-1", "Variation");
+$suivi_bdc_Locations_particuliers_table_header_row = array("Particuliers", "NB VH sur BDC", "NB VH Facturés", "BDC facturés total N-1", "Variation");
 $suivi_bdc_Locations_marchands_table_header_row = array("Marchands", "Nombre VH sur BDC", "Nombre VH Facturés", "Nombre VH Facturés total N-1", "Variation");
 $suivi_bdc_Locations_particuliersAndMarchands_table_header_row = array("Particuliers/Marchands", "Nombre VH sur BDC J-1", "Nombre VH sur BDC en cours", "Variation %", "Nombre VH sur BDC N-1", "Variation sur total N-1", "Nombre VH facturés J-1", "Nombre VH facturé en cours", "Variation % a date", "Nombre de VH", "Variation % sur total");
 

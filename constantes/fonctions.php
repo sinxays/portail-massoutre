@@ -2961,8 +2961,10 @@ function get_commission_by_immat($immat)
 {
 
     $pdo = Connection::getPDO_2();
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
+    try {
+        $request = $pdo->query("SELECT vehicules.immatriculation AS Immatriculation,
     destinations.libelle AS Destination,
     typeachats.libelle AS Type_Achat,
     typevehicules.libelle AS Type_Vehicule,
@@ -3016,10 +3018,50 @@ function get_commission_by_immat($immat)
     LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
     WHERE vehicules.immatriculation = '$immat' AND vehicules.deleted = 0 ");
 
-    // var_dump($where);
-    // die();
+        echo $request->queryString;
+        saut_de_ligne();
+        echo $request->errorCode();
 
-    $commission = $request->fetch(PDO::FETCH_ASSOC);
+        $commission = $request->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Erreur lors de l'exécution de la requête : " . $e->getMessage();
+
+    }
+    var_dump($commission);
+    die();
+
+    return $commission;
+}
+
+function get_test_by_immat($immat)
+{
+
+    $pdo = Connection::getPDO_2();
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    try {
+
+
+        $request = $pdo->prepare("SELECT immatriculation FROM vehicules WHERE immatriculation = :immat");
+
+        // Liaison du paramètre
+        $request->bindParam(':immat', $immat, PDO::PARAM_STR);
+
+        // Exécution de la requête
+        $request->execute();
+
+        echo $request->queryString;
+        saut_de_ligne();
+        echo $request->errorCode();
+
+        $immatriculation = $request->fetch(PDO::FETCH_ASSOC);
+        var_dump($immatriculation);
+    } catch (PDOException $e) {
+        echo "Erreur lors de l'exécution de la requête : " . $e->getMessage();
+
+    }
+
+    die();
 
     return $commission;
 }
@@ -3032,7 +3074,7 @@ function get_repreneur_by_immat($immat)
 
     $request = $pdo->query("SELECT options as Options
     FROM vehicules
-    WHERE immatriculation = '$immat'");
+    WHERE numero_chassis = '$immat'");
 
     // var_dump($where);
     // die();
@@ -3087,60 +3129,86 @@ function get_suivi_bdc_by_type($type)
 
 }
 
-function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance, $date_bdc = '')
 {
     $pdo = Connection::getPDO();
+
+    $sql_date = filtre_date_bdc_factures($date_bdc, "bdc");
 
     switch ($destination_vente) {
         //tableau particulier 
         case 1:
-            $request = $pdo->query("SELECT COUNT(bdc.numero_bdc) FROM suivi_ventes_bdc as bdc 
-            LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.bdc_id = bdc.id
+            //update : au final demande de GH on prend aussi le nbr de vh sur bdc plutot que bdc même si particulier
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) FROM vehicules_suivi_ventes as vsv 
+            LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL $sql_date");
             $nbre = $request->fetchColumn();
+
             break;
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
         case 2:
-            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) 
-            FROM vehicules_suivi_ventes as vsv 
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) FROM vehicules_suivi_ventes as vsv 
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
             LEFT JOIN cvo on cvo.ID = cp.id_site
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL $sql_date");
             $nbre = $request->fetchColumn();
             break;
     }
-
-
-
     return intval($nbre);
 }
 
-function get_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+function get_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance, $date_bdc)
 {
     $pdo = Connection::getPDO();
+
+    $sql_date = filtre_date_bdc_factures($date_bdc, "bdc");
 
     switch ($destination_vente) {
         //tableau particulier 
         case 1:
-            $request = $pdo->query("SELECT bdc.numero_bdc,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,bdc.date_bdc AS date
+            $request = $pdo->query("SELECT bdc.numero_bdc,
+            CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,
+            bdc.date_bdc AS date,
+            vsv.marque,
+            vsv.modele,
+            vsv.prix_achat_ht,
+            bdc.prix_vente_ht,
+            nom_acheteur,
+            vsv.immatriculation,
+            cvo.nom_cvo,
+            bdc.date_bdc,
+            dest.libelle AS destination_vente
                     FROM suivi_ventes_bdc as bdc 
                     LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.bdc_id = bdc.id
                     LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
-                    LEFT JOIN cvo on cvo.ID = cp.id_site 
-                    WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+                    LEFT JOIN cvo on cvo.ID = cp.id_site
+                    LEFT JOIN destination_vente as dest ON bdc.destination_vente = dest.id 
+                    WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL $sql_date");
             $liste = $request->fetchAll(PDO::FETCH_ASSOC);
             break;
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
         case 2:
-            $request = $pdo->query("SELECT vsv.immatriculation,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,bdc.date_bdc As date
+            $request = $pdo->query("SELECT vsv.immatriculation,
+            CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,
+            bdc.date_bdc As date,
+            vsv.marque,
+            vsv.modele,
+            vsv.prix_achat_ht,
+            bdc.prix_vente_ht,
+            bdc.nom_acheteur,
+            vsv.immatriculation,
+            cvo.nom_cvo,
+            bdc.date_bdc,
+            dest.libelle AS destination_vente
                     FROM vehicules_suivi_ventes as vsv 
                     LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
                     LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
                     LEFT JOIN cvo on cvo.ID = cp.id_site
-                    WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+                    LEFT JOIN destination_vente as dest ON bdc.destination_vente = dest.id 
+                    WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL $sql_date");
             $liste = $request->fetchAll(PDO::FETCH_ASSOC);
             break;
     }
@@ -3148,9 +3216,11 @@ function get_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type
 }
 
 
-function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance, $date_factures = '')
 {
     $pdo = Connection::getPDO();
+
+    $sql_date = filtre_date_bdc_factures($date_factures, "factures");
 
     switch ($destination_vente) {
         //tableau particulier 
@@ -3159,7 +3229,7 @@ function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_ve
             LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.facture_id = factures.id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
-            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
             $nbre = $request->fetchColumn();
             break;
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
@@ -3169,7 +3239,7 @@ function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_ve
             LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
             LEFT JOIN cvo on cvo.ID = cp.id_site
-            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
             $nbre = $request->fetchColumn();
             break;
     }
@@ -3177,29 +3247,50 @@ function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_ve
     return intval($nbre);
 }
 
-function get_factures_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+function get_factures_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance, $date_factures)
 {
     $pdo = Connection::getPDO();
+
+    $sql_date = filtre_date_bdc_factures($date_factures, "factures");
 
     switch ($destination_vente) {
         //tableau particulier 
         case 1:
-            $request = $pdo->query("SELECT factures.numero_facture,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,factures.date_facture AS date
+            $request = $pdo->query("SELECT factures.numero_facture,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,
+            factures.date_facture,
+            vsv.marque,
+            vsv.modele,
+            vsv.prix_achat_ht,
+            factures.prix_vente_vehicule_HT,
+            vsv.immatriculation,
+            factures.nom_acheteur,
+            cvo.nom_cvo,
+            dest.libelle AS destination_vente
             FROM suivi_ventes_factures as factures 
             LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.facture_id = factures.id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
-            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            LEFT JOIN destination_vente as dest ON factures.id_destination_vente = dest.id
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date");
             $liste = $request->fetchAll(PDO::FETCH_ASSOC);
             break;
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
         case 2:
-            $request = $pdo->query("SELECT vsv.immatriculation,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,factures.date_facture As date
+            $request = $pdo->query("SELECT vsv.immatriculation,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,
+            factures.date_facture,
+            vsv.marque,
+            vsv.modele,
+            vsv.prix_achat_ht,
+            factures.prix_vente_vehicule_HT,
+            vsv.immatriculation,
+            factures.nom_acheteur,cvo.nom_cvo,
+            dest.libelle AS destination_vente
             FROM vehicules_suivi_ventes as vsv 
             LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
             LEFT JOIN cvo on cvo.ID = cp.id_site
-            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            LEFT JOIN destination_vente as dest ON factures.id_destination_vente = dest.id
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date");
             $liste = $request->fetchAll(PDO::FETCH_ASSOC);
             break;
     }
@@ -3261,6 +3352,211 @@ function get_CVO_by_vendeur($nom_vendeur)
 
 }
 
+function update_prix_achat_vh($immatriculation = '')
+{
+
+    //base portail_massoutre
+    $pdo = Connection::getPDO();
+    //base portail
+    $pdo2 = Connection::getPDO_2();
+
+
+    //si un véhicule
+    if ($immatriculation != '') {
+        $request = $pdo2->query("SELECT prix_achat_ht FROM vehicules WHERE immatriculation = '$immatriculation' AND deleted = 0");
+        $result = $request->fetch(PDO::FETCH_ASSOC);
+        $prix_achat_ht = floatval($result['prix_achat_ht']);
+        $data = [
+            'prix_achat_ht' => $prix_achat_ht,
+            'immatriculation' => $immatriculation
+        ];
+        $sql = "UPDATE vehicules_suivi_ventes SET prix_achat_ht=:prix_achat_ht WHERE immatriculation=:immatriculation";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+    }
+    //sinon update de tous les vehicules de vehicules _suivi_ventes
+    else {
+        $request = $pdo->query("SELECT immatriculation,ID FROM vehicules_suivi_ventes");
+        $immatriculation_liste = $request->fetchAll(PDO::FETCH_ASSOC);
+
+        // var_dump($immatriculation_liste);
+
+        foreach ($immatriculation_liste as $key => $immatriculation) {
+
+            $immat = $immatriculation['immatriculation'];
+            $id = $immatriculation['ID'];
+
+            $pdo2 = Connection::getPDO_2();
+            $request = $pdo2->query("SELECT prix_achat_ht FROM vehicules WHERE immatriculation = '$immat' AND deleted = 0");
+            $result = $request->fetch(PDO::FETCH_ASSOC);
+
+            $prix_achat_ht = floatval($result['prix_achat_ht']);
+
+            $data = [
+                'prix_achat_ht' => $prix_achat_ht,
+                'ID' => $id
+            ];
+            $sql = "UPDATE vehicules_suivi_ventes SET prix_achat_ht=:prix_achat_ht WHERE ID=:ID";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data);
+        }
+    }
+}
+
+function get_prix_achat_ht($immatriculation)
+{
+    //base portail
+    $pdo2 = Connection::getPDO_2();
+
+    $request = $pdo2->query("SELECT prix_achat_ht FROM vehicules WHERE immatriculation = '$immatriculation' AND deleted = 0");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    $prix_achat_ht = floatval($result['prix_achat_ht']);
+
+    return $prix_achat_ht;
+}
+
+function get_frais_vo_by_immat($immatriculation)
+{
+    //base portail
+    $pdo2 = Connection::getPDO_2();
+
+    $request = $pdo2->query("SELECT frais_vo FROM vehicules WHERE immatriculation = '$immatriculation' AND deleted = 0");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    $frais_vo = floatval($result['frais_vo']);
+
+    return $frais_vo;
+}
+
+function get_infos_vehicules_portail_bleu($immatriculation)
+{
+    //base portail
+    $pdo2 = Connection::getPDO_2();
+    $request = $pdo2->query("SELECT cat.libelle as categorie,
+    finitions.libelle as finition,
+    dest.libelle as provenance,
+    date_immatriculation,
+    dest.libelle AS destination_vente,
+    mva.numero as mva,
+    vh.reference_lot,
+    vh.km_wizard
+    FROM vehicules AS vh
+    LEFT JOIN categories as cat ON vh.categorie_id = cat.id
+    LEFT JOIN finitions ON vh.finition_id = finitions.id
+    LEFT JOIN destinations as dest ON vh.destination_id = dest.id
+    LEFT JOIN mva ON vh.mva_id = mva.id
+    WHERE vh.immatriculation = '$immatriculation' AND vh.deleted = 0");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    return $result;
+}
+
+function get_infos_dates_vh($immatriculation)
+{
+    //base portail
+    $pdo2 = Connection::getPDO_2();
+    $request = $pdo2->query("SELECT date_premiere_location,date_stock
+    FROM vehicules
+    WHERE immatriculation = '$immatriculation' AND deleted = 0");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    return $result;
+}
+
+function get_id_vh($immatriculation)
+{
+    //base portail
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT id
+    FROM vehicules_suivi_ventes
+    WHERE immatriculation = '$immatriculation'");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($result);
+}
+
+
+function get_duree_locations($immatriculation)
+{
+
+    $dates = get_infos_dates_vh($immatriculation);
+
+    //base portail
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT bdc.date_bdc
+     FROM suivi_ventes_bdc as bdc
+     LEFT JOIN vehicules_suivi_ventes as vh ON bdc.id = vh.bdc_id
+     WHERE vh.immatriculation = '$immatriculation'");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+
+    //pour les négoce on mets à 0
+    $months = 0;
+
+    //si date premiere location alors c'est une provenance locations
+    if (isset($dates['date_premiere_location'])) {
+
+        $date_premiere_location = new Datetime($dates['date_premiere_location']);
+        $date_dernier_bdc = new Datetime($result['date_bdc']);
+
+        $interval = $date_premiere_location->diff($date_dernier_bdc);
+        $months = $interval->y * 12 + $interval->m;
+    }
+
+    return $months;
+}
+
+function get_duree_stock($immatriculation, $type)
+{
+
+    $dates = get_infos_dates_vh($immatriculation);
+
+    //base portail
+    $pdo = Connection::getPDO();
+    $days = 0;
+
+    switch ($type) {
+
+        case 'bdc':
+            $request = $pdo->query("SELECT bdc.date_bdc
+            FROM suivi_ventes_bdc as bdc
+            LEFT JOIN vehicules_suivi_ventes as vh ON bdc.id = vh.bdc_id
+            WHERE vh.immatriculation = '$immatriculation'");
+            $result = $request->fetch(PDO::FETCH_ASSOC);
+
+            //si date premiere location alors c'est une provenance locations
+            if (isset($dates['date_stock'])) {
+
+                $date_stock = new Datetime($dates['date_stock']);
+                $date_dernier_bdc = new Datetime($result['date_bdc']);
+
+                $interval = $date_stock->diff($date_dernier_bdc);
+                // $months = $interval->y * 12 + $interval->m;
+                $days = $interval->days;
+                return $days;
+            }
+
+            break;
+
+        case 'facture':
+            $request = $pdo->query("SELECT facture.date_facture
+            FROM suivi_ventes_factures as facture
+            LEFT JOIN vehicules_suivi_ventes as vh ON facture.id = vh.facture_id
+            WHERE vh.immatriculation = '$immatriculation'");
+            $result = $request->fetch(PDO::FETCH_ASSOC);
+
+            //si date premiere location alors c'est une provenance locations
+            if ($dates['date_stock']) {
+
+                $date_stock = new Datetime($dates['date_stock']);
+                $date_dernier_bdc = new Datetime($result['date_facture']);
+
+                $interval = $date_stock->diff($date_dernier_bdc);
+                // $months = $interval->y * 12 + $interval->m;
+                $days = $interval->days;
+                return $days;
+            }
+
+            break;
+
+
+    }
+}
 // SAUT DE LIGNE 
 function sautdeligne()
 {

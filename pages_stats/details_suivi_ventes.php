@@ -26,15 +26,6 @@
     <!--========== HEADER ==========-->
     <header class="header">
         <div class="header__container">
-            <img src="../assets/img/perfil.jpg" alt="" class="header__img">
-
-            <a href="#" class="header__logo"> </a>
-
-            <div class="header__search">
-                <input type="search" placeholder="Search" class="header__input">
-                <i class='bx bx-search header__icon'></i>
-            </div>
-
             <div class="header__toggle">
                 <i class='bx bx-menu' id="header-toggle"></i>
             </div>
@@ -58,34 +49,107 @@
         $destination_vente = $_GET['destination_vente'];
         $type_provenance = $_GET['type_provenance'];
         $type = $_GET['type'];
+        // $filtre_date = $_GET['filtre_date'];
+        $filtre_date = $_GET['filtre_date'];
+
+        $header = get_header_details($cvo, $destination_vente, $type_provenance, $type);
+
+        saut_de_ligne();
+
+        echo "<span>" . $header['nom_cvo'] . " | Type : " . $header['type'] . " | " . $header['destination_vente'] . " | Provenance : " . $header['type_provenance'] . "</span>";
+
+        saut_de_ligne();
 
         $table = '';
         $table .= "<table class='my_tab_payplan' id='table_suivi_bdc_detail'>";
         $table .= "<tr>";
         $table .= "<th class='th1'>BDC / Immat / Facture</th>";
-        $table .= "<th class='th1'>Nom vendeur</th>";
-        $table .= "<th class='th1'>Date</th>";
+        $table .= "<th class='th1'>Marque</th>";
+        $table .= "<th class='th1'>Modele</th>";
+        $table .= "<th class='th1'>Categorie</th>";
+        $table .= "<th class='th1'>Finition</th>";
+        $table .= "<th class='th1'>Provenance</th>";
+        $table .= "<th class='th1'>Date MEC</th>";
+        $table .= "<th class='th1'>Immatriculation</th>";
+        $table .= "<th class='th1'>Client</th>";
+        $table .= "<th class='th1'>Montant</th>";
+        $table .= "<th class='th1'>Durée Location (mois)</th>";
+        $table .= "<th class='th1'>Durée Stock (jours)</th>";
+        $table .= "<th class='th1'>Cout Detention / Marge</th>";
+        $table .= "<th class='th1'>Vendeur</th>";
+        $table .= "<th class='th1'>CVO</th>";
+        $table .= "<th class='th1'>Date dernier BDC</th>";
+        $table .= "<th class='th1'>Destination Vente</th>";
+        $table .= "<th class='th1'>MVA</th>";
+        $table .= "<th class='th1'>Reference Lot</th>";
+        $table .= "<th class='th1'>Km Wizard</th>";
         $table .= "</tr>";
 
         switch ($type) {
             case 'bdc':
-                $liste_detail = get_bdc_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance);
+                $liste_detail = get_bdc_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance, $filtre_date);
+
                 foreach ($liste_detail as $nb => $bdc) {
+                    $vh_infos = get_infos_vehicules_portail_bleu($bdc['immatriculation']);
+                    $duree_location = get_duree_locations($bdc['immatriculation']);
+                    $duree_stock = get_duree_stock($bdc['immatriculation'], $type);
+
                     $table .= "<tr>";
                     $table .= "<td>" . (isset($bdc['numero_bdc']) ? $bdc['numero_bdc'] : $bdc['immatriculation']) . "</td>";
+                    $table .= "<td>" . $bdc['marque'] . "</td>";
+                    $table .= "<td>" . $bdc['modele'] . "</td>";
+                    $table .= "<td>" . $vh_infos['categorie'] . "</td>";
+                    $table .= "<td>" . $vh_infos['finition'] . "</td>";
+                    $table .= "<td>" . $vh_infos['provenance'] . "</td>";
+                    $table .= "<td>" . $vh_infos['date_immatriculation'] . "</td>";
+                    $table .= "<td>" . $bdc['immatriculation'] . "</td>";
+                    $table .= "<td>" . $bdc['nom_acheteur'] . "</td>";
+                    $table .= "<td>" . $bdc['prix_vente_ht'] . "</td>";
+                    $table .= "<td> " . $duree_location . " </td>";
+                    $table .= "<td> " . $duree_stock . " </td>";
+                    $table .= "<td> marge </td>";
                     $table .= "<td>" . $bdc['nom_complet'] . "</td>";
-                    $table .= "<td>" . $bdc['date'] . "</td>";
+                    $table .= "<td>" . $bdc['nom_cvo'] . "</td>";
+                    $table .= "<td>" . $bdc['date_bdc'] . "</td>";
+                    $table .= "<td>" . $bdc['destination_vente'] . "</td>";
+                    $table .= "<td>" . $vh_infos['mva'] . "</td>";
+                    $table .= "<td>" . $vh_infos['reference_lot'] . "</td>";
+                    $table .= "<td>" . $vh_infos['km_wizard'] . "</td>";
                     $table .= "</tr>";
 
                 }
                 break;
             case 'facture':
-                $liste_detail = get_factures_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance);
-                foreach ($liste_detail as $nb => $bdc) {
+                $liste_detail = get_factures_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance, $filtre_date);
+                foreach ($liste_detail as $nb => $facture) {
+                    $frais_vo = get_frais_vo_by_immat($facture['immatriculation']);
+                    $calcul_marge = calcul_marge($type_provenance, $destination_vente, $facture, $frais_vo);
+                    $vh_infos = get_infos_vehicules_portail_bleu($facture['immatriculation']);
+                    $duree_location = get_duree_locations($facture['immatriculation']);
+                    $duree_stock = get_duree_stock($facture['immatriculation'], $type);
+
+
                     $table .= "<tr>";
-                    $table .= "<td>" . (isset($bdc['numero_facture']) ? $bdc['numero_facture'] : $bdc['immatriculation']) . "</td>";
-                    $table .= "<td>" . $bdc['nom_complet'] . "</td>";
-                    $table .= "<td>" . $bdc['date'] . "</td>";
+                    $table .= "<td>" . (isset($facture['numero_facture']) ? $facture['numero_facture'] . " (" . $facture['immatriculation'] . ")" : $facture['immatriculation']) . "</td>";
+                    $table .= "<td>" . $facture['marque'] . "</td>";
+                    $table .= "<td>" . $facture['modele'] . "</td>";
+                    $table .= "<td>" . $vh_infos['categorie'] . "</td>";
+                    $table .= "<td>" . $vh_infos['finition'] . "</td>";
+                    $table .= "<td>" . $vh_infos['provenance'] . "</td>";
+                    $table .= "<td>" . $vh_infos['date_immatriculation'] . "</td>";
+                    $table .= "<td>" . $facture['immatriculation'] . "</td>";
+                    $table .= "<td>" . $facture['nom_acheteur'] . "</td>";
+                    $table .= "<td>" . $facture['prix_vente_vehicule_HT'] . "</td>";
+                    $table .= "<td> " . $duree_location . " </td>";
+                    $table .= "<td> " . $duree_stock . " </td>";
+                    $table .= "<td class='bold_total_12'>" . $calcul_marge . "</td>";
+                    $table .= "<td>" . $facture['nom_complet'] . "</td>";
+                    $table .= "<td>" . $facture['nom_cvo'] . "</td>";
+                    $table .= "<td>" . $facture['date_facture'] . "</td>";
+                    $table .= "<td>" . $facture['destination_vente'] . "</td>";
+                    $table .= "<td>" . $vh_infos['mva'] . "</td>";
+                    $table .= "<td>" . $vh_infos['reference_lot'] . " </td>";
+                    $table .= "<td>" . $vh_infos['km_wizard'] . " </td>";
                     $table .= "</tr>";
 
                 }

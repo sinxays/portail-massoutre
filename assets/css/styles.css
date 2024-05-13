@@ -698,6 +698,33 @@ img {
     margin-top: 20px;
   }
 
+  .my_form_shop_ext {
+    width: 100%;
+    height: 120px;
+    border: #19181B 1px solid;
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: nowrap;
+    border-radius: 5px;
+    padding: 20px;
+  }
+
+  #div_shop_ext_1 {
+    display: flex;
+    height: auto;
+    align-items: center;
+    justify-content: space-between;
+    width: 500px;
+  }
+
+  #div_shop_ext_2 {
+    display: flex;
+    height: auto;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
+  }
+
   .my_form_marge {
     width: 100%;
     height: 120px;
@@ -1201,4 +1228,16 @@ img {
   width: fit-content;
   color: #8e0000;
   cursor: pointer;
+}
+
+.bold_total_16 {
+  color: red;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.bold_total_12 {
+  color: rgb(6, 110, 0);
+  font-weight: bold;
+  font-size: 10px;
 }

@@ -28,12 +28,7 @@
         <div class="header__container">
             <img src="../assets/img/perfil.jpg" alt="" class="header__img">
 
-            <a href="#" class="header__logo"> </a>
-
-            <div class="header__search">
-                <input type="search" placeholder="Search" class="header__input">
-                <i class='bx bx-search header__icon'></i>
-            </div>
+            <a href="#" class="header__logo">  </a>
 
             <div class="header__toggle">
                 <i class='bx bx-menu' id="header-toggle"></i>
@@ -57,22 +52,41 @@
         <form class="my_form_stats_loc">
 
             <div class="my_div_form">
+
                 <label for="afficherType_select">Provenance du vh (Type)</label>
-                <select class="form-select" id="select_provenance_vh">
+                <select class="form-select" id="select_provenance_vh" name="afficherType_select" style="width: 150px;">
                     <option selected value="1" style="color:green;font-weight:bold;">Locations</option>
                     <option value="2" style="color:red;font-weight:bold;">Negoce</option>
                 </select>
+
             </div>
 
-            <!--<div class="my_div_form">
-                <label for="afficherResultats_select">Résultats</label>
-                <select class="form-select" id="afficherResultats_select">
-                    <option selected value="tous">Tous</option>
-                    <option value="positif" style="color:green;font-weight:bold;">Positifs</option>
-                    <option value="negatif" style="color:red;font-weight:bold;">Négatifs</option>
+            <div class="my_div_form">
+
+                <label for="select_date_suivi_bdc">Date</label>
+                <select class="form-select" id="select_date_suivi_bdc" name="select_date_suivi_bdc"
+                    style="width : 200px;">
+                    <option value=0> Mois en cours </option>
+                    <option value=1> Mois précédent</option>
+                    <option value=2>personnalisée</option>
                 </select>
+
             </div>
--->
+
+            <div class="my_div_form" id="date_personnalisees_div" style="display:none">
+                <div class="my_div_form" id="div_date_debut">
+                    <label for="date_suivi_bdc_debut">Date Début</label>
+                    <input type="date" id="date_suivi_bdc_debut" style="border-radius: 5px;"
+                        placeholder="Date de début payplan" />
+                </div>
+                <div class="my_div_form" id="div_date_fin" style="display:none">
+                    <label for="date_suivi_bdc_fin">Date Fin</label>
+                    <input type="date" id="date_suivi_bdc_fin" style="border-radius: 5px;"
+                        placeholder="Date de fin payplan" />
+                </div>
+                <button type="button" class="btn btn-success" disabled id="btn_valider_date_perso">Valider date</button>
+            </div>
+
 
             <!-- <div class="my_div_form">
                 <label for="afficher_cvo">CVO</label>
@@ -102,20 +116,15 @@
         <br />
 
 
-            <div id="div_recup_date_bdc">
-        <label for="date_recup_bdc">Date BDC à récupérer</label>
-        <input type="date" id="date_recup_bdc" style="border-radius: 5px;" placeholder="Date BDC à récupérer" />
+        <div id="div_recup_date_bdc">
+            <label for="date_recup_bdc">Date BDC & Factures à récupérer</label>
+            <input type="date" id="date_recup_bdc" style="border-radius: 5px;" placeholder="Date BDC à récupérer" />
 
-        <button disabled type="button" class="btn btn-success" style="text-align: center;margin-left: 10px;"
-            id="btn_alimenter_suivi_ventes_bdc"><span>Recup BDC</span> </button>
+            <button disabled type="button" class="btn btn-success" style="text-align: center;margin-left: 10px;"
+                id="btn_alimenter_suivi_ventes_bdc"><span>Recup BDC</span> </button>
 
 
-
-        <label for="date_recup_factures">Date Factures à récupérer</label>
-        <input type="date" id="date_recup_factures" style="border-radius: 5px;" placeholder="Date factures à récupérer" />
-
-        <button disabled type="button" class="btn btn-success" style="text-align: center;margin-left: 10px;"
-            id="btn_alimenter_suivi_ventes_factures"><span>Recup Factures</span> </button>
+        </div>
 
 
         <?php
@@ -123,6 +132,8 @@
         saut_de_ligne();
 
         ?>
+
+        <div id="loader" style="display:none;">Chargement...</div>
 
         <span id="table_stats_suivi_bdc_particuliers"></span>
         <br />
