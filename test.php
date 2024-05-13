@@ -58,7 +58,7 @@
     // get_test_by_immat("BT953AN");
 
     
-    update_payplan_by_immat("BT953AN");
+    update_payplan_by_immat("534EXA91");
 
 
     ?>
