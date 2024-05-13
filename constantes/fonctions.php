@@ -3018,17 +3018,16 @@ function get_commission_by_immat($immat)
     LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
     WHERE vehicules.immatriculation = '$immat' AND vehicules.deleted = 0 ");
 
-        echo $request->queryString;
-        saut_de_ligne();
-        echo $request->errorCode();
+        // echo $request->queryString;
+        // saut_de_ligne();
+        // echo $request->errorCode();
 
         $commission = $request->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
         echo "Erreur lors de l'exécution de la requête : " . $e->getMessage();
 
     }
-    var_dump($commission);
-    die();
+
 
     return $commission;
 }
