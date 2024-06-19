@@ -121,7 +121,7 @@
             <input type="date" id="date_recup_bdc" style="border-radius: 5px;" placeholder="Date BDC à récupérer" />
 
             <button disabled type="button" class="btn btn-success" style="text-align: center;margin-left: 10px;"
-                id="btn_alimenter_suivi_ventes_bdc"><span>Recup BDC</span> </button>
+                id="btn_alimenter_suivi_ventes_bdc"><span>Recup BDC & Factures</span> </button>
 
 
         </div>
@@ -133,7 +133,15 @@
 
         ?>
 
-        <div id="loader" style="display:none;">Chargement...</div>
+
+        <div class="elements_row">
+            <div class="lds-ellipsis" id="loader" style="display:none;">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
 
         <span id="table_stats_suivi_bdc_particuliers"></span>
         <br />

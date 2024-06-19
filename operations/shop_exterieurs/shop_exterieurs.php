@@ -7,6 +7,7 @@
 
     <!--========== BOX ICONS ==========-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 
     <!--========== CSS ==========-->
 
@@ -53,7 +54,6 @@
 
         <H2> SHOP EXTERIEURS </H2>
 
-
         <form class="my_form_shop_ext">
 
             <div id="div_shop_ext_1">
@@ -70,15 +70,17 @@
             </div>
             <div id="div_shop_ext_2">
                 <div id="div_shop_ext_2_1">
-                    <button type="button" class="btn btn-success" disabled id="btn_creer_shop_ext">Ajout Shop
-                        Ext</button>
+                    <button type="button" class="btn btn-success" id="btn_creer_shop_ext">Ajout Shop Ext</button>
                 </div>
             </div>
 
 
         </form>
 
-        <br /> <br />
+
+        <br />
+        <div id="loader" style="display:none;">Chargement...</div>
+        <br />
 
         <span id="table_shop_exterieur"></span>
 
@@ -94,9 +96,10 @@
 
     <!--========== MAIN JS ==========-->
 
-    <script src="../assets/js/jquery-3.6.0.min.js"></script>
-    <script src="../assets/js/main.js"></script>
-    <script src="../assets/js/shop_exterieurs.js"></script>
+    <script src="/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/shop_exterieurs.js"></script>
+
 </body>
 
 </html>

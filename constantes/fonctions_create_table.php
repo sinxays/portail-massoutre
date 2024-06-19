@@ -647,6 +647,22 @@ function create_header_row($header)
     return $return;
 }
 
+function create_header_row_shop_ext($header)
+{
+    $return = "";
+    $return .= "<tr class='tr_header_shop_ext'>";
+    $return .= "<td colspan='7' id='td_info_vehicule'>Infos véhicule</td>";
+    $return .= "<td colspan='3' id='td_info_panne'>Infos Panne</td>";
+    $return .= "<td colspan='6' id='td_info_action'>Actions</td>";
+    $return .= "</tr>";
+    $return .= "<tr class='tr_sticky'>";
+    foreach ($header as $title_header) {
+        $return .= "<th class='th3'> $title_header </th>";
+    }
+    $return .= "</tr>";
+    return $return;
+}
+
 
 
 function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $filtre_date)
@@ -671,6 +687,21 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
 
     $query_date = http_build_query($data_date);
 
+    
+    $array_date_cumul = array(
+        'value_selected' => $filtre_date['value_selected'],
+        'date' => array(
+            'date_personnalise_debut' => "2024-02-22",
+            'date_personnalise_fin' => date('Y-m-d')
+        )
+    );
+
+    $data_date_cumul = array(
+        'filtre_date' => $array_date_cumul
+    );
+
+    $query_date_cumul =  http_build_query($data_date_cumul);
+
 
     switch ($type_provenance) {
 
@@ -685,18 +716,26 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
 
             $total_bdc = 0;
             $total_factures = 0;
+            $total_bdc_cumul = 0;
+            $total_factures_cumul = 0;
 
             //contenu
             foreach ($cvos as $cvo) {
 
-                //données
+                //données MOIS
                 $nbre_bdc = get_nbre_bdc_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance, $filtre_date);
                 $total_bdc += $nbre_bdc;
                 $nbre_factures = get_nbre_factures_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance, $filtre_date);
                 $total_factures += $nbre_factures;
-                // $nbre_factures_total_N1 = get_nbre_factures_total_N1_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance);
+
+                 //données CUMUL
+                $nbre_bdc_cumul = get_nbre_bdc_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance);
+                $total_bdc_cumul += $nbre_bdc_cumul;
+                $nbre_factures_cumul = get_nbre_factures_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance);
+                $total_factures_cumul += $nbre_factures_cumul;
+
                 $nbre_factures_total_N1 = 0;
-                $variation_factures = calcul_variation();
+                $variation_factures = 0;
 
                 //remplissage tableau
                 $table_suivi_bdc .= "<tr>";
@@ -704,6 +743,8 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
                 //si c'est destination particulier on prend le nombre de BDC en cours
                 $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=bdc&$query_date'>" . $nbre_bdc . " </a></td>";
                 $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date'>" . $nbre_factures . "</a></td>";
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=bdc&$query_date_cumul'>" . $nbre_bdc_cumul . " </a></td>";
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date_cumul'>" . $nbre_factures_cumul . "</a></td>";
                 $table_suivi_bdc .= "<td class='td_n1'>" . $nbre_factures_total_N1 . "</td>";
                 $table_suivi_bdc .= "<td class='td_n'>" . $variation_factures . "</td>";
                 $table_suivi_bdc .= "</tr>";
@@ -714,6 +755,8 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
             $table_suivi_bdc .= "<td class='td_n'> TOTAL </td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'>" . $total_bdc . "</td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'> " . $total_factures . " </td>";
+            $table_suivi_bdc .= "<td class='td_n bold_total_16'> " . $total_bdc_cumul . " </td>";
+            $table_suivi_bdc .= "<td class='td_n bold_total_16'> " . $total_factures_cumul . " </td>";
             $table_suivi_bdc .= "</tr>";
 
 
@@ -734,36 +777,51 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
 
             $total_bdc = 0;
             $total_factures = 0;
+            $total_bdc_cumul = 0;
+            $total_factures_cumul = 0;
 
             //contenu
             foreach ($cvos as $cvo) {
 
-                //données 
+                //MOIS PAR MOIS 
                 $nbre_bdc = get_nbre_bdc_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance, $filtre_date);
                 $total_bdc += $nbre_bdc;
                 $nbre_factures = get_nbre_factures_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance, $filtre_date);
                 $total_factures += $nbre_factures;
+                //CUMUL
+                $nbre_bdc_cumul = get_nbre_bdc_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance);
+                $total_bdc_cumul += $nbre_bdc_cumul;
+                $nbre_factures_cumul = get_nbre_factures_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance);
+                $total_factures_cumul += $nbre_factures_cumul;
+
+                $nb_vh_et_marge_totale_et_moyenne_factures_n1 = get_nb_vh_et_marge_totale_et_moyenne_factures_n1($cvo['ID'], $destination_vente, $type_provenance, $filtre_date);
+                $variation_nb_vh_factures = calcul_variation("vehicule", $nb_vh_et_marge_totale_et_moyenne_factures_n1, $nbre_factures);
+                // $variation_nb_vh_factures = 0;
 
                 //remplissage tableau
                 $table_suivi_bdc .= "<tr>";
                 $table_suivi_bdc .= "<td class='td_n'> " . $cvo['nom_cvo'] . " </td>";
                 $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=bdc&$query_date'>" . $nbre_bdc . " </a></td>";
                 $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date'>" . $nbre_factures . "</a></td>";
-                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=bdc&$query_date'>" . $nbre_bdc_cumul . " </a></td>";
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date'>" . $nbre_factures_cumul . "</a></td>";
+                $table_suivi_bdc .= "<td class='td_n1'>" . $nb_vh_et_marge_totale_et_moyenne_factures_n1['nb_vh_factures_total_n1'] . "</td>";
+                $table_suivi_bdc .= "<td class='td_n'>" . $variation_nb_vh_factures . " %</td>";
+                $table_suivi_bdc .= "<td class='td_n'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'>" . $nb_vh_et_marge_totale_et_moyenne_factures_n1['marge_totale_n1'] . "</td>";
                 $table_suivi_bdc .= "<td class='td_n'>0</td>";
                 $table_suivi_bdc .= "<td class='td_n'>0</td>";
-                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
-                $table_suivi_bdc .= "<td class='td_n'>0</td>";
-                $table_suivi_bdc .= "<td class='td_n'>0</td>";
-                $table_suivi_bdc .= "<td class='td_n1'>0</td>";
+                $table_suivi_bdc .= "<td class='td_n1'> " . $nb_vh_et_marge_totale_et_moyenne_factures_n1['moyenne_totale_n1'] . "</td>";
                 $table_suivi_bdc .= "<td class='td_n'>0</td>";
                 $table_suivi_bdc .= "</tr>";
             }
             //ligne total
-            $table_suivi_bdc .= "<tr>";
+            $table_suivi_bdc .= "<tr style='background:#DADADA'>";
             $table_suivi_bdc .= "<td class='td_n'> TOTAL </td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'>" . $total_bdc . "</td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'> " . $total_factures . " </td>";
+            $table_suivi_bdc .= "<td class='td_n bold_total_16'>" . $total_bdc_cumul . "</td>";
+            $table_suivi_bdc .= "<td class='td_n bold_total_16'> " . $total_factures_cumul . " </td>";
             $table_suivi_bdc .= "</tr>";
 
             //fin contenu
@@ -779,4 +837,74 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
     // var_dump($return);
 
     return $return;
+}
+
+
+function create_table_shop_exterieurs($header, $categorie)
+{
+    //données
+    $liste_shop_exterieurs = get_liste_shop_exterieurs($categorie);
+
+    $table_shop_exterieurs = "";
+
+    $table_shop_exterieurs .= "<table class='my_tab_perso'>";
+    //header
+    $table_shop_exterieurs .= create_header_row_shop_ext($header);
+    //fin header
+
+    //contenu
+    foreach ($liste_shop_exterieurs as $shop_ext) {
+
+        $compteur_immo = get_compteur_immo($shop_ext['date_declaration'], $shop_ext['ID']);
+        $last_action = get_last_action($shop_ext['ID']);
+
+        //remplissage tableau
+        $table_shop_exterieurs .= "<tr>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['immatriculation'] . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['modele'] . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['mva'] . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['kilometrage'] . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . ($shop_ext['garantie'] == 0 ? 'non' : 'oui') . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['num_contrat'] . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n' style='max-width:30px'> " . $compteur_immo . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['date_declaration'] . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['type_panne_libelle'] . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['localisation'] . " </td>";
+
+        if (isset($shop_ext['last_action']) && $shop_ext['last_action'] !== '') {
+            $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['last_action']['date_action'] . " - " . $shop_ext['last_action']['action'] . " </td>";
+            $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['last_action']['remarque'] . " </td>";
+            $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['last_action']['is_factured'] . " </td>";
+            $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['last_action']['montant_facture'] . " </td>";
+        } else {
+            $table_shop_exterieurs .= "<td class='td_n'> </td>";
+            $table_shop_exterieurs .= "<td class='td_n'> </td>";
+            $table_shop_exterieurs .= "<td class='td_n'> </td>";
+            $table_shop_exterieurs .= "<td class='td_n'> </td>";
+        }
+
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['date_demande_recup'] . " </td>";
+
+        if ($shop_ext['date_recup'] && $shop_ext['agence_recup']) {
+            $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['date_recup'] . " (" . $shop_ext['agence_recup'] . ") </td>";
+        } else {
+            $table_shop_exterieurs .= "<td class='td_n'>  </td>";
+        }
+        $table_shop_exterieurs .= "<td class='td_n' style='width:80px'>";
+        $table_shop_exterieurs .= "<a href='modif_shop_exterieur.php?id=" . $shop_ext['ID'] . "' style='margin-right:10px' title='Modifier'>
+        <box-icon name='edit'></box-icon>
+        </a>";
+        $table_shop_exterieurs .= "<a title='lecture en détail' href='lecture_shop_exterieur.php?id=" . $shop_ext['ID'] . "'><box-icon name='file-find'></box-icon></a>";
+
+        $table_shop_exterieurs .= "</td>";
+
+        $table_shop_exterieurs .= "</tr>";
+    }
+    //fin contenu
+    $table_shop_exterieurs .= "</table> ";
+
+
+    // var_dump($table_shop_exterieurs);
+
+    return $table_shop_exterieurs;
 }

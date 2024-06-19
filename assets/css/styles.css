@@ -143,6 +143,12 @@ body {
   color: var(--text-color);
 }
 
+#div_test {
+  display: flex;
+  flex-direction: column;
+  margin-top: 100px;
+}
+
 h3 {
   margin: 0;
 }
@@ -463,7 +469,7 @@ img {
 
   /***************************** Mon table perso *****************************/
   .my_tab_perso {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial;
     border-collapse: collapse;
     margin: 0px 10px 0px 10px;
     font-size: 70%;
@@ -475,12 +481,28 @@ img {
     padding: 8px;
   }
 
+  .my_tab_shop_ext_action {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    margin: 0px 10px 0px 10px;
+    font-size: 100%;
+    width: 90%;
+    margin: auto;
+  }
+
+  .my_tab_shop_ext_action td,
+  .my_tab_shop_ext_action th {
+    border: 1px solid #000000;
+    padding: 8px;
+  }
 
 
   /* pour une ligne sur deux en grisé , even pour les lignes paires */
-  .my_tab_perso tr:nth-child(even) {
+  .my_tab_perso tr:nth-child(even),
+  .my_tab_shop_ext_action:nth-child(even) {
     background-color: #f2f2f2;
   }
+
 
   .my_tab_payplan tr:nth-child(even),
   .my_tab_commission tr:nth-child(even),
@@ -488,9 +510,19 @@ img {
     background-color: #f2f2f2;
   }
 
-  .my_tab_perso tr:hover {
+  .my_tab_perso tr:hover tr:hover {
     background-color: #ddf0ff;
   }
+
+  .my_tab_shop_ext_action thead:first-of-type {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #aaadff;
+    color: white;
+  }
+
+
 
   .my_tab_perso .th0 {
     padding-top: 12px;
@@ -523,6 +555,8 @@ img {
     background-color: #67b3ef;
     color: white;
   }
+
+
 
   .my_tab_perso .td_n1 {
     background-color: #fcdada;
@@ -701,12 +735,13 @@ img {
   .my_form_shop_ext {
     width: 100%;
     height: 120px;
-    border: #19181B 1px solid;
+    /* border: #19181B 1px solid; */
     margin-top: 20px;
     display: flex;
     flex-wrap: nowrap;
     border-radius: 5px;
     padding: 20px;
+    background: #e6e6e6;
   }
 
   #div_shop_ext_1 {
@@ -714,7 +749,11 @@ img {
     height: auto;
     align-items: center;
     justify-content: space-between;
-    width: 500px;
+    width: 600px;
+  }
+
+  #div_shop_ext_1_1 {
+    margin-right: 20px;
   }
 
   #div_shop_ext_2 {
@@ -722,7 +761,7 @@ img {
     height: auto;
     align-items: center;
     justify-content: flex-end;
-    width: auto;
+    width: 100%;
   }
 
   .my_form_marge {
@@ -805,7 +844,7 @@ img {
 
 .lds-ellipsis div {
   position: absolute;
-  top: 33px;
+  top: 23px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -923,8 +962,227 @@ img {
   height: 800px;
 }
 
+.container_form_ajout_shop_ext {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  /* border: 2px solid #fe8f8f; */
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.container_form_modif_lecture_shop_ext {
+  /* padding: 40px; */
+  display: flex;
+  flex-direction: column;
+  /* border: 2px solid #fe8f8f; */
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+  transform: scale(0.7);
+  /* Mise à l'échelle à 70% */
+  transform-origin: top left;
+  /* Origine de la transformation */
+  margin: 0;
+  padding: 0;
+  width: 125%;
+  /* Inverse de 80% pour compenser la réduction */
+  height: 125%;
+  /* Inverse de 80% pour compenser la réduction */
+  overflow: hidden;
+  /* Pour éviter les barres de défilement */
+}
+
+
+
+.container_form_modif_lecture_shop_ext_1 {
+  padding: 40px;
+  display: flex;
+  flex-direction: row;
+  /* border: 2px solid #fe8f8f; */
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.container_form_modif_lecture_shop_ext_2 {
+  padding: 0px 40px 20px 40px;
+  height: 100%;
+  width: 100%;
+}
+
+.container_form_modif_lecture_shop_ext_3 {
+  padding: 20px 40px 60px 40px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  /* border: 2px solid #fe8f8f; */
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.container_form_modif_lecture_shop_ext_3>* {
+  margin-right: 150px;
+}
+
+.container_form_modif_lecture_shop_ext_3>*:last-child {
+  margin-right: 0;
+  /* Supprime l'espacement à droite du dernier élément */
+}
+
+
+.input-group-text_date_recup {
+  background: #6fff7b;
+}
+
+
+.ajout_shop_categorie {
+  display: flex;
+  flex-direction: column;
+  /* border: 2px solid #fe8f8f; */
+  border-radius: 10px;
+  height: 100%;
+  width: 50%;
+  background-color: rgb(234, 234, 234);
+  margin-bottom: 20px;
+  margin-right: 50px;
+}
+
+.ajout_shop_categorie_action {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(234, 234, 234);
+}
+
+#btn_ajout_action {
+  background: rgb(136, 132, 255);
+}
+
+.ajout_shop_categorie:last-child {
+  margin-right: 0px;
+}
+
+.div_contenu_label {
+  height: 300px;
+}
+
+.div_contenu_label_action {
+  height: 100%;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.div_form_vh_row {
+  padding: 10px;
+  display: flex;
+  gap: 20px;
+  /* border: 2px solid #fe8f8f; */
+  /* height: 70px; */
+  /* margin-bottom: 20px; */
+}
+
+.element_champ {
+  display: flex;
+  flex-direction: column;
+}
+
+.div_form_vh_column {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* border: 2px solid #fe8f8f; */
+  height: 100%;
+}
+
+.div_form_vh_column input {
+  margin-bottom: 10px;
+}
+
+.div_form_vh_label {
+  border: 2px solid #ffffff;
+  background-color: rgb(96, 138, 255);
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+.div_form_vh_label span {
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  font-size: 20px;
+}
+
 .div_form_ajout {
   margin: 10px;
+}
+
+.radio_group {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.radio_group span {
+  margin-right: 20px;
+  /* Espacement entre "Garantie" et les boutons radio */
+}
+
+.radio_group label {
+  margin-right: 20px;
+}
+
+#btn_ajout_shop_ext {
+  height: 50px;
+  width: 350px;
+}
+
+/* #modal_ajout_action {
+  display: none; 
+} */
+
+#my_modal_header_ajout_action {
+  background: #31a6ff;
+  color: white;
+}
+
+.modal_ajout_action_body {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+}
+
+.modal_ajout_action_body>div {
+  margin-bottom: 15px;
+}
+
+
+#btn_modif_shop_ext {
+  height: 100px;
+  width: 550px;
+  background: #50D14A;
+}
+
+
+.div_ajout_action {
+  padding: 20px;
+  gap: 10px;
+  height: 100%;
+}
+
+.div_validation_modif {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 
@@ -1240,4 +1498,26 @@ img {
   color: rgb(6, 110, 0);
   font-weight: bold;
   font-size: 10px;
+}
+
+.tr_header_shop_ext td {
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  border: 1px #d1d1d1 solid;
+}
+
+#td_info_vehicule {
+  background-color: #7affa4;
+  color: white;
+}
+
+#td_info_panne {
+  background-color: #8e0000;
+  color: yellow;
+}
+
+#td_info_action {
+  background-color: #31a6ff;
+  color: #bcffc2;
 }

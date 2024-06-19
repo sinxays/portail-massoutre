@@ -2,9 +2,6 @@ $(document).ready(function () {
 
     $('#loader').show();
 
-    let type = $("#type_tableau");
-    // load le tableau suivi bdc
-
     let date_select = {};
     date_select['value_selected'] = '0';
 
@@ -78,7 +75,7 @@ $(document).ready(function () {
                 date: date_bdc
             },
             success: function () {
-                location.reload(true);
+                // location.reload(true);
             }
         });
 

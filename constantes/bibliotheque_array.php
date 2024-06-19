@@ -123,12 +123,12 @@ $commission_table_header_row = array(
     "Mois Vente"
 );
 
-$suivi_bdc_Locations_particuliers_table_header_row = array("Particuliers", "NB VH sur BDC", "NB VH Facturés", "BDC facturés total N-1", "Variation");
-$suivi_bdc_Locations_marchands_table_header_row = array("Marchands", "Nombre VH sur BDC", "Nombre VH Facturés", "Nombre VH Facturés total N-1", "Variation");
-$suivi_bdc_Locations_particuliersAndMarchands_table_header_row = array("Particuliers/Marchands", "Nombre VH sur BDC J-1", "Nombre VH sur BDC en cours", "Variation %", "Nombre VH sur BDC N-1", "Variation sur total N-1", "Nombre VH facturés J-1", "Nombre VH facturé en cours", "Variation % a date", "Nombre de VH", "Variation % sur total");
+$suivi_bdc_Locations_particuliers_table_header_row = array("Particuliers", "VH sur BDC", "VH Facturés", "VH sur BDC CUMUL", "VH Facturés CUMUL", "VH facturés total N-1", "Variation");
+$suivi_bdc_Locations_marchands_table_header_row = array("Marchands", "VH sur BDC", "VH Facturés", "VH sur BDC CUMUL", "VH Facturés CUMUL", "VH Facturés total N-1", "Variation");
+$suivi_bdc_Locations_particuliersAndMarchands_table_header_row = array("Particuliers/Marchands", "VH sur BDC J-1", "VH sur BDC en cours", "Variation %", "VH sur BDC N-1", "Variation sur total N-1", "VH facturés J-1", "VH facturé en cours", "Variation % a date", "Nombre de VH", "Variation % sur total");
 
-$suivi_bdc_Negoce_particuliers_tableau_header_row = array("Partiuliers", "NB VH sur BDC", "NB VH Facturés", "Nombre VH Facturés total N-1", "Variation", "Marge totale", "Marge Totale N1", "Variation Marge", "Moyenne Marge facturé", "Moyenne Marge facturé N-1", "Variation Moyenne Marge");
-$suivi_bdc_Negoce_marchands_tableau_header_row = array("Marchands", "NB VH sur BDC", "NB VH Facturés", "Nombre VH Facturés total N-1", "Variation", "Marge totale", "Marge Totale N1", "Variation Marge", "Moyenne Marge facturé", "Moyenne Marge facturé N-1", "Variation Moyenne Marge");
+$suivi_bdc_Negoce_particuliers_tableau_header_row = array("Partiuliers", "VH sur BDC", "VH Facturés", "VH sur BDC CUMUL", "VH Facturés CUMUL", "VH Facturés total N-1", "Variation", "Marge totale", "Marge Totale N1", "Variation Marge", "Moyenne Marge facturé", "Moyenne Marge facturé N-1", "Variation Moyenne Marge");
+$suivi_bdc_Negoce_marchands_tableau_header_row = array("Marchands", "VH sur BDC", "VH Facturés", "VH sur BDC CUMUL", "VH Facturés CUMUL", "Nombre VH Facturés total N-1", "Variation", "Marge totale", "Marge Totale N1", "Variation Marge", "Moyenne Marge facturé", "Moyenne Marge facturé N-1", "Variation Moyenne Marge");
 $suivi_bdc_Negoce_particuliersAndMarchands_tableau_header_row = array("Particuliers/Marchands", "BDC en cours", "BDC à date mois N-1", "Variation %", "BDC total M-1", "Marge en cours", "Marge à date mois N-1", "Variation %", "Marge totale N-1", "Variation à date sur mois total", "Nbre de facturé mois en cours", "Nbre facture à date N-1", "Variation %", "Nbre total factures N-1", "Marge facture mois en cours", "Marge factures mois en cours N-1", "Variation %", "Marge Totale N-1", "Variation à date N-1");
 
 $payplan_table_header_row = array("Immatriculation", "Parc Achat", "Marge", "Acheteur", "Com Acheteur", "Repreneur Final", "Vendeur", "Com Vendeur", "Date d'Achat", "Date de Facturation");
@@ -137,10 +137,11 @@ $payplan_detail_reprise_collaborateur_table_header_row = array("Immatriculation"
 
 $payplan_detail_achat_collaborateur_table_header_row = array("Immatriculation", "Parc Achat", "Date Achat");
 
-
 $collaborateurs_payplan_header_row = array("Collaborateur", "Reprise");
 
 $table_payplan_reprise_achat_header_row = array("Collaborateur", "Repreneur final", "Achat", "Achat MVC", "PACK_FIRST");
+
+$shop_exterieurs_table_header_row = array("Immatriculation", "Modele", "MVA", "KM", "Garantie", "Numéro contrat", "Compteur Immo", "Date déclaration", "Type Panne", "Localisation", "Date + Derniere action", "Remarque", "Payé?", "Montant(€)", "Date demande récup", "Date récup + code agence", "  ");
 
 
 $imprimantes_table_header_row = array(

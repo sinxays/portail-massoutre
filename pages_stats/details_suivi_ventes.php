@@ -58,6 +58,7 @@
 
         echo "<span>" . $header['nom_cvo'] . " | Type : " . $header['type'] . " | " . $header['destination_vente'] . " | Provenance : " . $header['type_provenance'] . "</span>";
 
+
         saut_de_ligne();
 
         $table = '';
@@ -123,10 +124,20 @@
                 $liste_detail = get_factures_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance, $filtre_date);
                 foreach ($liste_detail as $nb => $facture) {
                     $frais_vo = get_frais_vo_by_immat($facture['immatriculation']);
+
+                    // echo $type_provenance;
+                    // echo $destination_vente;
+                    // var_dump($facture);
+                    // echo $frais_vo;
+
+                    // die();
+
                     $calcul_marge = calcul_marge($type_provenance, $destination_vente, $facture, $frais_vo);
                     $vh_infos = get_infos_vehicules_portail_bleu($facture['immatriculation']);
                     $duree_location = get_duree_locations($facture['immatriculation']);
                     $duree_stock = get_duree_stock($facture['immatriculation'], $type);
+
+                    
 
 
                     $table .= "<tr>";

@@ -17,9 +17,14 @@
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../assets/css/styles.css">
 
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</head>
 
 
-    <title>Portail Massoutre - test</title>
+
+<title>test</title>
 </head>
 
 <body>
@@ -44,21 +49,40 @@
     </header>
 
     <!--========== NAV ==========-->
-    <?php
 
-    include "right_menubar.php";
-    include "include.php";
+    <div id="div_test">
+        <?php
 
-
-    ini_set('max_execution_time', 0);
-
+        include "right_menubar.php";
+        include "include.php";
 
 
-    // get_holding_cost_total("GB401HV");
-    // get_test_by_immat("BT953AN");
-
-    
-    update_payplan_by_immat("534EXA91");
+        ini_set('max_execution_time', 0);
 
 
-    ?>
+
+        // get_holding_cost_total("GB401HV");
+        // get_test_by_immat("BT953AN");
+        
+
+        // update_payplan_by_immat("534EXA91");
+        
+
+
+        $test = get_id_destination_vente_by_libelle('VENTE MARCHAND ');
+
+        var_dump($test);
+
+
+
+        ?>
+    </div>
+
+    <br />
+    <br />
+    <br />
+
+
+</body>
+
+</html>

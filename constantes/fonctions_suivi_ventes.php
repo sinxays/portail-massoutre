@@ -3,35 +3,259 @@
 
 use app\Connection;
 
-function alimenter_suivi_ventes_bdc($date_bdc_selected)
+
+ini_set('xdebug.var_display_max_depth', 10);
+ini_set('xdebug.var_display_max_children', 256);
+ini_set('xdebug.var_display_max_data', 1024);
+set_time_limit(0);
+
+
+function alimenter_suivi_ventes_bdc_via_portail($date_bdc_selected)
+{
+    //base portail
+    $pdo2 = Connection::getPDO_2();
+    //base portail_massoutre
+    $pdo = Connection::getPDO();
+
+    // on commence par aller chercher dans la base portail tous les bdc d'une date
+    $request = $pdo2->query("SELECT * FROM bdcventes 
+    WHERE date_dernier_bdc = '$date_bdc_selected'");
+
+    $result_list_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($result_list_bdc as $bdc) {
+
+        //on va d'abord chercher les données véhicules du portail dans la table vehicules
+        $request = $pdo2->query("SELECT vh.immatriculation,vh.destination_id,vh.numero_chassis,marques.libelle AS marque,
+         modelescommerciaux.libelle AS modele,
+         finitions.libelle AS version_vh,
+         vh.prix_achat_ht FROM vehicules AS vh
+         LEFT JOIN marques ON marques.ID = vh.marque_id
+         LEFT JOIN modelescommerciaux ON modelescommerciaux.ID = vh.modelecommercial_id
+         LEFT JOIN finitions ON finitions.ID = vh.finition_id
+         WHERE vh.ID = " . intval($bdc['vehicule_id']) . "");
+        $result_vh = $request->fetch(PDO::FETCH_ASSOC);
+
+
+
+        //on check déja si le bdc existe ou pas
+        $request = $pdo->query("SELECT numero_bdc FROM suivi_ventes_bdc AS bdc
+        WHERE bdc.numero_bdc = " . intval($bdc['numero']) . "");
+        $result_check_bdc = $request->fetch(PDO::FETCH_COLUMN);
+
+        //si pas de BDC alors on le crée
+        if (empty($result_check_bdc)) {
+
+            $vendeur_id = get_id_collaborateur_payplan_by_name($bdc['nom_vendeur']);
+            $destination_sortie = get_destination_sortie($bdc['destination_sortie']);
+            $uuid = get_uuid_from_num_bdc($bdc['numero']);
+
+            //insert du bdc dans suivi_ventes_bdc
+            $data_bdc = [
+                'num_bdc' => $bdc['numero'],
+                'nom_acheteur' => $bdc['nom_client'],
+                'prixTotalHT' => $bdc['montant_ht'],
+                'prixTTC' => $bdc['montant_ttc'],
+                'nom_vendeur' => $vendeur_id,
+                'dateBC' => $bdc['date_dernier_bdc'],
+                'destination_sortie' => $destination_sortie,
+                'uuid' => $uuid
+            ];
+            $sql = "INSERT INTO suivi_ventes_bdc (numero_bdc,nom_acheteur,prix_vente_ht,prix_vente_ttc,vendeur_id,date_bdc,destination_vente,uuid) 
+            VALUES (:num_bdc, :nom_acheteur,:prixTotalHT, :prixTTC,:nom_vendeur, :dateBC,:destination_sortie, :uuid)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data_bdc);
+            $id_bdc_last_inserted = $pdo->lastInsertId();
+
+            /******* On ajoute ensuite le 1er véhicule ( il peut y avoir plusieurs véhicule dans un BDC ) *******/
+
+            $provenance = get_provenance_from_destination_id_portail($result_vh['destination_id']);
+
+            //insert du vh dans suivi_ventes_vh
+            $data_vh = [
+                'immatriculation' => $result_vh['immatriculation'],
+                'provenance' => $provenance,
+                'VIN' => strtoupper($result_vh['numero_chassis']),
+                'marque' => $result_vh['marque'],
+                'modele' => $result_vh['modele'],
+                'version_vh' => $result_vh['version_vh'],
+                'bdc_id' => $id_bdc_last_inserted,
+                'reference_kepler' => NULL,
+                'prix_achat_ht' => $result_vh['prix_achat_ht']
+            ];
+
+            $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
+            VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler,:prix_achat_ht)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data_vh);
+
+
+
+        }
+
+        //sinon si il existe déja le BDC alors c'est surement un BDC avec plusieurs véhicule.
+        // Alors on ajoute juste la ligne véhicule dans suivi_ventes_vehicules
+        else {
+
+            // on vérifie quand même si le vh n'existe déja pas dans la base
+            //on va chercher l'immat
+            $request = $pdo->query("SELECT * FROM suivi_ventes_vehicules       
+               WHERE immatriculation = '" . $result_vh['immatriculation'] . "'");
+            $result_check_vh = $request->fetch(PDO::FETCH_ASSOC);
+
+            //si on trouve pas de véhicule
+            if (!$result_check_vh) {
+
+                $id_bdc = get_id_bdc_liee(intval($result_check_bdc));
+
+
+                //insert du vh dans suivi_ventes_vh
+                $data_vh = [
+                    'immatriculation' => $result_vh['immatriculation'],
+                    'provenance' => $provenance,
+                    'VIN' => strtoupper($result_vh['numero_chassis']),
+                    'marque' => strtoupper($result_vh['marque']),
+                    'modele' => strtoupper($result_vh['modele']),
+                    'version_vh' => $result_vh['version_vh'],
+                    'bdc_id' => $id_bdc,
+                    'reference_kepler' => NULL,
+                    'prix_achat_ht' => $result_vh['prix_achat_ht']
+                ];
+                $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
+                VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler,:prix_achat_ht)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data_vh);
+
+                //on update ensuite les prix ht et TTC du BDC
+
+                //on prend les prix déja dans la base pour ensuite y ajouter les prix du second bdc qui est le même.
+                $request = $pdo->query("SELECT prix_vente_ht,prix_vente_ttc FROM suivi_ventes_bdc WHERE ID = $id_bdc");
+                $result_get_prix = $request->fetch(PDO::FETCH_ASSOC);
+
+                $montant_total_ht = $result_get_prix['prix_vente_ht'] + $bdc['montant_ht'];
+                $montant_total_ttc = $result_get_prix['prix_vente_ttc'] + $bdc['montant_ttc'];
+
+                $data_update_bdc = [
+                    'montant_total_ht' => $montant_total_ht,
+                    'montant_total_ttc' => $montant_total_ttc
+                ];
+
+                $sql = "UPDATE suivi_ventes_bdc SET prix_vente_ht =:montant_total_ht ,  prix_vente_ttc=:montant_total_ttc
+                WHERE ID = $id_bdc";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data_update_bdc);
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+    }
+
+}
+
+function alimenter_suivi_ventes_factures_via_portail()
 {
 
+    //base portail
+    $pdo2 = Connection::getPDO_2();
+    //base portail_massoutre
+    $pdo = Connection::getPDO();
 
+    // $request = $pdo2->query("SELECT * FROM bdcventes 
+    // WHERE date_dernier_bdc = '$date_bdc_selected'");
+
+    //ON RECUPERE LES FACTURES DU PORTAIL 
+    $request = $pdo2->query("SELECT factventes.dernier_numero_facture,factventes.vehicule_id ,
+    factventes.date_facturation,factventes.montant ,factventes.nom_client,factventes.email_client,factventes.telephone1_client,factventes.vendeur_id,factventes.site_id,factventes.destination_sortie,factventes.total_produit,factventes.marge_brute,factventes.marge_nette,
+    adresse.adresse1,adresse.codepostal,adresse.ville,
+    pays.libelle as libelle_pays,
+    utilisateurs.identification as nom_complet_vendeur
+    FROM factureventes AS factventes
+    LEFT JOIN adresses AS adresse ON adresse.ID = factventes.adresse_id
+    LEFT JOIN pays ON pays.id = adresse.pays_id
+    LEFT JOIN utilisateurs ON utilisateurs.id = factventes.vendeur_id
+    WHERE factventes.date_facturation BETWEEN '2024-01-01' AND '2024-06-14'");
+    //  WHERE factventes.date_facturation BETWEEN '2024-01-01' AND '2024-03-14'");
+    $result_list_factures = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    // var_dump($result_list_factures);
+    // die();
+
+    // vérifier tout d'abord si il n'existe pas déja la facture dans ma base suivi_ventes_factures
+    foreach ($result_list_factures as $facture) {
+
+        //on va chercher d'abord si on connait le véhicule dans ma base suivi_ventes_vehicules
+        //on prend le vehicule de la base massoutre et on check si on l'a aussi dans ma base
+        $request = $pdo2->query("SELECT vh.ID,vh.immatriculation,vh.destination_id,vh.numero_chassis,
+            marques.libelle AS marque,
+            modelescommerciaux.libelle AS modele,
+            finitions.libelle AS version_vh,
+            vh.numero_bdc,
+            vh.prix_achat_ht 
+            FROM vehicules as vh
+            LEFT JOIN marques ON marques.ID = vh.marque_id
+            LEFT JOIN modelescommerciaux ON modelescommerciaux.ID = vh.modelecommercial_id
+            LEFT JOIN factureventes AS fact on fact.vehicule_id = vh.ID
+            LEFT JOIN finitions ON finitions.ID = vh.finition_id
+            WHERE fact.vehicule_id = " . $facture['vehicule_id']);
+        $vh_portail = $request->fetch(PDO::FETCH_ASSOC);
+
+
+        // on check si on a le vh chez nous ? 
+        $request = $pdo->query("SELECT * FROM  suivi_ventes_vehicules
+            WHERE immatriculation = '" . $vh_portail['immatriculation'] . "'");
+        $check_vh = $request->fetch(PDO::FETCH_ASSOC);
+
+        //si le vh n'existe pas
+        if (empty($check_vh)) {
+
+            //on get id facture pour le relier au vh
+            $id_facture = get_id_facture_by_num_facture($facture['dernier_numero_facture']);
+
+
+            //insert du vh dans suivi_ventes_vh
+            $provenance = get_provenance_from_destination_id_portail($vh_portail['destination_id']);
+            $data_vh = [
+                'immatriculation' => $vh_portail['immatriculation'],
+                'provenance' => $provenance,
+                'VIN' => strtoupper($vh_portail['numero_chassis']),
+                'marque' => strtoupper($vh_portail['marque']),
+                'modele' => strtoupper($vh_portail['modele']),
+                'version_vh' => $vh_portail['version_vh'],
+                'bdc_id' => NULL,
+                'reference_kepler' => NULL,
+                'prix_achat_ht' => $vh_portail['prix_achat_ht'],
+                'id_facture' => $id_facture,
+            ];
+            $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,facture_id,reference_kepler,prix_achat_ht) 
+                    VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:id_facture,:reference_kepler,:prix_achat_ht)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data_vh);
+        }
+    }
+}
+
+
+
+function alimenter_suivi_ventes_bdc($date_bdc_selected)
+{
     /******************************************  CODE MAIN ******************************************/
-
-    ini_set('xdebug.var_display_max_depth', 10);
-    ini_set('xdebug.var_display_max_children', 256);
-    ini_set('xdebug.var_display_max_data', 1024);
-
-
-    set_time_limit(0);
     // recup données
-
-    $request_bon_de_commande = "v3.1/order-form/";
-
-    $url = "https://www.kepler-soft.net/api/";
-
-    $req_url_BC = $url . "" . $request_bon_de_commande;
-
-
     $j = 1;
 
     $array_datas = array();
 
-    $nb_BC = 0;
-    $nb_lignes = 0;
     $i = 0;
-    $nb_total_vehicules_selling = 0;
 
     $datas_find = true;
 
@@ -390,6 +614,8 @@ function alimenter_suivi_ventes_factures($date_recup_facture)
         $obj = GoCurl_Facture($valeur_token, $req_url, $j, $date_recup_facture);
         $obj_final = $obj->datas;
 
+        // var_dump($obj_final);
+
         if (!empty($obj_final)) {
             $datas_find = true;
 
@@ -428,6 +654,8 @@ function alimenter_suivi_ventes_factures($date_recup_facture)
                                 $array_datas[$i]['source_client'] = $infos_facture['source_client'];
                                 $array_datas[$i]['bdc_liee'] = $infos_facture['bdc_liee'];
                                 $array_datas[$i]['reference_kepler'] = $reference_kepler;
+                                $array_datas[$i]['uuid_facture'] = $infos_facture['uuid_facture'];
+                                ;
 
                                 upload_suivi_ventes_factures($array_datas[$i]);
 
@@ -923,7 +1151,7 @@ function upload_suivi_ventes_bdc($bdc, $uuid)
                 'reference_kepler' => $bdc['reference_kepler'],
                 'prix_achat_ht' => $prix_achat_ht
             ];
-            $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
+            $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
             VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler,:prix_achat_ht)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($data_vh);
@@ -955,7 +1183,7 @@ function upload_suivi_ventes_bdc($bdc, $uuid)
         $stmt->execute($data_bdc);
         $id_bdc_last_inserted = $pdo->lastInsertId();
 
-        // on va chercher dans le portil son prix d'achat
+        // on va chercher dans le portail son prix d'achat
         $prix_achat_ht = get_prix_achat_ht($bdc['immatriculation']);
         $frais_maintenance_estime =
 
@@ -971,7 +1199,7 @@ function upload_suivi_ventes_bdc($bdc, $uuid)
                 'reference_kepler' => $bdc['reference_kepler'],
                 'prix_achat_ht' => $prix_achat_ht
             ];
-        $sql = "INSERT INTO vehicules_suivi_ventes (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
+        $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
         VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler,:prix_achat_ht)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data_vh);
@@ -1015,12 +1243,13 @@ function upload_suivi_ventes_factures($facture)
             'id_destination_vente' => $facture['destination_sortie'],
             'source' => $facture['source_client'],
             'id_bdc' => $id_bdc,
+            'uuid' => $facture['uuid_facture']
         ];
 
         var_dump($data_facture);
 
-        $sql = "INSERT INTO suivi_ventes_factures (numero_facture,date_facture,prix_vente_total_ht,prix_vente_vehicule_HT,nom_acheteur,adresse_acheteur,cp_acheteur,ville_acheteur,pays_acheteur,email_acheteur,tel_acheteur,id_vendeur,id_cvo_vente,id_destination_vente,source,id_bdc) 
-            VALUES (:numero_facture, :date_facture,:prix_vente_total_ht, :prix_vente_vehicule_HT,:nom_acheteur, :adresse_acheteur,:cp_acheteur, :ville_acheteur,:pays_acheteur,:email_acheteur,:tel_acheteur,:id_vendeur,:id_cvo_vente,:id_destination_vente,:source,:id_bdc)";
+        $sql = "INSERT INTO suivi_ventes_factures (numero_facture,date_facture,prix_vente_total_ht,prix_vente_vehicule_HT,nom_acheteur,adresse_acheteur,cp_acheteur,ville_acheteur,pays_acheteur,email_acheteur,tel_acheteur,id_vendeur,id_cvo_vente,id_destination_vente,source,id_bdc,uuid) 
+            VALUES (:numero_facture, :date_facture,:prix_vente_total_ht, :prix_vente_vehicule_HT,:nom_acheteur, :adresse_acheteur,:cp_acheteur, :ville_acheteur,:pays_acheteur,:email_acheteur,:tel_acheteur,:id_vendeur,:id_cvo_vente,:id_destination_vente,:source,:id_bdc,:uuid)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data_facture);
         $id_facture_last_inserted = intval($pdo->lastInsertId());
@@ -1043,16 +1272,15 @@ function upload_suivi_ventes_factures($facture)
             'reference_kepler' => $facture['reference_kepler'],
             'facture_id' => $id_facture_last_inserted
         ];
-        $sql = "UPDATE vehicules_suivi_ventes SET facture_id = :facture_id WHERE reference_kepler = :reference_kepler";
+        $sql = "UPDATE suivi_ventes_vehicules SET facture_id = :facture_id WHERE reference_kepler = :reference_kepler";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
         $stmt->debugDumpParams();
 
     }
 
-
-
 }
+
 
 function get_provenance_vh($typeVoVn)
 {
@@ -1092,8 +1320,8 @@ function get_bdc_from_uuid($uuid)
 {
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT numero_bdc FROM bdc_ventes WHERE uuid = '$uuid' ");
-    $uuid = $request->fetch(PDO::FETCH_COLUMN);
-    return $uuid;
+    $bdc_num = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($bdc_num);
 }
 
 
@@ -1164,10 +1392,14 @@ function get_infos_facture($obj_facture)
     $return['numero_facture'] = $obj_facture->number;
 
     //get nom acheteur
-    if (isset($obj_facture->owner->firstname)) {
-        $return['nom_acheteur'] = $obj_facture->owner->firstname . " " . $obj_facture->owner->lastname;
+    if (isset($obj_facture->owner)) {
+        if (isset($obj_facture->owner->firstname)) {
+            $return['nom_acheteur'] = $obj_facture->owner->firstname . " " . $obj_facture->owner->lastname;
+        } else {
+            $return['nom_acheteur'] = $obj_facture->owner->corporateNameContact;
+        }
     } else {
-        $return['nom_acheteur'] = $obj_facture->owner->corporateNameContact;
+        $return['nom_acheteur'] = "";
     }
 
     //adresse du client
@@ -1234,6 +1466,12 @@ function get_infos_facture($obj_facture)
         $return['bdc_liee'] = $obj_facture->orderForm->number;
     }
 
+
+    //get uuid facture
+    if (isset($obj_facture->uuid) && !empty($obj_facture->uuid)) {
+        $return['uuid_facture'] = $obj_facture->uuid;
+    }
+
     return $return;
 
 }
@@ -1243,7 +1481,7 @@ function get_vh_from_suivi_ventes($limite)
     $pdo = Connection::getPDO();
 
     // on check deja si il existe un numéro de facture identique pour éviter les doublons
-    $request = $pdo->query("SELECT immatriculation FROM vehicules_suivi_ventes WHERE reference_kepler IS NULL LIMIT $limite ");
+    $request = $pdo->query("SELECT immatriculation FROM suivi_ventes_vehicules WHERE reference_kepler IS NULL LIMIT $limite ");
     $liste_vhs = $request->fetchAll(PDO::FETCH_COLUMN);
 
     return $liste_vhs;
@@ -1282,7 +1520,7 @@ function update_reference_kepler($liste_immatriculation)
                 'immatriculation' => $immat_format_xx123xx
 
             ];
-            $sql = "UPDATE vehicules_suivi_ventes SET reference_kepler = :reference_kepler WHERE immatriculation = :immatriculation";
+            $sql = "UPDATE suivi_ventes_vehicules SET reference_kepler = :reference_kepler WHERE immatriculation = :immatriculation";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($data);
         }
@@ -1339,11 +1577,11 @@ function calcul_marge($provenance, $destination_vente, $bdc, $frais_vo)
             switch ($destination_vente) {
                 // destination particulier
                 case 1:
-                    $marge = $bdc['prix_vente_vehicule_HT'] - ($bdc['prix_achat_ht'] + $frais_vo);
+                    $marge = round($bdc['prix_vente_vehicule_HT'] - ($bdc['prix_achat_ht'] + $frais_vo), 2);
                     break;
                 //destination marchands
                 case 2:
-                    $marge = $bdc['prix_vente_vehicule_HT'] - $bdc['prix_achat_ht'];
+                    $marge = round(($bdc['prix_vente_vehicule_HT'] - $bdc['prix_achat_ht']), 2);
                     break;
 
             }
@@ -1395,5 +1633,448 @@ function get_header_details($cvo, $destination_vente, $type_provenance, $type)
     }
 
     return $return;
+
+}
+
+function get_nb_vh_et_marge_totale_et_moyenne_factures_n1($id_cvo, $destination_vente, $type_provenance, $filtre_date)
+{
+
+    switch ($filtre_date['value_selected']) {
+        //mois en cours
+        case '0':
+            // Obtenir la date du début du mois en cours
+            $startOfMonth = new DateTime('first day of this month last year');
+            $startOfMonthFormatted_n1 = $startOfMonth->format('Y-m-d');
+            // On démarre au 15 mars 2023, car j'ai commencé ma récup factures à cette date en 2024
+            $startOfMonthFormatted_n1 = new DateTime("2023-03-15");
+            $date_debut_perso = $startOfMonthFormatted_n1->format("Y-m-d");
+
+            // Obtenir la date du dernier jour du mois en cours
+            $endOfMonth = new DateTime('last day of this month last year');
+            $endOfMonthFormatted_n1 = $endOfMonth->format('Y-m-d');
+            break;
+        //mois précédent
+        case '1':
+            $currentDate = new DateTime();
+            $currentDate->modify('-1 year');
+            $currentDate->modify('-1 month');
+            $currentDate->modify('first day of this month');
+            $startOfMonthFormatted_n1 = $currentDate->format('Y-m-d');
+            // On démarre au 15 mars 2023, car j'ai commencé ma récup factures à cette date en 2024
+            $startOfMonthFormatted_n1 = new DateTime("2023-03-15");
+            $date_debut_perso = $startOfMonthFormatted_n1->format("Y-m-d");
+            $currentDate = new DateTime();
+            $currentDate->modify('-1 year');
+            $currentDate->modify('-1 month');
+            $currentDate->modify('last day of this month');
+            $endOfMonthFormatted_n1 = $currentDate->format('Y-m-d');
+            break;
+    }
+
+    $pdo = Connection::getPDO_2();
+
+
+    $id_cvo_portail = get_id_cvo_portail($id_cvo);
+    $destination_vente_portail = get_destination_vente_portail($destination_vente);
+    $provenance_portail = get_provenance_portail($type_provenance);
+
+    $request = $pdo->query("SELECT factventes.dernier_numero_facture,factventes.marge_brute,factventes.site_id 
+    FROM factureventes as factventes
+    LEFT JOIN vehicules ON vehicules.id = factventes.vehicule_id
+    LEFT JOIN destinations ON destinations.id = vehicules.destination_id
+    WHERE factventes.site_id = $id_cvo_portail 
+    AND factventes.destination_sortie = '$destination_vente_portail'
+    AND destinations.id = $provenance_portail 
+    AND factventes.date_facturation BETWEEN '$date_debut_perso' AND '$endOfMonthFormatted_n1' ");
+    $result_req_factures = $request->fetchAll(PDO::FETCH_ASSOC);
+    // $query = $request->queryString;
+    // var_dump($query);
+
+    $nb_vh_factures_total = $request->rowCount();
+    $marge_totale_n1_factures = calcul_marge_total_factures($result_req_factures);
+    if ($nb_vh_factures_total !== 0) {
+        $moyenne_totale_n1 = $marge_totale_n1_factures / $nb_vh_factures_total;
+    } else {
+        $moyenne_totale_n1 = "pas de vente";
+    }
+
+    // var_dump($moyenne_totale_n1);
+
+    $array_result['nb_vh_factures_total_n1'] = $nb_vh_factures_total;
+    $array_result['marge_totale_n1'] = $marge_totale_n1_factures;
+    $array_result['moyenne_totale_n1'] = round($moyenne_totale_n1);
+
+
+    return $array_result;
+}
+
+function get_id_cvo_portail($id)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT id_cvo_portail FROM cvo WHERE ID = $id");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+
+    return intval($result);
+}
+
+function get_destination_vente_portail($id)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT libelle FROM destination_vente WHERE id = $id");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return $result;
+}
+
+function get_id_destination_vente_by_libelle($libelle)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT id FROM destination_vente WHERE libelle LIKE '" . trim($libelle) . "'");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($result);
+}
+
+function get_provenance_portail($id)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT id_provenance_portail FROM provenance_vo_vn WHERE ID = $id");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($result);
+}
+function get_provenance_from_destination_id_portail($id)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT id_provenance_portail FROM provenance_vo_vn WHERE id_provenance_portail = $id");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($result);
+}
+
+
+
+function calcul_marge_total_factures($array_factures)
+{
+    $marge_totale = 0;
+    foreach ($array_factures as $facture) {
+        $marge_totale = $marge_totale + $facture['marge_brute'];
+    }
+    return round($marge_totale);
+}
+
+function calcul_variation($type, $data_calcul_n1, $data_n)
+{
+    switch ($type) {
+        case "vehicule":
+            //on vérifie qu'on ait des ventes quand même sinon le calcul ne se fera pas et une erreur sera retournée.
+            if ($data_n !== 0 && $data_calcul_n1['nb_vh_factures_total_n1'] !== 0) {
+                $variation = (($data_n - $data_calcul_n1['nb_vh_factures_total_n1']) / $data_calcul_n1['nb_vh_factures_total_n1']) * 100;
+            } else {
+                $variation = 0;
+            }
+            break;
+        case "marge":
+            break;
+        case "moyenne":
+            break;
+    }
+
+    return round($variation, 2);
+
+}
+
+function snapshot_suivi_ventes_pour_histo()
+{
+
+}
+
+
+function get_uuid_from_num_bdc($num_bdc)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT uuid FROM bdc_ventes WHERE numero_bdc = $num_bdc");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    if ($result) {
+        return $result;
+    } else {
+        return NUll;
+    }
+}
+
+function get_id_bdc_from_suivi_ventes_vh($immatriculation)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT bdc_id FROM suivi_ventes_vehicules
+    WHERE immatriculation = '" . $immatriculation . "'");
+    $bdc_id = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($bdc_id);
+}
+
+function get_id_facture_by_num_facture($num_facture)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT ID FROM suivi_ventes_factures
+    WHERE numero_facture = '" . $num_facture . "'");
+    $facture_id = $request->fetch(PDO::FETCH_COLUMN);
+    return intval($facture_id);
+}
+
+function update_bdc_annule($date)
+{
+
+    $j = 1;
+
+    $datas_find = true;
+
+    while ($datas_find == true) {
+
+        // date d'hier
+        // $date = date('Y-m-d', strtotime("-1 day"));
+
+        //date spécifique 
+        // $date = "2024-04-18";
+
+        //recupere la requete !!!!
+        $valeur_token = goCurlToken();
+        $obj = GoCurl_Recup_BDC_ANNULE($valeur_token, $j, $date);
+
+        // var_dump($obj);
+        // die();
+
+        //a ce niveau obj est un object
+
+        //on prends le tableau datas dans obj et ce qui nous fait un array sur obj_final
+        if (!empty($obj)) {
+            $obj_final = $obj->datas;
+        } else {
+            $obj_final = '';
+        }
+
+
+        if (!empty($obj_final)) {
+
+            sautdeligne();
+            sautdeligne();
+
+            /*****************    BOUCLE du tableau de données récupérés *****************/
+
+
+            //on boucle par rapport au nombre de bon de commande dans le tableau datas[]
+            foreach ($obj_final as $keydatas => $keyvalue) {
+
+                //on recupere l'uuid pour retrouver le bon numero de bdc original
+                $uuid = $keyvalue->uuid;
+                $bdc = get_bdc_from_uuid($uuid);
+
+                //si on trouve un bdc dans ma base on le supprime avec son/ses vh(s) associés
+                if (!empty($bdc)) {
+
+                    $pdo = Connection::getPDO();
+                    //on prend l'id du BDC
+                    $request = $pdo->query("SELECT ID FROM suivi_ventes_bdc WHERE numero_bdc = $bdc");
+                    $bdc_id = $request->fetch(PDO::FETCH_COLUMN);
+
+                    //on supprime les vh associés
+                    $data = [
+                        'bdc_id' => $bdc_id,
+                    ];
+                    $sql = "DELETE FROM suivi_ventes_vehicules WHERE bdc_id = :bdc_id ";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($data);
+
+                    // on supprime ensuite le BDC
+                    $data = [
+                        'bdc_id' => $bdc_id,
+                    ];
+                    $sql = "DELETE FROM suivi_ventes_bdc WHERE ID = :bdc_id ";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($data);
+
+                }
+            }
+        }
+        //si il n'y a pas de données
+        else {
+            $datas_find = false;
+            echo "pas de données";
+        }
+        $j++;
+    }
+}
+
+function update_factures_annule($date)
+{
+    $page = 1;
+    $factures_annulees = recup_facture_annule($date, $page);
+
+    // var_dump($factures_annulees);
+
+    foreach ($factures_annulees as $facture) {
+        $uuid = $facture->uuid;
+
+        $pdo = Connection::getPDO();
+        $request = $pdo->query("SELECT * FROM suivi_ventes_factures 
+        WHERE uuid = '$uuid'");
+        $result = $request->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            //on enleve la facture des vhs associés
+            $data = [
+                'id' => intval($result['ID'])
+            ];
+            $sql = "UPDATE suivi_ventes_vehicules SET facture_id = 0 WHERE facture_id=:id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data);
+
+            // on supprime ensuite la facture
+            $data = [
+                'uuid' => $result['uuid']
+            ];
+            $sql = "DELETE FROM suivi_ventes_factures WHERE uuid = :uuid ";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data);
+        }
+    }
+}
+
+function recup_facture_annule($date, $page)
+{
+    $token = goCurlToken();
+    $ch = curl_init();
+
+    // le token
+    $header = array();
+    $header[] = 'X-Auth-Token:' . $token;
+    $header[] = 'Content-Type:text/html;charset=utf-8';
+
+    //sur une date
+    if ($date && $date !== '') {
+        $dataArray = array(
+            "state" => 'invoice.state.canceled',
+            "invoiceDateFrom" => $date,
+            "invoiceDateTo" => $date,
+            // "updateDateFrom" => "2023-12-08",
+            // "updateDateTo" => "2023-11-06",
+            "count" => "100",
+            "page" => $page
+        );
+    }
+
+    // URL factures API
+    $request_facture = "v3.1/invoice/";
+    $url = "https://www.kepler-soft.net/api/";
+    $req_url = $url . "" . $request_facture;
+
+    $data = http_build_query($dataArray);
+
+    $getURL = $req_url . '?' . $data;
+
+    print_r($getURL);
+
+    sautdeligne();
+
+    curl_setopt($ch, CURLOPT_URL, $getURL);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+    $result = curl_exec($ch);
+
+    if (curl_error($ch)) {
+        $result = curl_error($ch);
+        print_r($result);
+        echo "<br/> erreur";
+    }
+
+    curl_close($ch);
+
+    $obj = json_decode($result);
+    $result = $obj->datas;
+    return $result;
+}
+
+function GoCurl_Recup_BDC_ANNULE($token, $page, $date_bdc = '')
+{
+
+    $ch = curl_init();
+
+    // le token
+    $header = array();
+    $header[] = 'X-Auth-Token:' . $token;
+    $header[] = 'Content-Type:text/html;charset=utf-8';
+
+    // choper un BC spécifique
+    if (isset($num_bdc) && $num_bdc != '') {
+        $dataArray = array(
+            "state" => array(
+                'administrative_selling.state.canceled'
+            ),
+            "uniqueId" => $num_bdc,
+            "page" => $page
+        );
+    }
+    //sinon par date
+    else {
+
+        if (isset($date_bdc) && $date_bdc != '') {
+
+            $dataArray = array(
+                "state" => 'administrative_selling.state.canceled',
+                "updateDateFrom" => "$date_bdc",
+                "updateDateTo" => "$date_bdc",
+                "count" => 100,
+                "page" => $page
+            );
+        }
+        //si pas de date alors on prend de début avril à hier
+        else {
+            $date_from = "2024-04-18";
+            $date_to = date('Y-m-d', strtotime('-1 day'));
+            $dataArray = array(
+                "state" => "administrative_selling.state.canceled",
+                // "orderFormDateFrom" => "$date_from",
+                // "orderFormDateTo" => "$date_to",
+                "updateDateFrom" => "$date_from",
+                "updateDateTo" => "$date_from",
+                "count" => 100,
+                "page" => $page
+            );
+        }
+    }
+
+    $request_bon_de_commande = "v3.1/order-form/";
+    $url = "https://www.kepler-soft.net/api/";
+    $req_url_BC = $url . "" . $request_bon_de_commande;
+
+
+    $getURL = $req_url_BC . '?' . http_build_query($dataArray);
+
+    print_r($getURL);
+
+    // die();
+
+    sautdeligne();
+
+    curl_setopt($ch, CURLOPT_URL, $getURL);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+
+    $result = curl_exec($ch);
+
+    if (curl_error($ch)) {
+        $result = curl_error($ch);
+        print_r($result);
+        echo "<br/> erreur";
+    }
+
+    curl_close($ch);
+
+    echo gettype($result);
+    echo $result;
+
+    $obj = json_decode($result);
+    var_dump($obj);
+
+    return $obj;
 
 }

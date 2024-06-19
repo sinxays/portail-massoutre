@@ -2363,7 +2363,7 @@ function check_if_immatriculation_exist_suivi_ventes($immat)
 {
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT immatriculation 
-                    from vehicules_suivi_ventes 
+                    from suivi_ventes_vehicules 
                     WHERE immatriculation = '$immat' ");
     $result = $request->fetch(PDO::FETCH_ASSOC);
     return $result;
@@ -3138,7 +3138,7 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
         //tableau particulier 
         case 1:
             //update : au final demande de GH on prend aussi le nbr de vh sur bdc plutot que bdc même si particulier
-            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) FROM vehicules_suivi_ventes as vsv 
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) FROM suivi_ventes_vehicules as vsv 
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
@@ -3148,11 +3148,40 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
             break;
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
         case 2:
-            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) FROM vehicules_suivi_ventes as vsv 
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) FROM suivi_ventes_vehicules as vsv 
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
             LEFT JOIN cvo on cvo.ID = cp.id_site
             WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL $sql_date");
+            $nbre = $request->fetchColumn();
+            break;
+    }
+    return intval($nbre);
+}
+
+function get_nbre_bdc_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+{
+    $pdo = Connection::getPDO();
+
+    switch ($destination_vente) {
+        //tableau particulier 
+        case 1:
+            //update : au final demande de GH on prend aussi le nbr de vh sur bdc plutot que bdc même si particulier
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) FROM suivi_ventes_vehicules as vsv 
+            LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
+            LEFT JOIN cvo on cvo.ID = cp.id_site 
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+            $nbre = $request->fetchColumn();
+
+            break;
+        //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
+        case 2:
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) FROM suivi_ventes_vehicules as vsv 
+            LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
+            LEFT JOIN cvo on cvo.ID = cp.id_site
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
             $nbre = $request->fetchColumn();
             break;
     }
@@ -3181,7 +3210,7 @@ function get_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type
             bdc.date_bdc,
             dest.libelle AS destination_vente
                     FROM suivi_ventes_bdc as bdc 
-                    LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.bdc_id = bdc.id
+                    LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.bdc_id = bdc.id
                     LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
                     LEFT JOIN cvo on cvo.ID = cp.id_site
                     LEFT JOIN destination_vente as dest ON bdc.destination_vente = dest.id 
@@ -3202,7 +3231,7 @@ function get_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type
             cvo.nom_cvo,
             bdc.date_bdc,
             dest.libelle AS destination_vente
-                    FROM vehicules_suivi_ventes as vsv 
+                    FROM suivi_ventes_vehicules as vsv 
                     LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
                     LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
                     LEFT JOIN cvo on cvo.ID = cp.id_site
@@ -3225,7 +3254,7 @@ function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_ve
         //tableau particulier 
         case 1:
             $request = $pdo->query("SELECT COUNT(factures.numero_facture) FROM suivi_ventes_factures as factures 
-            LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
             WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
@@ -3234,11 +3263,40 @@ function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_ve
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
         case 2:
             $request = $pdo->query("SELECT COUNT(vsv.immatriculation) 
-            FROM vehicules_suivi_ventes as vsv 
+            FROM suivi_ventes_vehicules as vsv 
             LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
             LEFT JOIN cvo on cvo.ID = cp.id_site
             WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
+            $nbre = $request->fetchColumn();
+            break;
+    }
+
+    return intval($nbre);
+}
+function get_nbre_factures_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+{
+    $pdo = Connection::getPDO();
+
+
+    switch ($destination_vente) {
+        //tableau particulier 
+        case 1:
+            $request = $pdo->query("SELECT COUNT(factures.numero_facture) FROM suivi_ventes_factures as factures 
+            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
+            LEFT JOIN cvo on cvo.ID = cp.id_site 
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            $nbre = $request->fetchColumn();
+            break;
+        //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
+        case 2:
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) 
+            FROM suivi_ventes_vehicules as vsv 
+            LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
+            LEFT JOIN cvo on cvo.ID = cp.id_site
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
             $nbre = $request->fetchColumn();
             break;
     }
@@ -3266,7 +3324,7 @@ function get_factures_by_site_by_destination_vente($cvo_id, $destination_vente, 
             cvo.nom_cvo,
             dest.libelle AS destination_vente
             FROM suivi_ventes_factures as factures 
-            LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
             LEFT JOIN destination_vente as dest ON factures.id_destination_vente = dest.id
@@ -3284,7 +3342,7 @@ function get_factures_by_site_by_destination_vente($cvo_id, $destination_vente, 
             vsv.immatriculation,
             factures.nom_acheteur,cvo.nom_cvo,
             dest.libelle AS destination_vente
-            FROM vehicules_suivi_ventes as vsv 
+            FROM suivi_ventes_vehicules as vsv 
             LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
             LEFT JOIN cvo on cvo.ID = cp.id_site
@@ -3305,7 +3363,7 @@ function get_nbre_factures_total_N1_by_site_by_destination_vente($cvo_id, $desti
         //tableau particulier 
         case 1:
             $request = $pdo->query("SELECT COUNT(factures.numero_facture) FROM suivi_ventes_factures as factures 
-            LEFT JOIN vehicules_suivi_ventes as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
             WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
@@ -3314,7 +3372,7 @@ function get_nbre_factures_total_N1_by_site_by_destination_vente($cvo_id, $desti
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
         case 2:
             $request = $pdo->query("SELECT COUNT(vsv.immatriculation) 
-            FROM vehicules_suivi_ventes as vsv 
+            FROM suivi_ventes_vehicules as vsv 
             LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
             LEFT JOIN cvo on cvo.ID = cp.id_site
@@ -3325,14 +3383,6 @@ function get_nbre_factures_total_N1_by_site_by_destination_vente($cvo_id, $desti
 
     return intval($nbre);
 }
-
-//TO DO
-function calcul_variation()
-{
-
-    return 0;
-}
-
 
 function get_CVO_by_vendeur($nom_vendeur)
 {
@@ -3369,13 +3419,13 @@ function update_prix_achat_vh($immatriculation = '')
             'prix_achat_ht' => $prix_achat_ht,
             'immatriculation' => $immatriculation
         ];
-        $sql = "UPDATE vehicules_suivi_ventes SET prix_achat_ht=:prix_achat_ht WHERE immatriculation=:immatriculation";
+        $sql = "UPDATE suivi_ventes_vehicules SET prix_achat_ht=:prix_achat_ht WHERE immatriculation=:immatriculation";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
     }
     //sinon update de tous les vehicules de vehicules _suivi_ventes
     else {
-        $request = $pdo->query("SELECT immatriculation,ID FROM vehicules_suivi_ventes");
+        $request = $pdo->query("SELECT immatriculation,ID FROM suivi_ventes_vehicules");
         $immatriculation_liste = $request->fetchAll(PDO::FETCH_ASSOC);
 
         // var_dump($immatriculation_liste);
@@ -3395,7 +3445,7 @@ function update_prix_achat_vh($immatriculation = '')
                 'prix_achat_ht' => $prix_achat_ht,
                 'ID' => $id
             ];
-            $sql = "UPDATE vehicules_suivi_ventes SET prix_achat_ht=:prix_achat_ht WHERE ID=:ID";
+            $sql = "UPDATE suivi_ventes_vehicules SET prix_achat_ht=:prix_achat_ht WHERE ID=:ID";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($data);
         }
@@ -3464,7 +3514,7 @@ function get_id_vh($immatriculation)
     //base portail
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT id
-    FROM vehicules_suivi_ventes
+    FROM suivi_ventes_vehicules
     WHERE immatriculation = '$immatriculation'");
     $result = $request->fetch(PDO::FETCH_COLUMN);
     return intval($result);
@@ -3480,7 +3530,7 @@ function get_duree_locations($immatriculation)
     $pdo = Connection::getPDO();
     $request = $pdo->query("SELECT bdc.date_bdc
      FROM suivi_ventes_bdc as bdc
-     LEFT JOIN vehicules_suivi_ventes as vh ON bdc.id = vh.bdc_id
+     LEFT JOIN suivi_ventes_vehicules as vh ON bdc.id = vh.bdc_id
      WHERE vh.immatriculation = '$immatriculation'");
     $result = $request->fetch(PDO::FETCH_ASSOC);
 
@@ -3514,7 +3564,7 @@ function get_duree_stock($immatriculation, $type)
         case 'bdc':
             $request = $pdo->query("SELECT bdc.date_bdc
             FROM suivi_ventes_bdc as bdc
-            LEFT JOIN vehicules_suivi_ventes as vh ON bdc.id = vh.bdc_id
+            LEFT JOIN suivi_ventes_vehicules as vh ON bdc.id = vh.bdc_id
             WHERE vh.immatriculation = '$immatriculation'");
             $result = $request->fetch(PDO::FETCH_ASSOC);
 
@@ -3535,7 +3585,7 @@ function get_duree_stock($immatriculation, $type)
         case 'facture':
             $request = $pdo->query("SELECT facture.date_facture
             FROM suivi_ventes_factures as facture
-            LEFT JOIN vehicules_suivi_ventes as vh ON facture.id = vh.facture_id
+            LEFT JOIN suivi_ventes_vehicules as vh ON facture.id = vh.facture_id
             WHERE vh.immatriculation = '$immatriculation'");
             $result = $request->fetch(PDO::FETCH_ASSOC);
 
