@@ -65,15 +65,15 @@
         // get_test_by_immat("BT953AN");
         
 
-        // update_payplan_by_immat("534EXA91");
-        
+        $date_debut = new DateTime();
+        $date_debut->modify('first day of January this year');
+        $date['date_debut'] = $date_debut->format('Y-m-d');
 
+        $date_fin = new DateTime();
+        $date_fin->modify('last day of this month');
+        $date['date_fin'] = $date_fin->format('Y-m-d');
 
-        $test = get_id_destination_vente_by_libelle('VENTE MARCHAND ');
-
-        var_dump($test);
-
-
+        var_dump($date);
 
         ?>
     </div>

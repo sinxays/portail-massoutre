@@ -15,6 +15,7 @@ if (isset($_POST['type_date'])) {
     $filtre_date = '';
 }
 
+
 if (isset($_POST["type_tableau"])) {
     $type_provenance = intval($_POST["type_tableau"]);
     switch ($type_provenance) {

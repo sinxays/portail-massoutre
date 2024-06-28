@@ -29,8 +29,23 @@ $(document).ready(function () {
         fadeOutSuiviBdcTableau(300);
         let value_provenance = $("#select_provenance_vh").val();
 
-        let date_select = {};
-        date_select['value_selected'] = parseInt($("#select_date_suivi_bdc").val());
+        let choix_date = parseInt($("#select_date_suivi_bdc").val());
+
+        if (choix_date == 0 || choix_date == 1) {
+            let date_select = {};
+            date_select['value_selected'] = choix_date;
+        }
+        //alors c'est date personnalisée
+        else {
+            date_debut = $("#date_suivi_bdc_debut").val();
+            date_fin = $("#date_suivi_bdc_fin").val();
+
+            let value_dates_perso = {};
+            date_select['value_selected'] = 2;
+            date_select['date'] = {};  // Initialiser l'objet 'date'
+            date_select['date']['date_personnalise_debut'] = date_debut;
+            date_select['date']['date_personnalise_fin'] = date_fin;
+        }
 
         console.log(date_select);
 
@@ -75,7 +90,7 @@ $(document).ready(function () {
                 date: date_bdc
             },
             success: function () {
-                // location.reload(true);
+                location.reload(true);
             }
         });
 
@@ -83,8 +98,6 @@ $(document).ready(function () {
 
     /***** Filtre DATE ******/
     $("#select_date_suivi_bdc").change(function (e) {
-
-        fadeOutSuiviBdcTableau(200);
 
         let date_select = {};
         date_select['value_selected'] = parseInt($(this).val());
@@ -97,6 +110,7 @@ $(document).ready(function () {
         switch (date_select['value_selected']) {
             //mois en cours
             case 0:
+                fadeOutSuiviBdcTableau(200);
                 $("#date_personnalisees_div").fadeOut(200);
                 $("#date_suivi_bdc_debut").val("");
                 $("#date_suivi_bdc_fin").val("");
@@ -125,6 +139,7 @@ $(document).ready(function () {
 
             //si on choisit mois précédent
             case 1:
+                fadeOutSuiviBdcTableau(200);
                 $("#date_personnalisees_div").fadeOut(200);
                 $("#date_suivi_bdc_debut").val("");
                 $("#date_suivi_bdc_fin").val("");
@@ -192,10 +207,10 @@ $(document).ready(function () {
         console.log(date_debut);
         console.log(date_fin);
 
-        // value_dates_perso = Array(date_debut,date_fin);
 
         let value_dates_perso = {};
         value_dates_perso['value_selected'] = 2;
+        value_dates_perso['date'] = {};  // Initialiser l'objet 'date'
         value_dates_perso['date']['date_personnalise_debut'] = date_debut;
         value_dates_perso['date']['date_personnalise_fin'] = date_fin;
 

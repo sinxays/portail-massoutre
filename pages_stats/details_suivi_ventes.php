@@ -121,7 +121,7 @@
                 }
                 break;
             case 'facture':
-                $liste_detail = get_factures_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance, $filtre_date);
+                $liste_detail = get_factures_detail_by_site_by_destination_vente($cvo, $destination_vente, $type_provenance, $filtre_date);
                 foreach ($liste_detail as $nb => $facture) {
                     $frais_vo = get_frais_vo_by_immat($facture['immatriculation']);
 

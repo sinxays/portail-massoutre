@@ -3142,7 +3142,7 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL $sql_date");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date");
             $nbre = $request->fetchColumn();
 
             break;
@@ -3152,16 +3152,19 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
             LEFT JOIN cvo on cvo.ID = cp.id_site
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL $sql_date");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date");
             $nbre = $request->fetchColumn();
             break;
     }
     return intval($nbre);
 }
 
-function get_nbre_bdc_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+
+function get_nbre_bdc_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance,$filtre_date)
 {
     $pdo = Connection::getPDO();
+
+    $sql_date = filtre_date_bdc_factures_cumul($filtre_date, "bdc");
 
     switch ($destination_vente) {
         //tableau particulier 
@@ -3171,8 +3174,9 @@ function get_nbre_bdc_cumul_by_site_by_destination_vente($cvo_id, $destination_v
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL $sql_date");
             $nbre = $request->fetchColumn();
+            // var_dump($request->queryString);
 
             break;
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
@@ -3181,7 +3185,7 @@ function get_nbre_bdc_cumul_by_site_by_destination_vente($cvo_id, $destination_v
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
             LEFT JOIN cvo on cvo.ID = cp.id_site
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance AND bdc.is_invoiced is NULL $sql_date");
             $nbre = $request->fetchColumn();
             break;
     }
@@ -3244,6 +3248,8 @@ function get_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type
 }
 
 
+
+
 function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance, $date_factures = '')
 {
     $pdo = Connection::getPDO();
@@ -3274,10 +3280,12 @@ function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_ve
 
     return intval($nbre);
 }
-function get_nbre_factures_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance)
+
+function get_nbre_factures_by_site_by_destination_vente_N1($cvo_id, $destination_vente, $type_provenance, $date_factures = '')
 {
     $pdo = Connection::getPDO();
 
+    $sql_date = filtre_date_bdc_factures_N1($date_factures, "factures");
 
     switch ($destination_vente) {
         //tableau particulier 
@@ -3286,7 +3294,7 @@ function get_nbre_factures_cumul_by_site_by_destination_vente($cvo_id, $destinat
             LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
-            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
             $nbre = $request->fetchColumn();
             break;
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
@@ -3296,7 +3304,7 @@ function get_nbre_factures_cumul_by_site_by_destination_vente($cvo_id, $destinat
             LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
             LEFT JOIN cvo on cvo.ID = cp.id_site
-            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance");
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
             $nbre = $request->fetchColumn();
             break;
     }
@@ -3304,7 +3312,40 @@ function get_nbre_factures_cumul_by_site_by_destination_vente($cvo_id, $destinat
     return intval($nbre);
 }
 
-function get_factures_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance, $date_factures)
+
+function get_nbre_factures_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance,$filtre_date)
+{
+    $pdo = Connection::getPDO();
+
+    $sql_date = filtre_date_bdc_factures_cumul($filtre_date, "factures");
+
+    switch ($destination_vente) {
+        //tableau particulier 
+        case 1:
+            $request = $pdo->query("SELECT COUNT(factures.numero_facture) FROM suivi_ventes_factures as factures 
+            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
+            LEFT JOIN cvo on cvo.ID = cp.id_site 
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date");
+            $nbre = $request->fetchColumn();
+            // var_dump($request->queryString);
+            break;
+        //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
+        case 2:
+            $request = $pdo->query("SELECT COUNT(vsv.immatriculation) 
+            FROM suivi_ventes_vehicules as vsv 
+            LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
+            LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
+            LEFT JOIN cvo on cvo.ID = cp.id_site
+            WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date");
+            $nbre = $request->fetchColumn();
+            break;
+    }
+
+    return intval($nbre);
+}
+
+function get_factures_detail_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance, $date_factures)
 {
     $pdo = Connection::getPDO();
 
