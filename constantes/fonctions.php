@@ -3260,7 +3260,7 @@ function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_ve
         //tableau particulier 
         case 1:
             $request = $pdo->query("SELECT COUNT(factures.numero_facture) FROM suivi_ventes_factures as factures 
-            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.ID = factures.id_vehicule
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
             WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
@@ -3270,7 +3270,7 @@ function get_nbre_factures_by_site_by_destination_vente($cvo_id, $destination_ve
         case 2:
             $request = $pdo->query("SELECT COUNT(vsv.immatriculation) 
             FROM suivi_ventes_vehicules as vsv 
-            LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
+            LEFT JOIN suivi_ventes_factures as factures ON factures.id_vehicule = vsv.ID 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
             LEFT JOIN cvo on cvo.ID = cp.id_site
             WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");

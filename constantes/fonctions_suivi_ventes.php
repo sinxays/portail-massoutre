@@ -2475,7 +2475,7 @@ function get_factures_by_site_by_destination_vente($cvo_id, $destination_vente, 
         //tableau particulier 
         case 1:
             $request = $pdo->query("SELECT factures.ID,factures.numero_facture,factures.date_facture,factures.marge_ht FROM suivi_ventes_factures as factures 
-            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.id = factures.id_vehicule
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
             WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
@@ -2484,7 +2484,7 @@ function get_factures_by_site_by_destination_vente($cvo_id, $destination_vente, 
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
         case 2:
             $request = $pdo->query("SELECT factures.ID,factures.numero_facture,factures.date_facture,factures.marge_ht FROM suivi_ventes_vehicules as vsv 
-            LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
+            LEFT JOIN suivi_ventes_factures as factures ON factures.id_vehicule = vsv.ID 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
             LEFT JOIN cvo on cvo.ID = cp.id_site
             WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
@@ -2505,7 +2505,7 @@ function get_factures_by_site_by_destination_vente_N1($cvo_id, $destination_vent
         //tableau particulier 
         case 1:
             $request = $pdo->query("SELECT factures.ID,factures.numero_facture,factures.date_facture,factures.marge_ht FROM suivi_ventes_factures as factures 
-            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
+            LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.ID = factures.id_vehicule
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
             WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
@@ -2514,7 +2514,7 @@ function get_factures_by_site_by_destination_vente_N1($cvo_id, $destination_vent
         //tableau marchands : on prend pas le nbre de BDC mais le nombre de VH car cela fait plus sens
         case 2:
             $request = $pdo->query("SELECT factures.ID,factures.numero_facture,factures.date_facture,factures.marge_ht FROM suivi_ventes_vehicules as vsv 
-            LEFT JOIN suivi_ventes_factures as factures ON factures.ID = vsv.facture_id 
+            LEFT JOIN suivi_ventes_factures as factures ON factures.id_vehicule = vsv.ID 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = factures.id_vendeur
             LEFT JOIN cvo on cvo.ID = cp.id_site
             WHERE cvo.ID = $cvo_id AND factures.id_destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance  $sql_date");
@@ -2532,5 +2532,85 @@ function calcul_nbre_factures($factures)
         $nbre_facture++;
     }
     return $nbre_facture;
+}
+
+function update_vh_factures_OS()
+{
+
+    $pdo_portail = Connection::getPDO();
+    $pdo_base = Connection::getPDO_2();
+
+    //on commence par récupérer tous les numéros de facture de ma base 
+    $request = $pdo_portail->query("SELECT ID,numero_facture FROM suivi_ventes_factures
+    WHERE id_vehicule IS NULL");
+    $liste_num_factures = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    //on boucle pour chaque num facture
+    foreach ($liste_num_factures as $facture) {
+        $num_facture = $facture['numero_facture'];
+        $id_facture = $facture['ID'];
+
+        // on va chercher l'immat du vh dans la base massoutre
+        $request = $pdo_base->query("SELECT vh.immatriculation FROM factureventes as facture
+        LEFT JOIN vehicules AS vh ON vh.ID = facture.vehicule_id
+        WHERE facture.dernier_numero_facture = '$num_facture'");
+        $immatriculation = $request->fetch(PDO::FETCH_COLUMN);
+
+        //une fois l'immat on va récupérer l'id du vh de suivi vente vh pour le rattacher à la facture. 
+        $request = $pdo_portail->query("SELECT ID FROM suivi_ventes_vehicules
+        WHERE immatriculation = '$immatriculation'");
+        $result = $request->fetch(PDO::FETCH_COLUMN);
+        $id_vehicule = intval($result);
+
+        //on va update la facture
+        $data = [
+            'id_vehicule' => $id_vehicule,
+            'id' => $id_facture
+        ];
+        $sql = "UPDATE suivi_ventes_factures SET id_vehicule=:id_vehicule WHERE ID=:id";
+        $stmt = $pdo_portail->prepare($sql);
+        $stmt->execute($data);
+    }
+
+}
+
+
+function update_vh_bdc_OS()
+{
+
+    $pdo_portail = Connection::getPDO();
+    $pdo_base = Connection::getPDO_2();
+
+    //on commence par récupérer tous les immat de ma base 
+    $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules WHERE bdc_id IS NULL");
+    $liste_vh = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    //on boucle pour chaque num facture
+    // foreach ($liste_vh as $vh) {
+    //     $vh_immat = $vh['immatriculation'];
+    //     $vh_id = $vh['ID'];
+
+    //     // on va chercher le num bdc dans la base massoutre
+    //     $request = $pdo_base->query("SELECT bdc.numero FROM bdcventes as bdc
+    //     LEFT JOIN vehicules AS vh ON vh.ID = bdc.vehicule_id
+    //     WHERE vh.immatriculation = '$vh_immat'");
+    //     $num_bdc = $request->fetch(PDO::FETCH_COLUMN);
+
+    //     //une fois l'immat on va récupérer l'id du vh de suivi vente vh pour le rattacher à la facture. 
+    //     $request = $pdo_portail->query("SELECT ID FROM suivi_ventes_vehicules
+    //     WHERE immatriculation = '$immatriculation'");
+    //     $result = $request->fetch(PDO::FETCH_COLUMN);
+    //     $id_vehicule = intval($result);
+
+    //     //on va update la facture
+    //     $data = [
+    //         'id_vehicule' => $id_vehicule,
+    //         'id' => $id_facture
+    //     ];
+    //     $sql = "UPDATE suivi_ventes_factures SET id_vehicule=:id_vehicule WHERE ID=:id";
+    //     $stmt = $pdo_portail->prepare($sql);
+    //     $stmt->execute($data);
+    // }
+
 }
 
