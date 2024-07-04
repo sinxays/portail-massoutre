@@ -1443,6 +1443,8 @@ function get_destination_sortie($destination_sortie)
         case "VENTE MARCHAND":
             $destination = 2;
             break;
+        default:
+            $destination = 0;
     }
     return $destination;
 }
