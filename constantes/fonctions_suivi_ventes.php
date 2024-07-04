@@ -22,8 +22,10 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
     WHERE date_dernier_bdc = '$date'");
     // $request = $pdo2->query("SELECT * FROM bdcventes 
     // WHERE date_dernier_bdc BETWEEN $date");
-
     $result_list_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    // TO DO : FAIRE UN APPEL BDC À KEPLER SUR LA MÊME DATE POUR AVOIR UNE LISTE DE BDC DE LA MÊME DATE ( NORMALEMENT ON DEVRAIT AVOIR LES MÊMES BDC ) 
+    // STOCKER ENSUITE DANS UN ARRAY LE NUM ET SON UUID POUR POUVOIR L'UTILISER PLUS BAS
 
     foreach ($result_list_bdc as $bdc) {
 
@@ -48,6 +50,7 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
         // $infos_bdc_kepler = get_bdc_from_kepler_by_number($bdc['numero']);
         // $uuid_bdc = $infos_bdc_kepler->uuid;
         // $reference_vh_kepler = $infos_bdc_kepler->items[0]->reference;
+
         $uuid_bdc = NULL;
         $reference_vh_kepler = NULL;
 
@@ -93,8 +96,6 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
             $stmt = $pdo->prepare($sql);
             $stmt->execute($data_vh);
 
-
-
         }
 
         //sinon si il existe déja le BDC alors c'est surement un BDC avec plusieurs véhicule.
@@ -110,6 +111,7 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
             //si on trouve pas de véhicule
             if (!$result_check_vh) {
 
+                // on récupere l'id du bon de commande lié au vh 
                 $id_bdc = get_id_bdc_liee(intval($result_check_bdc_num));
 
                 //insert du vh dans suivi_ventes_vh
@@ -180,6 +182,9 @@ function alimenter_suivi_ventes_factures_via_portail($date)
 
     // var_dump($result_list_factures);
     // die();
+
+    // TO DO : FAIRE UN APPEL FACTURE À KEPLER SUR LA MÊME DATE POUR AVOIR UNE LISTE DE FACTURES DE LA MÊME DATE ( NORMALEMENT ON DEVRAIT AVOIR LES MÊMES FACTURES ) 
+    // STOCKER ENSUITE DANS UN ARRAY LE NUM ET SON UUID POUR POUVOIR L'UTILISER PLUS BAS
 
     // vérifier tout d'abord si il n'existe pas déja la facture dans ma base suivi_ventes_factures
     foreach ($result_list_factures as $facture) {
@@ -278,17 +283,27 @@ function alimenter_suivi_ventes_factures_via_portail($date)
                     'bdc_id' => NULL,
                     'reference_kepler' => NULL,
                     'prix_achat_ht' => $vh_portail['prix_achat_ht'],
-                    'id_facture' => $id_facture_inserted,
+                    'id_facture' => intval($id_facture_inserted),
                 ];
                 $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,facture_id,reference_kepler,prix_achat_ht) 
                     VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:id_facture,:reference_kepler,:prix_achat_ht)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($data_vh);
+                $id_vh_cree = $pdo->lastInsertId();
+
+                //on récupere l'id du vh tout juste crée pour le remettre à la facture
+                $data_update_fact = [
+                    'id_vh' => intval($id_vh_cree),
+                    'ID' => intval($id_facture_inserted)
+                ];
+                $sql = "UPDATE suivi_ventes_factures SET id_vehicule =:id_vh WHERE ID = :ID";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data_update_fact);
+
             }
 
             //si le vh existe déja 
             else {
-
                 //normalement le vh existe déja, donc on va créer la facture et relier le vh à la facture
                 $data_facture = [
                     'numero_facture' => $facture['dernier_numero_facture'],
@@ -309,13 +324,29 @@ function alimenter_suivi_ventes_factures_via_portail($date)
                     'id_destination_vente' => $id_destination_vente,
                     'id_bdc' => $id_bdc,
                     'id_vehicule' => $id_vehicule,
-                    'uuid' => $uuid_facture,
+                    'uuid' => $uuid_facture
 
                 ];
                 $sql = "INSERT INTO suivi_ventes_factures (numero_facture,date_facture,prix_vente_total_ht,prix_vente_vehicule_HT,marge_ht,marge_ttc,nom_acheteur,adresse_acheteur,cp_acheteur,ville_acheteur,pays_acheteur,email_acheteur,tel_acheteur,id_vendeur,id_cvo_vente,id_destination_vente,id_bdc,id_vehicule,uuid) 
                 VALUES (:numero_facture, :date_facture,:prix_total_ht, :prix_vh_ht,:marge_ht, :marge_ttc,:nom_acheteur,:adresse_acheteur,:cp_acheteur,:ville_acheteur,:pays_acheteur,:email_acheteur,:tel_acheteur,:id_vendeur,:id_cvo,:id_destination_vente,:id_bdc,:id_vehicule,:uuid)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($data_facture);
+                $id_facture = $pdo->lastInsertId();
+
+                //on update aussi le vh pour relier la facture
+                $data = [
+                    'facture_id' => intval($id_facture),
+                    'ID' => $id_vehicule
+                ];
+                $sql = "UPDATE suivi_ventes_vehicules SET facture_id =:facture_id WHERE ID = :ID";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data);
+
+                //il faut ensuite check si le vh facturé était le seul du bdc dans ce cas on passe le bdc a facturé
+                $request = $pdo->query("SELECT bdc_id FROM suivi_ventes_vehicules WHERE ID = $id_vehicule");
+                $bdc_id = $request->fetch(PDO::FETCH_ASSOC);
+                check_and_update_if_bdc_invoiced_by_id_bdc(intval($bdc_id['ID']));
+
             }
         }
     }
@@ -1271,7 +1302,7 @@ function upload_suivi_ventes_bdc($bdc, $uuid)
                 'marque' => $bdc['marque'],
                 'modele' => $bdc['modele'],
                 'version_vh' => $bdc['version_vh'],
-                'bdc_id' => $id_bdc_last_inserted,
+                'bdc_id' => intval($id_bdc_last_inserted),
                 'reference_kepler' => $bdc['reference_kepler'],
                 'prix_achat_ht' => $prix_achat_ht
             ];
@@ -1921,7 +1952,7 @@ function get_provenance_portail($id)
 function get_provenance_from_destination_id_portail($id)
 {
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT id_provenance_portail FROM provenance_vo_vn WHERE id_provenance_portail = $id");
+    $request = $pdo->query("SELECT ID FROM provenance_vo_vn WHERE id_provenance_portail = $id");
     $result = $request->fetch(PDO::FETCH_COLUMN);
     return intval($result);
 }
@@ -2614,3 +2645,109 @@ function update_vh_bdc_OS()
 
 }
 
+function update_bdc_invoice()
+{
+
+    $pdo_portail = Connection::getPDO();
+    $pdo_base = Connection::getPDO_2();
+
+    //on commence par récupérer tous les BDC de ma base 
+    $request = $pdo_portail->query("SELECT ID,numero_bdc FROM suivi_ventes_bdc WHERE is_invoiced IS NULL");
+    $liste_bdc_no_invoiced = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($liste_bdc_no_invoiced as $bdc) {
+
+        $id_bdc = $bdc['ID'];
+
+        // on recupere tous les vh qui sont sur ce bdc
+        $request = $pdo_portail->query("SELECT ID,immatriculation,facture_id FROM suivi_ventes_vehicules WHERE bdc_id = $id_bdc");
+        $liste_vh_du_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($liste_vh_du_bdc as $vh) {
+            if (is_null($vh['facture_id'])) {
+                $is_invoiced = FALSE;
+            } else {
+                $is_invoiced = TRUE;
+            }
+        }
+
+        //si on doit passer le bdc a l'etat facturé
+        if ($is_invoiced) {
+            $data = [
+                'etat' => 1,
+                'ID' => $id_bdc
+            ];
+
+            $sql = "UPDATE suivi_ventes_bdc SET is_invoiced =:etat WHERE ID = :ID";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data);
+        }
+    }
+}
+
+function update_vh_invoice()
+{
+
+    $pdo_portail = Connection::getPDO();
+    $pdo_base = Connection::getPDO_2();
+
+    //on commence par récupérer tous les VH de ma base qui sont pas facturés
+    $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules WHERE facture_id IS NULL");
+    $liste_vh_no_invoiced = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($liste_vh_no_invoiced as $vh) {
+        $id_vh = $vh['ID'];
+
+        // on recupere tous les vh qui sont sur ce bdc
+        $request = $pdo_portail->query("SELECT ID,numero_facture FROM suivi_ventes_factures WHERE id_vehicule = $id_vh");
+        $facture_du_vh = $request->fetch(PDO::FETCH_ASSOC);
+
+        //si on trouve une facture associée
+        if ($facture_du_vh) {
+            $data = [
+                'facture_id' => $facture_du_vh['ID'],
+                'ID' => $id_vh
+            ];
+            $sql = "UPDATE suivi_ventes_vehicules SET facture_id =:facture_id WHERE ID = :ID";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data);
+        }
+
+    }
+
+}
+
+
+function check_and_update_if_bdc_invoiced_by_id_bdc($id_bdc)
+{
+    $pdo_portail = Connection::getPDO();
+    //on commence par récupérer le BDC de ma base 
+    $request = $pdo_portail->query("SELECT ID,numero_bdc FROM suivi_ventes_bdc WHERE ID = $id_bdc");
+    $bdc = $request->fetch(PDO::FETCH_ASSOC);
+
+    $id_bdc = intval($bdc['ID']);
+
+    // on recupere tous les vh qui sont sur ce bdc
+    $request = $pdo_portail->query("SELECT ID,immatriculation,facture_id FROM suivi_ventes_vehicules WHERE bdc_id = $id_bdc");
+    $liste_vh_du_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($liste_vh_du_bdc as $vh) {
+        if (is_null($vh['facture_id'])) {
+            $is_invoiced = FALSE;
+        } else {
+            $is_invoiced = TRUE;
+        }
+    }
+
+    //si is_invoiced = true on doit passer le bdc a l'etat facturé
+    if ($is_invoiced) {
+        $data = [
+            'etat' => 1,
+            'ID' => $id_bdc
+        ];
+
+        $sql = "UPDATE suivi_ventes_bdc SET is_invoiced =:etat WHERE ID = :ID";
+        $stmt = $pdo_portail->prepare($sql);
+        $stmt->execute($data);
+    }
+}

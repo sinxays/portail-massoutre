@@ -10,7 +10,6 @@ ini_set('max_execution_time', 0);
 if (isset($_POST['date']) && $_POST['date'] !== '') {
     $date = $_POST['date'];
 
-
     // $date = "'2023-09-01' AND '2023-12-31'";
     // alimenter_suivi_ventes_bdc($date);
     // alimenter_suivi_ventes_factures($date);

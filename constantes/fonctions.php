@@ -3132,7 +3132,10 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
 {
     $pdo = Connection::getPDO();
 
-    $sql_date = filtre_date_bdc_factures($date_bdc, "bdc");
+    // $sql_date = filtre_date_bdc_factures($date_bdc, "bdc");
+
+    $date = date('Y-m-d');
+    $sql_date = " AND bdc.date_bdc BETWEEN '2024-01-01' AND '" . $date . "'";
 
     switch ($destination_vente) {
         //tableau particulier 
@@ -3142,7 +3145,7 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id 
             LEFT JOIN cvo on cvo.ID = cp.id_site 
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date AND bdc.is_invoiced IS NULL");
             $nbre = $request->fetchColumn();
 
             break;
@@ -3152,7 +3155,7 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
             LEFT JOIN suivi_ventes_bdc as bdc ON bdc.ID = vsv.bdc_id 
             LEFT JOIN collaborateurs_payplan as cp ON cp.ID = bdc.vendeur_id
             LEFT JOIN cvo on cvo.ID = cp.id_site
-            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date");
+            WHERE cvo.ID = $cvo_id AND bdc.destination_vente = $destination_vente AND vsv.provenance_vo_vn = $type_provenance $sql_date AND bdc.is_invoiced IS NULL");
             $nbre = $request->fetchColumn();
             break;
     }
@@ -3160,7 +3163,7 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
 }
 
 
-function get_nbre_bdc_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance,$filtre_date)
+function get_nbre_bdc_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance, $filtre_date)
 {
     $pdo = Connection::getPDO();
 
@@ -3313,7 +3316,7 @@ function get_nbre_factures_by_site_by_destination_vente_N1($cvo_id, $destination
 }
 
 
-function get_nbre_factures_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance,$filtre_date)
+function get_nbre_factures_cumul_by_site_by_destination_vente($cvo_id, $destination_vente, $type_provenance, $filtre_date)
 {
     $pdo = Connection::getPDO();
 

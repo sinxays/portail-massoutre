@@ -125,7 +125,7 @@ $commission_table_header_row = array(
 
 $suivi_bdc_Locations_particuliers_table_header_row = array("Particuliers", " BDC en cours", "FACTURES", "FACTURES mois N-1", "Variation", "FACTURES TOTAL N");
 // $suivi_bdc_Locations_marchands_table_header_row = array("Marchands", "VH sur BDC", "VH Facturés", "VH sur BDC CUMUL", "VH Facturés CUMUL", "VH Facturés total N-1", "Variation");
-$suivi_bdc_Locations_marchands_table_header_row = array("Marchands", "BDCen cours", "FACTURES", "FACTURES mois N-1", "Variation", "FACTURES TOTAL N");
+$suivi_bdc_Locations_marchands_table_header_row = array("Marchands", "BDC en cours", "FACTURES", "FACTURES mois N-1", "Variation", "FACTURES TOTAL N");
 $suivi_bdc_Locations_particuliersAndMarchands_table_header_row = array("Particuliers/Marchands", "VH sur BDC J-1", "VH sur BDC en cours", "Variation %", "VH sur BDC N-1", "Variation sur total N-1", "VH facturés J-1", "VH facturé en cours", "Variation % a date", "Nombre de VH", "Variation % sur total");
 
 // $suivi_bdc_Negoce_particuliers_tableau_header_row = array("Partiuliers", "VH sur BDC", "VH Facturés", "VH sur BDC CUMUL", "VH Facturés CUMUL", "VH Facturés total N-1", "Variation", "Marge totale", "Marge Totale N1", "Variation Marge", "Moyenne Marge facturé", "Moyenne Marge facturé N-1", "Variation Moyenne Marge");
