@@ -64,16 +64,7 @@
         // get_holding_cost_total("GB401HV");
         // get_test_by_immat("BT953AN");
         
-
-        $date_debut = new DateTime();
-        $date_debut->modify('first day of January this year');
-        $date['date_debut'] = $date_debut->format('Y-m-d');
-
-        $date_fin = new DateTime();
-        $date_fin->modify('last day of this month');
-        $date['date_fin'] = $date_fin->format('Y-m-d');
-
-        var_dump($date);
+        update_vh_invoice();
 
         ?>
     </div>
