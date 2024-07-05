@@ -2567,6 +2567,8 @@ function calcul_nbre_factures($factures)
     return $nbre_facture;
 }
 
+
+// fonction pour relier le id_vehicule à la facture
 function update_vh_factures_OS()
 {
 
@@ -2647,6 +2649,7 @@ function update_vh_bdc_OS()
 
 }
 
+//fonction pour passer le bdc à facturé si tous les vh de ce bdc sont facturés
 function update_bdc_invoice()
 {
 
@@ -2687,6 +2690,7 @@ function update_bdc_invoice()
     }
 }
 
+//fonction pour relier l'id_facture au vh si il est facturé 
 function update_vh_invoice()
 {
 
