@@ -3411,6 +3411,7 @@ function get_factures_detail_by_site_by_destination_vente($cvo_id, $destination_
         case 2:
             $request = $pdo->query("SELECT vsv.immatriculation,CONCAT(cp.nom, ' ', cp.prenom) AS nom_complet,
             factures.date_facture,
+            factures.numero_facture,
             vsv.marque,
             vsv.modele,
             vsv.prix_achat_ht,
