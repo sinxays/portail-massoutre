@@ -1776,6 +1776,66 @@ function filtre_date_bdc_factures_cumul($filtre_date, $type)
 
 }
 
+function filtre_date_bdc_factures_cumul_N1($filtre_date, $type)
+{
+
+    $filtre_date_selected = intval($filtre_date['value_selected']);
+
+    switch ($filtre_date_selected) {
+        //mois en cours
+        case 0:
+            $date_debut = new DateTime();
+            $date_debut->modify('first day of January this year');
+            $date_debut->modify('-1 year');
+            $date['date_debut'] = $date_debut->format('Y-m-d');
+
+            $date_fin = new DateTime();
+            $date_fin->modify('last day of this month');
+            $date_fin->modify('-1 year');
+            $date['date_fin'] = $date_fin->format('Y-m-d');
+
+            break;
+        //mois précédent
+        case 1:
+
+            $date_debut = new DateTime();
+            $date_debut->modify('first day of January this year');
+            $date['date_debut'] = $date_debut->format('Y-m-d');
+
+            $date_fin = new DateTime();
+            $date_fin->modify('last day of last month');
+            $date_fin->modify('-1 year');
+            $date['date_fin'] = $date_fin->format('Y-m-d');
+
+            break;
+        //mois personnalisé
+        case 2:
+            $date_debut = new DateTime($filtre_date['date']['date_personnalise_debut']);
+            $date_debut->modify('-1 year');
+            $date_fin = new DateTime($filtre_date['date']['date_personnalise_fin']);
+            $date_fin->modify('-1 year');
+            
+            // $date['date_debut'] = $filtre_date['date']['date_personnalise_debut'];
+            // $date['date_fin'] = $filtre_date['date']['date_personnalise_fin'];
+            $date['date_debut'] = $date_debut->format('Y-m-d');
+            $date['date_fin'] = $date_fin->format('Y-m-d');
+            break;
+    }
+
+    switch ($type) {
+        case 'bdc':
+            $sql_date = " AND bdc.date_bdc BETWEEN '" . $date['date_debut'] . "' AND '" . $date['date_fin'] . "'";
+            break;
+
+        case 'factures':
+            $sql_date = " AND factures.date_facture BETWEEN '" . $date['date_debut'] . "'AND '" . $date['date_fin'] . "'";
+            break;
+
+    }
+    return $sql_date;
+
+}
+
 function calcul_marge($provenance, $destination_vente, $bdc, $frais_vo)
 {
     switch ($provenance) {

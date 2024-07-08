@@ -737,7 +737,7 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
                 //données CUMUL
                 // $nbre_bdc_cumul = get_nbre_bdc_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance,$filtre_date);
                 // $total_bdc_cumul += $nbre_bdc_cumul;
-                $nbre_factures_cumul = get_nbre_factures_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance,$filtre_date);
+                $nbre_factures_cumul = get_nbre_factures_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance, $filtre_date);
                 $total_factures_cumul += $nbre_factures_cumul;
 
                 $nbre_factures_total_N1 = 0;
@@ -758,7 +758,7 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
             }
 
             //ligne total
-            $table_suivi_bdc .= "<tr>";
+            $table_suivi_bdc .= "<tr style='background:#ECECEC;'>";
             $table_suivi_bdc .= "<td class='td_n'> TOTAL </td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'>" . $total_bdc . "</td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'> " . $total_factures . " </td>";
@@ -789,6 +789,7 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
             $total_bdc_cumul = 0;
             $total_factures_cumul = 0;
             $total_factures_N1 = 0;
+            $total_factures_cumul_N1 = 0;
             $total_marge = 0;
             $total_marge_N1 = 0;
 
@@ -830,8 +831,10 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
                 //CUMUL
                 // $nbre_bdc_cumul = get_nbre_bdc_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance,$filtre_date);
                 // $total_bdc_cumul += $nbre_bdc_cumul;
-                $nbre_factures_cumul = get_nbre_factures_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance,$filtre_date);
+                $nbre_factures_cumul = get_nbre_factures_cumul_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance, $filtre_date);
                 $total_factures_cumul += $nbre_factures_cumul;
+                $nbre_factures_cumul_N1 = get_nbre_factures_cumul_N1_by_site_by_destination_vente($cvo['ID'], $destination_vente, $type_provenance, $filtre_date);
+                $total_factures_cumul_N1 += $nbre_factures_cumul_N1;
 
 
                 //remplissage tableau
@@ -849,10 +852,12 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
                 // $table_suivi_bdc .= "<td class='td_n'>" . $variation_moyenne . "%</td>";
                 // $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=bdc&$query_date'>" . $nbre_bdc_cumul . " </a></td>";
                 $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date'>" . $nbre_factures_cumul . "</a></td>";
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date'>" . $nbre_factures_cumul_N1 . "</a></td>";
                 $table_suivi_bdc .= "</tr>";
             }
+
             //ligne total
-            $table_suivi_bdc .= "<tr style='background:#DADADA;'>";
+            $table_suivi_bdc .= "<tr style='background:#ECECEC;'>";
             $table_suivi_bdc .= "<td class='td_n'> TOTAL </td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'>" . $total_bdc . "</td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'> " . $total_factures . " </td>";
@@ -863,9 +868,9 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
             $table_suivi_bdc .= "<td class='td_n bold_total_16'></td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'></td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'></td>";
-            $table_suivi_bdc .= "<td class='td_n bold_total_16'></td>";
-            $table_suivi_bdc .= "<td class='td_n bold_total_16'></td>";
             $table_suivi_bdc .= "<td class='td_n bold_total_16'>" . $total_factures_cumul . "</td>";
+            $table_suivi_bdc .= "<td class='td_n bold_total_16'>" . $total_factures_cumul_N1 . "</td>";
+
 
 
             $table_suivi_bdc .= "</tr>";
