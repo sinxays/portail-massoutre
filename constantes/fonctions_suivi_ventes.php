@@ -41,12 +41,7 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
     }
 
 
-
-
-
-
     foreach ($result_list_bdc as $bdc) {
-
 
         //on va d'abord chercher les données véhicules du portail dans la table vehicules
         $request = $pdo2->query("SELECT vh.immatriculation,vh.destination_id,vh.numero_chassis,marques.libelle AS marque,
@@ -208,6 +203,20 @@ function alimenter_suivi_ventes_factures_via_portail($date)
 
     // TO DO : FAIRE UN APPEL FACTURE À KEPLER SUR LA MÊME DATE POUR AVOIR UNE LISTE DE FACTURES DE LA MÊME DATE ( NORMALEMENT ON DEVRAIT AVOIR LES MÊMES FACTURES ) 
     // STOCKER ENSUITE DANS UN ARRAY LE NUM ET SON UUID POUR POUVOIR L'UTILISER PLUS BAS
+    $j = 1;
+    $token = goCurlToken();
+    $liste_factures = GoCurl_Recup_Factures($token, $j, $date);
+
+    $j = 0;
+    $array_factures = array();
+    foreach ($liste_factures as $facture) {
+        $array_factures[$j]['num_facture'] = $facture->number;
+        $array_factures[$j]['uuid_facture'] = $facture->uuid;
+        $date_facture = new datetime($facture->invoiceDate);
+        $formatted_date = $date_facture->format("Y-m-d");
+        $array_factures[$j]['date_facture'] = $formatted_date;
+        $j++;
+    }
 
     // vérifier tout d'abord si il n'existe pas déja la facture dans ma base suivi_ventes_factures
     foreach ($result_list_factures as $facture) {
@@ -255,8 +264,9 @@ function alimenter_suivi_ventes_factures_via_portail($date)
             // ci dessous à décommenter pour avoir le uuid de kepler
             // $infos_facture_from_kepler = get_facture_from_kepler_by_number($facture['dernier_numero_facture']);
             // $uuid_facture = $infos_facture_from_kepler->uuid;
-            $uuid_facture = NULL;
 
+            //uuid
+            $uuid_facture = get_uuid_facture_from_array($array_factures, $facture['dernier_numero_facture']);
 
             //si le vh n'existe pas
             if (empty($check_vh)) {
@@ -324,7 +334,6 @@ function alimenter_suivi_ventes_factures_via_portail($date)
                 $stmt->execute($data_update_fact);
 
             }
-
             //si le vh existe déja 
             else {
                 //normalement le vh existe déja, donc on va créer la facture et relier le vh à la facture
@@ -940,7 +949,7 @@ function GoCurl_Recup_BDC($token, $page, $num_bdc = '', $date_bdc = '')
 
 
 
-function GoCurl_Facture($token, $url, $page, $date = '')
+function GoCurl_Recup_Factures($token, $page, $date = '', $num_facture = '')
 {
 
     $ch = curl_init();
@@ -972,11 +981,14 @@ function GoCurl_Facture($token, $url, $page, $date = '')
         );
     }
 
+    // URL factures API
+    $request_facture = "v3.1/invoice/";
+    $url = "https://www.kepler-soft.net/api/";
+    $req_url = $url . "" . $request_facture;
+
     $data = http_build_query($dataArray);
 
-    $getURL = $url . '?' . $data;
-
-    print_r($getURL);
+    $getURL = $req_url . '?' . $data;
 
     sautdeligne();
 
@@ -993,16 +1005,11 @@ function GoCurl_Facture($token, $url, $page, $date = '')
         print_r($result);
         echo "<br/> erreur";
     }
-
     curl_close($ch);
-
-    echo "<pre>";
-    print_r($result);
-    echo "</pre>";
 
     $obj = json_decode($result);
 
-    return $obj;
+    return $obj->datas;
 
 }
 
@@ -2828,16 +2835,33 @@ function get_uuid_bdc_from_array($array_bdc, $num_bdc)
 
     foreach ($array_bdc as $num_array => $bdc) {
         if ($bdc['num_bdc'] == $num_bdc) {
-            $num_liee_array = $num_array;
-            $uuid = $bdc['uuid_bdc'];
+            $uuid_bdc = $bdc['uuid_bdc'];
             $bdc_finded = TRUE;
             break;
         }
     }
     if ($bdc_finded) {
-        return $uuid;
+        return $uuid_bdc;
     } else {
         return NULL;
     }
 
+}
+
+function get_uuid_facture_from_array($array_factures, $num_facture)
+{
+    $facture_finded = FALSE;
+
+    foreach ($array_factures as $num_array => $facture) {
+        if ($facture['num_facture'] == $num_facture) {
+            $uuid_facture = $facture['uuid_facture'];
+            $facture_finded = TRUE;
+            break;
+        }
+    }
+    if ($facture_finded) {
+        return $uuid_facture;
+    } else {
+        return NULL;
+    }
 }
