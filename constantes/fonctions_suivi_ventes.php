@@ -218,6 +218,10 @@ function alimenter_suivi_ventes_factures_via_portail($date)
         $j++;
     }
 
+    $test_num_facture = 'VO109108';
+
+
+
     // vérifier tout d'abord si il n'existe pas déja la facture dans ma base suivi_ventes_factures
     foreach ($result_list_factures as $facture) {
 
@@ -259,14 +263,10 @@ function alimenter_suivi_ventes_factures_via_portail($date)
             $id_destination_vente = get_id_destination_vente_by_libelle($facture['destination_sortie']);
             $id_bdc = get_id_bdc_from_suivi_ventes_vh($vh_portail['immatriculation']);
             $id_vehicule = get_id_vh_suivi_bdc_by_immat($vh_portail['immatriculation']);
-
-
-            // ci dessous à décommenter pour avoir le uuid de kepler
-            // $infos_facture_from_kepler = get_facture_from_kepler_by_number($facture['dernier_numero_facture']);
-            // $uuid_facture = $infos_facture_from_kepler->uuid;
-
             //uuid
-            $uuid_facture = get_uuid_facture_from_array($array_factures, $facture['dernier_numero_facture']);
+            $uuid_facture = get_uuid_facture_from_array($array_factures, $test_num_facture);
+
+
 
             //si le vh n'existe pas
             if (empty($check_vh)) {
