@@ -260,7 +260,7 @@ function alimenter_suivi_ventes_factures_via_portail($date)
             $id_bdc = get_id_bdc_from_suivi_ventes_vh($vh_portail['immatriculation']);
             $id_vehicule = get_id_vh_suivi_bdc_by_immat($vh_portail['immatriculation']);
             //uuid
-            $uuid_facture = get_uuid_facture_from_array($array_factures, $test_num_facture);
+            $uuid_facture = get_uuid_facture_from_array($array_factures, $facture['dernier_numero_facture']);
 
 
 
