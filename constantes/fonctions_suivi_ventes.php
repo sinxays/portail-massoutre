@@ -218,10 +218,6 @@ function alimenter_suivi_ventes_factures_via_portail($date)
         $j++;
     }
 
-    $test_num_facture = 'VO109108';
-
-
-
     // vérifier tout d'abord si il n'existe pas déja la facture dans ma base suivi_ventes_factures
     foreach ($result_list_factures as $facture) {
 
