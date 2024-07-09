@@ -26,8 +26,27 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
 
     // TO DO : FAIRE UN APPEL BDC À KEPLER SUR LA MÊME DATE POUR AVOIR UNE LISTE DE BDC DE LA MÊME DATE ( NORMALEMENT ON DEVRAIT AVOIR LES MÊMES BDC ) 
     // STOCKER ENSUITE DANS UN ARRAY LE NUM ET SON UUID POUR POUVOIR L'UTILISER PLUS BAS
+    $j = 1;
+    $token = goCurlToken();
+    $liste_bdc = GoCurl_Recup_BDC($token, $j, '', $date);
+    $j = 0;
+    $array_bdc = array();
+    foreach ($liste_bdc as $bdc) {
+        $array_bdc[$j]['num_bdc'] = $bdc->number;
+        $array_bdc[$j]['uuid_bdc'] = $bdc->uuid;
+        $date_bdc = new datetime($bdc->date);
+        $formatted_date = $date_bdc->format("Y-m-d");
+        $array_bdc[$j]['date_bdc'] = $formatted_date;
+        $j++;
+    }
+
+
+
+
+
 
     foreach ($result_list_bdc as $bdc) {
+
 
         //on va d'abord chercher les données véhicules du portail dans la table vehicules
         $request = $pdo2->query("SELECT vh.immatriculation,vh.destination_id,vh.numero_chassis,marques.libelle AS marque,
@@ -45,17 +64,21 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
         WHERE bdc.numero_bdc = " . intval($bdc['numero']) . "");
         $result_check_bdc_num = $request->fetch(PDO::FETCH_COLUMN);
 
-        $vendeur_id = get_id_collaborateur_payplan_by_name($bdc['nom_vendeur']);
-        $destination_sortie = get_destination_sortie($bdc['destination_sortie']);
-        // $infos_bdc_kepler = get_bdc_from_kepler_by_number($bdc['numero']);
-        // $uuid_bdc = $infos_bdc_kepler->uuid;
-        // $reference_vh_kepler = $infos_bdc_kepler->items[0]->reference;
-
-        $uuid_bdc = NULL;
-        $reference_vh_kepler = NULL;
-
         //si pas de BDC alors on le crée
         if (empty($result_check_bdc_num)) {
+
+            $vendeur_id = get_id_collaborateur_payplan_by_name($bdc['nom_vendeur']);
+            $destination_sortie = get_destination_sortie($bdc['destination_sortie']);
+
+            /**** REFERENCE VH KEPLER ( pas vraiment utile mais à garder au cas ou ) ****/
+            // $infos_bdc_kepler = get_bdc_from_kepler_by_number($bdc['numero']);
+            // $uuid_bdc = $infos_bdc_kepler->uuid;
+            // $reference_vh_kepler = $infos_bdc_kepler->items[0]->reference;
+            $reference_vh_kepler = NULL;
+
+            //uuid
+            $uuid_bdc = get_uuid_bdc_from_array($array_bdc, $bdc['numero']);
+
 
             //insert du bdc dans suivi_ventes_bdc
             $data_bdc = [
@@ -887,7 +910,7 @@ function GoCurl_Recup_BDC($token, $page, $num_bdc = '', $date_bdc = '')
 
     $getURL = $url_bdc . '?' . http_build_query($dataArray);
 
-    print_r($getURL);
+    // print_r($getURL);
 
     // die();
 
@@ -910,30 +933,9 @@ function GoCurl_Recup_BDC($token, $page, $num_bdc = '', $date_bdc = '')
 
     curl_close($ch);
 
-    echo gettype($result);
-    echo $result;
-
     $obj = json_decode($result);
 
-    // sautdeligne();
-    // echo gettype($obj);
-    // die();
-
-
-
-    // echo gettype($obj);
-    // var_dump($obj);
-
-
-    // echo '<pre>' . print_r($obj) . '</pre>';
-
-    if (!isset($num_bdc) && $num_bdc == '') {
-        echo '<pre> nombre total de BDC : ' . $obj->total . '</pre>';
-        echo '<pre> page actuelle :' . $obj->currentPage . '</pre>';
-        echo '<pre> BDC par page :' . $obj->perPage . '</pre>';
-    }
-
-    return $obj;
+    return $obj->datas;
 }
 
 
@@ -1814,7 +1816,7 @@ function filtre_date_bdc_factures_cumul_N1($filtre_date, $type)
             $date_debut->modify('-1 year');
             $date_fin = new DateTime($filtre_date['date']['date_personnalise_fin']);
             $date_fin->modify('-1 year');
-            
+
             // $date['date_debut'] = $filtre_date['date']['date_personnalise_debut'];
             // $date['date_fin'] = $filtre_date['date']['date_personnalise_fin'];
             $date['date_debut'] = $date_debut->format('Y-m-d');
@@ -2816,4 +2818,26 @@ function check_and_update_if_bdc_invoiced_by_id_bdc($id_bdc)
         $stmt = $pdo_portail->prepare($sql);
         $stmt->execute($data);
     }
+}
+
+
+function get_uuid_bdc_from_array($array_bdc, $num_bdc)
+{
+
+    $bdc_finded = FALSE;
+
+    foreach ($array_bdc as $num_array => $bdc) {
+        if ($bdc['num_bdc'] == $num_bdc) {
+            $num_liee_array = $num_array;
+            $uuid = $bdc['uuid_bdc'];
+            $bdc_finded = TRUE;
+            break;
+        }
+    }
+    if ($bdc_finded) {
+        return $uuid;
+    } else {
+        return NULL;
+    }
+
 }
