@@ -207,15 +207,15 @@ function alimenter_suivi_ventes_factures_via_portail($date)
     $token = goCurlToken();
     $liste_factures = GoCurl_Recup_Factures($token, $j, $date);
 
-    $j = 0;
+    $i = 0;
     $array_factures = array();
     foreach ($liste_factures as $facture) {
-        $array_factures[$j]['num_facture'] = $facture->number;
-        $array_factures[$j]['uuid_facture'] = $facture->uuid;
+        $array_factures[$i]['num_facture'] = $facture->number;
+        $array_factures[$i]['uuid_facture'] = $facture->uuid;
         $date_facture = new datetime($facture->invoiceDate);
         $formatted_date = $date_facture->format("Y-m-d");
-        $array_factures[$j]['date_facture'] = $formatted_date;
-        $j++;
+        $array_factures[$i]['date_facture'] = $formatted_date;
+        $i++;
     }
 
     // vérifier tout d'abord si il n'existe pas déja la facture dans ma base suivi_ventes_factures
@@ -1007,6 +1007,68 @@ function GoCurl_Recup_Factures($token, $page, $date = '', $num_facture = '')
 
     return $obj->datas;
 
+}
+
+function GoCurl_Recup_Factures_Canceled($token, $page, $date = '')
+{
+
+    $ch = curl_init();
+
+    // le token
+    //$token = '7MLGvf689hlSPeWXYGwZUi\/t2mpcKrvVr\/fKORXMc+9BFxmYPqq4vOZtcRjVes9DBLM=';
+    $header = array();
+    $header[] = 'X-Auth-Token:' . $token;
+    $header[] = 'Content-Type:text/html;charset=utf-8';
+
+    if (isset($date) && $date !== '') {
+        //sur une date
+        $dataArray = array(
+            "state" => 'invoice.state.canceled',
+            "invoiceDateFrom" => $date,
+            "invoiceDateTo" => $date,
+            "count" => "100",
+            "page" => $page
+        );
+    } else {
+        //sinon on prend à J-1
+        $date = date('Y-m-d', strtotime('-1 day'));
+        $dataArray = array(
+            "state" => 'invoice.state.edit',
+            "invoiceDateFrom" => $date,
+            "invoiceDateTo" => $date,
+            "count" => "100",
+            "page" => $page
+        );
+    }
+
+    // URL factures API
+    $request_facture = "v3.1/invoice/";
+    $url = "https://www.kepler-soft.net/api/";
+    $req_url = $url . "" . $request_facture;
+
+    $data = http_build_query($dataArray);
+
+    $getURL = $req_url . '?' . $data;
+
+    sautdeligne();
+
+    curl_setopt($ch, CURLOPT_URL, $getURL);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+    $result = curl_exec($ch);
+
+    if (curl_error($ch)) {
+        $result = curl_error($ch);
+        print_r($result);
+        echo "<br/> erreur";
+    }
+    curl_close($ch);
+
+    $obj = json_decode($result);
+    return $obj->datas;
 }
 
 function getvehiculeInfo($reference, $token, $state, $is_not_available_for_sell = '')
@@ -2102,179 +2164,6 @@ function get_id_vh_suivi_bdc_by_immat($immat)
     return intval($id_vh);
 }
 
-function update_bdc_annule($date)
-{
-
-    $j = 1;
-
-    $datas_find = true;
-
-    while ($datas_find == true) {
-
-        // date d'hier
-        // $date = date('Y-m-d', strtotime("-1 day"));
-
-        //date spécifique 
-        // $date = "2024-04-18";
-
-        //recupere la requete !!!!
-        $valeur_token = goCurlToken();
-        $obj = GoCurl_Recup_BDC_ANNULE($valeur_token, $j, $date);
-
-        // var_dump($obj);
-        // die();
-
-        //a ce niveau obj est un object
-
-        //on prends le tableau datas dans obj et ce qui nous fait un array sur obj_final
-        if (!empty($obj)) {
-            $obj_final = $obj->datas;
-        } else {
-            $obj_final = '';
-        }
-
-
-        if (!empty($obj_final)) {
-
-            sautdeligne();
-            sautdeligne();
-
-            /*****************    BOUCLE du tableau de données récupérés *****************/
-
-
-            //on boucle par rapport au nombre de bon de commande dans le tableau datas[]
-            foreach ($obj_final as $keydatas => $keyvalue) {
-
-                //on recupere l'uuid pour retrouver le bon numero de bdc original
-                $uuid = $keyvalue->uuid;
-                $bdc = get_bdc_from_uuid($uuid);
-
-                //si on trouve un bdc dans ma base on le supprime avec son/ses vh(s) associés
-                if (!empty($bdc)) {
-
-                    $pdo = Connection::getPDO();
-                    //on prend l'id du BDC
-                    $request = $pdo->query("SELECT ID FROM suivi_ventes_bdc WHERE numero_bdc = $bdc");
-                    $bdc_id = $request->fetch(PDO::FETCH_COLUMN);
-
-                    //on supprime les vh associés
-                    $data = [
-                        'bdc_id' => $bdc_id,
-                    ];
-                    $sql = "DELETE FROM suivi_ventes_vehicules WHERE bdc_id = :bdc_id ";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute($data);
-
-                    // on supprime ensuite le BDC
-                    $data = [
-                        'bdc_id' => $bdc_id,
-                    ];
-                    $sql = "DELETE FROM suivi_ventes_bdc WHERE ID = :bdc_id ";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute($data);
-
-                }
-            }
-        }
-        //si il n'y a pas de données
-        else {
-            $datas_find = false;
-            echo "pas de données";
-        }
-        $j++;
-    }
-}
-
-function update_factures_annule($date)
-{
-    $page = 1;
-    $factures_annulees = recup_facture_annule($date, $page);
-
-    // var_dump($factures_annulees);
-
-    foreach ($factures_annulees as $facture) {
-        $uuid = $facture->uuid;
-
-        $pdo = Connection::getPDO();
-        $request = $pdo->query("SELECT * FROM suivi_ventes_factures 
-        WHERE uuid = '$uuid'");
-        $result = $request->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            //on enleve la facture des vhs associés
-            $data = [
-                'id' => intval($result['ID'])
-            ];
-            $sql = "UPDATE suivi_ventes_vehicules SET facture_id = 0 WHERE facture_id=:id";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute($data);
-
-            // on supprime ensuite la facture
-            $data = [
-                'uuid' => $result['uuid']
-            ];
-            $sql = "DELETE FROM suivi_ventes_factures WHERE uuid = :uuid ";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute($data);
-        }
-    }
-}
-
-function recup_facture_annule($date, $page)
-{
-    $token = goCurlToken();
-    $ch = curl_init();
-
-    // le token
-    $header = array();
-    $header[] = 'X-Auth-Token:' . $token;
-    $header[] = 'Content-Type:text/html;charset=utf-8';
-
-    //sur une date
-    if ($date && $date !== '') {
-        $dataArray = array(
-            "state" => 'invoice.state.canceled',
-            "invoiceDateFrom" => $date,
-            "invoiceDateTo" => $date,
-            // "updateDateFrom" => "2023-12-08",
-            // "updateDateTo" => "2023-11-06",
-            "count" => "100",
-            "page" => $page
-        );
-    }
-
-    // URL factures API
-    $request_facture = "v3.1/invoice/";
-    $url = "https://www.kepler-soft.net/api/";
-    $req_url = $url . "" . $request_facture;
-
-    $data = http_build_query($dataArray);
-
-    $getURL = $req_url . '?' . $data;
-
-    print_r($getURL);
-
-    sautdeligne();
-
-    curl_setopt($ch, CURLOPT_URL, $getURL);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-
-    $result = curl_exec($ch);
-
-    if (curl_error($ch)) {
-        $result = curl_error($ch);
-        print_r($result);
-        echo "<br/> erreur";
-    }
-
-    curl_close($ch);
-
-    $obj = json_decode($result);
-    $result = $obj->datas;
-    return $result;
-}
 
 function get_facture_from_kepler_by_number($num_facture)
 {
@@ -2398,7 +2287,7 @@ function get_url_recup_kepler($type)
     return $req_url;
 }
 
-function GoCurl_Recup_BDC_ANNULE($token, $page, $date_bdc = '')
+function GoCurl_Recup_BDC_canceled($token, $page, $date_bdc = '')
 {
 
     $ch = curl_init();
@@ -2408,55 +2297,37 @@ function GoCurl_Recup_BDC_ANNULE($token, $page, $date_bdc = '')
     $header[] = 'X-Auth-Token:' . $token;
     $header[] = 'Content-Type:text/html;charset=utf-8';
 
-    // choper un BC spécifique
-    if (isset($num_bdc) && $num_bdc != '') {
+    if (isset($date_bdc) && $date_bdc != '') {
+
         $dataArray = array(
-            "state" => array(
-                'administrative_selling.state.canceled'
-            ),
-            "uniqueId" => $num_bdc,
+            "state" => 'administrative_selling.state.canceled',
+            "updateDateFrom" => "$date_bdc",
+            "updateDateTo" => "$date_bdc",
+            "count" => 100,
             "page" => $page
         );
     }
-    //sinon par date
+    //si pas de date alors on prend de début avril à hier
     else {
-
-        if (isset($date_bdc) && $date_bdc != '') {
-
-            $dataArray = array(
-                "state" => 'administrative_selling.state.canceled',
-                "updateDateFrom" => "$date_bdc",
-                "updateDateTo" => "$date_bdc",
-                "count" => 100,
-                "page" => $page
-            );
-        }
-        //si pas de date alors on prend de début avril à hier
-        else {
-            $date_from = "2024-04-18";
-            $date_to = date('Y-m-d', strtotime('-1 day'));
-            $dataArray = array(
-                "state" => "administrative_selling.state.canceled",
-                // "orderFormDateFrom" => "$date_from",
-                // "orderFormDateTo" => "$date_to",
-                "updateDateFrom" => "$date_from",
-                "updateDateTo" => "$date_from",
-                "count" => 100,
-                "page" => $page
-            );
-        }
+        $date = date('Y-m-d', strtotime('-1 day'));
+        $dataArray = array(
+            "state" => "administrative_selling.state.canceled",
+            // "orderFormDateFrom" => "$date_from",
+            // "orderFormDateTo" => "$date_to",
+            "updateDateFrom" => "$date",
+            "updateDateTo" => "$date",
+            "count" => 100,
+            "page" => $page
+        );
     }
+
 
     $request_bon_de_commande = "v3.1/order-form/";
     $url = "https://www.kepler-soft.net/api/";
-    $req_url_BC = $url . "" . $request_bon_de_commande;
+    $req_url_BDC = $url . "" . $request_bon_de_commande;
 
 
-    $getURL = $req_url_BC . '?' . http_build_query($dataArray);
-
-    print_r($getURL);
-
-    // die();
+    $getURL = $req_url_BDC . '?' . http_build_query($dataArray);
 
     sautdeligne();
 
@@ -2474,16 +2345,10 @@ function GoCurl_Recup_BDC_ANNULE($token, $page, $date_bdc = '')
         print_r($result);
         echo "<br/> erreur";
     }
-
     curl_close($ch);
 
-    echo gettype($result);
-    echo $result;
-
     $obj = json_decode($result);
-    var_dump($obj);
-
-    return $obj;
+    return $obj->datas;
 
 }
 
@@ -2861,3 +2726,94 @@ function get_uuid_facture_from_array($array_factures, $num_facture)
         return NULL;
     }
 }
+
+
+
+
+
+function update_factures_canceled($date)
+{
+    $j = 1;
+    $token = goCurlToken();
+    $liste_facture_canceled = GoCurl_Recup_Factures_canceled($token, $j, $date);
+    if ($liste_facture_canceled) {
+        delete_facture($liste_facture_canceled);
+    }
+}
+
+function delete_facture($array_facture_to_delete)
+{
+    foreach ($array_facture_to_delete as $facture) {
+        $facture_id_and_num = get_id_and_num_facture_by_uuid_facture($facture->uuid);
+        $num_facture = $facture_id_and_num['numero_facture'];
+        $id_facture = intval($facture_id_and_num['ID']);
+
+        $pdo_portail = Connection::getPDO();
+
+        $data_facture_to_delete = [
+            'id' => $id_facture
+        ];
+
+        $sql = "DELETE FROM suivi_ventes_factures WHERE ID=:id";
+        $stmt = $pdo_portail->prepare($sql);
+        $stmt->execute($data_facture_to_delete);
+    }
+}
+
+function get_id_and_num_facture_by_uuid_facture($facture_uuid)
+{
+    $pdo_portail = Connection::getPDO();
+    $request = $pdo_portail->query("SELECT ID,numero_facture FROM suivi_ventes_factures WHERE uuid = '" . $facture_uuid . "'");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    return $result;
+}
+
+
+
+
+
+function update_bdc_canceled($date)
+{
+    $j = 1;
+    $token = goCurlToken();
+    $liste_bdc_canceled = GoCurl_Recup_BDC_canceled($token, $j, $date);
+    if ($liste_bdc_canceled) {
+        delete_bdc($liste_bdc_canceled);
+    }
+}
+
+function delete_bdc($array_bdc_to_delete)
+{
+    foreach ($array_bdc_to_delete as $bdc) {
+        $bdc_id_and_num = get_id_and_num_bdc_by_uuid_bdc($bdc->uuid);
+        $num_bdc = $bdc_id_and_num['numero_bdc'];
+        $id_bdc = intval($bdc_id_and_num['ID']);
+
+        $pdo_portail = Connection::getPDO();
+
+        $data_bdc_to_delete = [
+            'id' => $id_bdc
+        ];
+
+        $sql = "DELETE FROM suivi_ventes_bdc WHERE ID=:id";
+        $stmt = $pdo_portail->prepare($sql);
+        $stmt->execute($data_bdc_to_delete);
+
+        //il faut aussi supprimer tous les vh du BDC
+        $data_vh_liee_bdc_to_delete = [
+            'id' => $id_bdc
+        ];
+        $sql = "DELETE FROM suivi_ventes_vehicules WHERE bdc_id=:id";
+        $stmt = $pdo_portail->prepare($sql);
+        $stmt->execute($data_vh_liee_bdc_to_delete);
+    }
+}
+
+function get_id_and_num_bdc_by_uuid_bdc($bdc_uuid)
+{
+    $pdo_portail = Connection::getPDO();
+    $request = $pdo_portail->query("SELECT ID,numero_bdc FROM suivi_ventes_bdc WHERE uuid = '" . $bdc_uuid . "'");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+    return $result;
+}
+
