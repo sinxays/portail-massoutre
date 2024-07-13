@@ -674,34 +674,102 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
     $table_suivi_bdc = "";
     $url_details = "details_suivi_ventes.php";
 
-    $array_date = array(
-        'value_selected' => $filtre_date['value_selected'],
-        'date' => array(
-            'date_personnalise_debut' => isset($filtre_date['date']['date_personnalise_debut']) ? $filtre_date['date']['date_personnalise_debut'] : date('Y-m-d'),
-            'date_personnalise_fin' => isset($filtre_date['date']['date_personnalise_fin']) ? $filtre_date['date']['date_personnalise_fin'] : date('Y-m-d')
-        )
-    );
+    switch ($filtre_date['value_selected']) {
+        //mois en cours
+        case 0:
+            $dates = get_dates_mois_encours();
+            $dates_N1 = get_dates_mois_encours_N1();
+            $dates_cumul = get_dates_N_encours();
 
-    $data_date = array(
-        'filtre_date' => $array_date
-    );
+            //pour N en cours
+            $array_date = array(
+                'date' => array(
+                    'date_debut' => $dates['date_debut'],
+                    'date_fin' => $dates['date_fin']
+                )
+            );
+            $data_date = array(
+                'filtre_date' => $array_date
+            );
+            $query_date = http_build_query($data_date);
 
-    $query_date = http_build_query($data_date);
+            // pour N-1
+            $array_date_N1 = array(
+                'date' => array(
+                    'date_debut' => $dates_N1['date_debut'],
+                    'date_fin' => $dates_N1['date_fin']
+                )
+            );
+            $data_date_N1 = array(
+                'filtre_date' => $array_date_N1
+            );
+            $query_date_N1 = http_build_query($data_date_N1);
 
 
-    $array_date_cumul = array(
-        'value_selected' => $filtre_date['value_selected'],
-        'date' => array(
-            'date_personnalise_debut' => "2024-02-22",
-            'date_personnalise_fin' => date('Y-m-d')
-        )
-    );
+            //date cumul
+            $array_date_cumul = array(
+                'date' => array(
+                    'date_debut' => $dates_cumul['date_debut'],
+                    'date_fin' => $dates_cumul['date_fin']
+                )
+            );
+            $data_date_cumul = array(
+                'filtre_date' => $array_date_cumul
+            );
+            $query_date_cumul = http_build_query($data_date_cumul);
+            break;
 
-    $data_date_cumul = array(
-        'filtre_date' => $array_date_cumul
-    );
 
-    $query_date_cumul = http_build_query($data_date_cumul);
+        //mois précédent
+        case 1:
+            $dates_last_mois = get_dates_mois_precedent();
+            $dates_last_mois_N1 = get_dates_mois_precedent_N1();
+            $dates_last_mois_cumul = get_dates_N_mois_precedent();
+
+            $array_date_last_mois = array(
+                'date' => array(
+                    'date_debut' => $dates_last_mois['date_debut'],
+                    'date_fin' => $dates_last_mois['date_fin']
+                )
+            );
+            $data_date_last_mois = array(
+                'filtre_date' => $array_date_last_mois
+            );
+            $query_date = http_build_query($data_date_last_mois);
+
+
+            $array_date_last_mois_N1 = array(
+                'date' => array(
+                    'date_debut' => $dates_last_mois_N1['date_debut'],
+                    'date_fin' => $dates_last_mois_N1['date_fin']
+                )
+            );
+            $data_date_last_mois_N1 = array(
+                'filtre_date' => $array_date_last_mois_N1
+            );
+            $query_date_N1 = http_build_query($data_date_last_mois_N1);
+
+            $array_date_cumul = array(
+                'date' => array(
+                    'date_debut' => $dates_last_mois_cumul['date_debut'],
+                    'date_fin' => $dates_last_mois_cumul['date_fin']
+                )
+            );
+            $data_date_cumul = array(
+                'filtre_date' => $array_date_cumul
+            );
+            $query_date_cumul = http_build_query($data_date_cumul);
+            break;
+
+
+        //mois personnalisé
+        case 2:
+    }
+
+
+
+
+
 
 
     switch ($type_provenance) {
@@ -742,13 +810,15 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
 
                 $nbre_factures_total_N1 = 0;
 
+                //date N-1
+
 
                 //remplissage tableau
                 $table_suivi_bdc .= "<tr>";
                 $table_suivi_bdc .= "<td class='td_n'> " . $cvo['nom_cvo'] . " </td>";
                 $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=bdc&$query_date'>" . $nbre_bdc . " </a></td>";
                 $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date'>" . $nbre_factures . "</a></td>";
-                $table_suivi_bdc .= "<td class='td_n1'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date'>" . $nbre_factures_n1 . "</a></td>";
+                $table_suivi_bdc .= "<td class='td_n1'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date_N1'>" . $nbre_factures_n1 . "</a></td>";
                 $table_suivi_bdc .= "<td class='td_n'>" . $variation_factures . " % </td>";
 
                 //CUMUL

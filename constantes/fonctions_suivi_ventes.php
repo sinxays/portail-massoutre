@@ -26,21 +26,9 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
 
     // TO DO : FAIRE UN APPEL BDC À KEPLER SUR LA MÊME DATE POUR AVOIR UNE LISTE DE BDC DE LA MÊME DATE ( NORMALEMENT ON DEVRAIT AVOIR LES MÊMES BDC ) 
     // STOCKER ENSUITE DANS UN ARRAY LE NUM ET SON UUID POUR POUVOIR L'UTILISER PLUS BAS
-    $j = 1;
-    $token = goCurlToken();
-    $liste_bdc = GoCurl_Recup_BDC($token, $j, '', $date);
-    $j = 0;
-    $array_bdc = array();
-    foreach ($liste_bdc as $bdc) {
-        $array_bdc[$j]['num_bdc'] = $bdc->number;
-        $array_bdc[$j]['uuid_bdc'] = $bdc->uuid;
-        $date_bdc = new datetime($bdc->date);
-        $formatted_date = $date_bdc->format("Y-m-d");
-        $array_bdc[$j]['date_bdc'] = $formatted_date;
-        $j++;
-    }
+    $array_bdc = get_array_bdc_from_kepler($date);
 
-
+    //on boucle sur la liste des BDC récupérés
     foreach ($result_list_bdc as $bdc) {
 
         //on va d'abord chercher les données véhicules du portail dans la table vehicules
@@ -93,7 +81,6 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
             $id_bdc_last_inserted = $pdo->lastInsertId();
 
             /******* On ajoute ensuite le 1er véhicule ( il peut y avoir plusieurs véhicule dans un BDC ) *******/
-
             $provenance = get_provenance_from_destination_id_portail($result_vh['destination_id']);
 
             //insert du vh dans suivi_ventes_vh
@@ -203,20 +190,7 @@ function alimenter_suivi_ventes_factures_via_portail($date)
 
     // TO DO : FAIRE UN APPEL FACTURE À KEPLER SUR LA MÊME DATE POUR AVOIR UNE LISTE DE FACTURES DE LA MÊME DATE ( NORMALEMENT ON DEVRAIT AVOIR LES MÊMES FACTURES ) 
     // STOCKER ENSUITE DANS UN ARRAY LE NUM ET SON UUID POUR POUVOIR L'UTILISER PLUS BAS
-    $j = 1;
-    $token = goCurlToken();
-    $liste_factures = GoCurl_Recup_Factures($token, $j, $date);
-
-    $i = 0;
-    $array_factures = array();
-    foreach ($liste_factures as $facture) {
-        $array_factures[$i]['num_facture'] = $facture->number;
-        $array_factures[$i]['uuid_facture'] = $facture->uuid;
-        $date_facture = new datetime($facture->invoiceDate);
-        $formatted_date = $date_facture->format("Y-m-d");
-        $array_factures[$i]['date_facture'] = $formatted_date;
-        $i++;
-    }
+    $array_factures = get_array_factures_from_kepler($date);
 
     // vérifier tout d'abord si il n'existe pas déja la facture dans ma base suivi_ventes_factures
     foreach ($result_list_factures as $facture) {
@@ -1741,6 +1715,21 @@ function filtre_date_bdc_factures($filtre_date, $type)
     return $sql_date;
 }
 
+
+function filtre_date_bdc_factures_detail_suivi_ventes($date, $type)
+{
+    switch ($type) {
+        case 'bdc':
+            $sql_date = " AND bdc.date_bdc BETWEEN '" . $date['date']['date_debut'] . "' AND '" . $date['date']['date_fin'] . "'";
+            break;
+
+        case 'factures':
+            $sql_date = " AND factures.date_facture BETWEEN '" . $date['date']['date_debut'] . "'AND '" . $date['date']['date_fin'] . "'";
+            break;
+    }
+    return $sql_date;
+}
+
 function filtre_date_bdc_factures_N1($filtre_date, $type)
 {
     $filtre_date_selected = intval($filtre_date['value_selected']);
@@ -2688,6 +2677,44 @@ function check_and_update_if_bdc_invoiced_by_id_bdc($id_bdc)
     }
 }
 
+function get_array_factures_from_kepler($date)
+{
+    $j = 1;
+    $token = goCurlToken();
+    $liste_factures = GoCurl_Recup_Factures($token, $j, $date);
+
+    $i = 0;
+    $array_factures = array();
+    foreach ($liste_factures as $facture) {
+        $array_factures[$i]['num_facture'] = $facture->number;
+        $array_factures[$i]['uuid_facture'] = $facture->uuid;
+        $date_facture = new datetime($facture->invoiceDate);
+        $formatted_date = $date_facture->format("Y-m-d");
+        $array_factures[$i]['date_facture'] = $formatted_date;
+        $i++;
+    }
+    return $array_factures;
+}
+
+function get_array_bdc_from_kepler($date)
+{
+    $j = 1;
+    $token = goCurlToken();
+    $liste_bdc = GoCurl_Recup_BDC($token, $j, '', $date);
+    $j = 0;
+    $array_bdc = array();
+    foreach ($liste_bdc as $bdc) {
+        $array_bdc[$j]['num_bdc'] = $bdc->number;
+        $array_bdc[$j]['uuid_bdc'] = $bdc->uuid;
+        $date_bdc = new datetime($bdc->date);
+        $formatted_date = $date_bdc->format("Y-m-d");
+        $array_bdc[$j]['date_bdc'] = $formatted_date;
+        $j++;
+    }
+    return $array_bdc;
+}
+
+
 
 function get_uuid_bdc_from_array($array_bdc, $num_bdc)
 {
@@ -2816,4 +2843,3 @@ function get_id_and_num_bdc_by_uuid_bdc($bdc_uuid)
     $result = $request->fetch(PDO::FETCH_ASSOC);
     return $result;
 }
-

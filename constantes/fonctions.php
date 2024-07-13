@@ -1151,7 +1151,6 @@ function get_commission($filtre = '')
 
     // var_dump($filtre);
 
-
     if (isset($filtre) && $filtre !== '') {
 
         switch ($filtre) {
@@ -1868,18 +1867,6 @@ function get_pack_first_by_collaborateur($id_collaborateur, $filtre = '')
     return $result;
 }
 
-
-function test()
-{
-    $pdo = Connection::getPDO();
-
-    $request = $pdo->query("SELECT  CONCAT(UPPER(prenom),' ',UPPER(nom)) AS nom_complet_collaborateur,ID,identifiant_payplan 
-    FROM collaborateurs_payplan
-    WHERE ID = 17");
-    $nom_collaborateur = $request->fetch(PDO::FETCH_ASSOC);
-    $return['nom_collaborateur'] = $nom_collaborateur['nom_complet_collaborateur'];
-    return $return;
-}
 
 
 function get_all_identifiants_collaborateurs_payplan()
@@ -3199,7 +3186,7 @@ function get_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type
 {
     $pdo = Connection::getPDO();
 
-    $sql_date = filtre_date_bdc_factures($date_bdc, "bdc");
+    $sql_date = filtre_date_bdc_factures_detail_suivi_ventes($date_bdc, "bdc");
 
     switch ($destination_vente) {
         //tableau particulier 
@@ -3384,7 +3371,7 @@ function get_factures_detail_by_site_by_destination_vente($cvo_id, $destination_
 {
     $pdo = Connection::getPDO();
 
-    $sql_date = filtre_date_bdc_factures($date_factures, "factures");
+    $sql_date = filtre_date_bdc_factures_detail_suivi_ventes($date_factures, "factures");
 
     switch ($destination_vente) {
         //tableau particulier 
@@ -3689,3 +3676,99 @@ function sautdeligne()
     echo "<br/>";
     echo "<br/>";
 }
+
+function get_dates_mois_encours()
+{
+    $tmp_date_debut = new datetime();
+    $tmp_date_debut->modify('first day of this month');
+    $date_debut_N1 = $tmp_date_debut->format('Y-m-d');
+    $tmp_date_fin = new datetime();
+    $tmp_date_fin->modify('last day of this month');
+    $date_fin_N1 = $tmp_date_fin->format('Y-m-d');
+
+    $result['date_debut'] = $date_debut_N1;
+    $result['date_fin'] = $date_fin_N1;
+
+    return $result;
+}
+function get_dates_mois_encours_N1()
+{
+    $tmp_date_debut_N1 = new datetime();
+    $tmp_date_debut_N1->modify('first day of this month');
+    $tmp_date_debut_N1->modify('-1 year');
+    $date_debut_N1 = $tmp_date_debut_N1->format('Y-m-d');
+    $tmp_date_fin_N1 = new datetime();
+    $tmp_date_fin_N1->modify('-1 year');
+    $tmp_date_fin_N1->modify('last day of this month');
+    $date_fin_N1 = $tmp_date_fin_N1->format('Y-m-d');
+
+    $result['date_debut'] = $date_debut_N1;
+    $result['date_fin'] = $date_fin_N1;
+
+    return $result;
+
+}
+
+//date mois en cours
+function get_dates_mois_precedent()
+{
+    $tmp_date_debut = new datetime();
+    $tmp_date_debut->modify('first day of last month');
+    $date_debut = $tmp_date_debut->format('Y-m-d');
+    $tmp_date_fin = new datetime();
+    $tmp_date_fin->modify('last day of last month');
+    $date_fin = $tmp_date_fin->format('Y-m-d');
+
+    $result['date_debut'] = $date_debut;
+    $result['date_fin'] = $date_fin;
+
+    return $result;
+}
+// pour avoir les valeurs de l'année précédente sur le même mois
+function get_dates_mois_precedent_N1()
+{
+    $tmp_date_debut_N1 = new datetime();
+    $tmp_date_debut_N1->modify('first day of last month');
+    $tmp_date_debut_N1->modify('-1 year');
+    $date_debut_N1 = $tmp_date_debut_N1->format('Y-m-d');
+    $tmp_date_fin_N1 = new datetime();
+    $tmp_date_fin_N1->modify('-1 year');
+    $tmp_date_fin_N1->modify('last day of last month');
+    $date_fin_N1 = $tmp_date_fin_N1->format('Y-m-d');
+
+    $result['date_debut'] = $date_debut_N1;
+    $result['date_fin'] = $date_fin_N1;
+
+    return $result;
+}
+
+function get_dates_N_encours()
+{
+    $tmp_date_debut = new datetime();
+    $tmp_date_debut->modify('first day of January this year');
+    $date_debut = $tmp_date_debut->format('Y-m-d');
+    $tmp_date_fin = new datetime();
+    $date_fin = $tmp_date_fin->format('Y-m-d');
+
+    $result['date_debut'] = $date_debut;
+    $result['date_fin'] = $date_fin;
+
+    return $result;
+}
+
+function get_dates_N_mois_precedent()
+{
+    $tmp_date_debut = new datetime();
+    $tmp_date_debut->modify('first day of January this year');
+    $date_debut = $tmp_date_debut->format('Y-m-d');
+    $tmp_date_fin = new datetime();
+    $tmp_date_fin->modify('last day of previous month');
+    $date_fin = $tmp_date_fin->format('Y-m-d');
+
+    $result['date_debut'] = $date_debut;
+    $result['date_fin'] = $date_fin;
+
+    return $result;
+}
+
+
