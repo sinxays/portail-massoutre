@@ -3379,6 +3379,7 @@ function get_factures_detail_by_site_by_destination_vente($cvo_id, $destination_
             vsv.modele,
             vsv.prix_achat_ht,
             factures.prix_vente_vehicule_HT,
+            factures.marge_ht,
             vsv.immatriculation,
             factures.nom_acheteur,
             cvo.nom_cvo,

@@ -137,9 +137,6 @@
                     $duree_location = get_duree_locations($facture['immatriculation']);
                     $duree_stock = get_duree_stock($facture['immatriculation'], $type);
 
-                    
-
-
                     $table .= "<tr>";
                     $table .= "<td>" . (isset($facture['numero_facture']) ? $facture['numero_facture'] . " (" . $facture['immatriculation'] . ")" : $facture['immatriculation']) . "</td>";
                     $table .= "<td>" . $facture['marque'] . "</td>";
