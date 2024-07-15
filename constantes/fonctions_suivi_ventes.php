@@ -236,6 +236,8 @@ function alimenter_suivi_ventes_factures_via_portail($date)
             //uuid
             $uuid_facture = get_uuid_facture_from_array($array_factures, $facture['dernier_numero_facture']);
 
+            $marge_ttc = $facture['marge_nette'] * 1.2;
+
 
 
             //si le vh n'existe pas
@@ -247,8 +249,8 @@ function alimenter_suivi_ventes_factures_via_portail($date)
                     'date_facture' => $facture['date_facturation'],
                     'prix_total_ht' => NULL,
                     'prix_vh_ht' => $facture['montant'],
-                    'marge_ht' => $facture['marge_brute'],
-                    'marge_ttc' => $facture['marge_nette'],
+                    'marge_ht' => $facture['marge_nette'],
+                    'marge_ttc' => $marge_ttc,
                     'nom_acheteur' => $facture['nom_client'],
                     'adresse_acheteur' => $facture['adresse1'],
                     'cp_acheteur' => $facture['codepostal'],
@@ -312,8 +314,8 @@ function alimenter_suivi_ventes_factures_via_portail($date)
                     'date_facture' => $facture['date_facturation'],
                     'prix_total_ht' => NULL,
                     'prix_vh_ht' => $facture['montant'],
-                    'marge_ht' => $facture['marge_brute'],
-                    'marge_ttc' => $facture['marge_nette'],
+                    'marge_ht' => $facture['marge_nette'],
+                    'marge_ttc' => $marge_ttc,
                     'nom_acheteur' => $facture['nom_client'],
                     'adresse_acheteur' => $facture['adresse1'],
                     'cp_acheteur' => $facture['codepostal'],
@@ -2871,4 +2873,43 @@ function get_id_and_num_bdc_by_uuid_bdc($bdc_uuid)
     $request = $pdo_portail->query("SELECT ID,numero_bdc FROM suivi_ventes_bdc WHERE uuid = '" . $bdc_uuid . "'");
     $result = $request->fetch(PDO::FETCH_ASSOC);
     return $result;
+}
+
+function update_marge_nette()
+{
+    $pdo = Connection::getPDO();
+
+    // on commence par aller chercher dans la base  toutes les factures 
+    $request = $pdo->query("SELECT ID,marge_ht,marge_ttc FROM suivi_ventes_factures ");
+    $result_list_factures = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($result_list_factures as $facture) {
+
+        $marge_ttc = $facture['marge_ttc'] * 1.2;
+
+        $data_update_facture = [
+            'ID' => $facture['ID'],
+            'marge_ht' => $facture['marge_ttc']
+        ];
+
+        $sql = "UPDATE suivi_ventes_factures SET marge_ht =:marge_ht WHERE ID =:ID";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data_update_facture);
+
+
+        $data_update_facture_2 = [
+            'ID' => $facture['ID'],
+            'marge_ttc' => $marge_ttc
+        ];
+
+        $sql = "UPDATE suivi_ventes_factures SET marge_ttc =:marge_ttc WHERE ID =:ID";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data_update_facture_2);
+
+    }
+
+
+
+
+
 }

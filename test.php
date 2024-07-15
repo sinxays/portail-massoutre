@@ -59,17 +59,17 @@
 
         ini_set('max_execution_time', 0);
 
-
-
-        // get_holding_cost_total("GB401HV");
-        // get_test_by_immat("BT953AN");
-
-        update_vh_factures_OS();
+        /****** UPDATE ALL ******/
+        // update_vh_factures_OS();
+        // update_vh_invoice();
+        // update_bdc_invoice();
         
-        update_vh_invoice();
+        update_marge_nette();
 
-        update_bdc_invoice();
 
+
+
+        
         ?>
     </div>
 
