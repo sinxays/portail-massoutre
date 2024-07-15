@@ -1680,6 +1680,35 @@ function update_reference_kepler($liste_immatriculation)
 
 }
 
+function filtre_date_bdc_encours($filtre_date)
+{
+    $filtre_date_selected = intval($filtre_date['value_selected']);
+
+    switch ($filtre_date_selected) {
+        //mois en cours
+        case 0:
+            $date['date_debut'] = date('Y-01-01');
+            $date['date_fin'] = date('Y-m-d');
+            break;
+        //mois précédent
+        case 1:
+            $date['date_debut'] = date('Y-01-01');
+            $date['date_fin'] = date('Y-m-d', strtotime("last day of last month"));
+            break;
+        //mois personnalisé
+        case 2:
+            $date['date_debut'] = $filtre_date['date']['date_personnalise_debut'];
+            $date['date_fin'] = $filtre_date['date']['date_personnalise_fin'];
+            break;
+    }
+
+    $sql_date = " AND bdc.date_bdc BETWEEN '" . $date['date_debut'] . "' AND '" . $date['date_fin'] . "'";
+
+    return $sql_date;
+}
+
+
+
 function filtre_date_bdc_factures($filtre_date, $type)
 {
     $filtre_date_selected = intval($filtre_date['value_selected']);
@@ -1688,7 +1717,7 @@ function filtre_date_bdc_factures($filtre_date, $type)
         //mois en cours
         case 0:
             $date['date_debut'] = date('Y-m-01');
-            $date['date_fin'] = date('Y-m-t');
+            $date['date_fin'] = date('Y-m-d');
             break;
         //mois précédent
         case 1:

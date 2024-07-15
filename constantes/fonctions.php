@@ -3119,10 +3119,7 @@ function get_nbre_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, 
 {
     $pdo = Connection::getPDO();
 
-    // $sql_date = filtre_date_bdc_factures($date_bdc, "bdc");
-
-    $date = date('Y-m-d');
-    $sql_date = " AND bdc.date_bdc BETWEEN '2024-01-01' AND '" . $date . "'";
+    $sql_date = filtre_date_bdc_encours($date_bdc);
 
     switch ($destination_vente) {
         //tableau particulier 
@@ -3771,4 +3768,27 @@ function get_dates_N_mois_precedent()
     return $result;
 }
 
+function get_dates_personnalisees($dates_personnalisees)
+{
+    $dates_perso['date_debut'] = $dates_personnalisees['date']['date_personnalise_debut'];
+    $dates_perso['date_fin'] = $dates_personnalisees['date']['date_personnalise_fin'];
 
+    return $dates_perso;
+}
+
+function get_dates_personnalisees_N1($dates_personnalisees)
+{
+    $date_perso_debut_tmp = $dates_personnalisees['date']['date_personnalise_debut'];
+    $date_perso_fin_tmp = $dates_personnalisees['date']['date_personnalise_fin'];
+    $tmp_date_debut = new datetime($date_perso_debut_tmp);
+    $tmp_date_debut->modify('-1 year');
+    $date_debut = $tmp_date_debut->format('Y-m-d');
+    $tmp_date_fin = new datetime($date_perso_fin_tmp);
+    $tmp_date_fin->modify('-1 year');
+    $date_fin = $tmp_date_fin->format('Y-m-d');
+
+    $result['date_debut'] = $date_debut;
+    $result['date_fin'] = $date_fin;
+
+    return $result;
+}
