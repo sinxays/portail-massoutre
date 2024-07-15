@@ -132,7 +132,7 @@
 
                     // die();
 
-                    $calcul_marge = calcul_marge($type_provenance, $destination_vente, $facture, $frais_vo);
+                    // $calcul_marge = calcul_marge($type_provenance, $destination_vente, $facture, $frais_vo);
                     $vh_infos = get_infos_vehicules_portail_bleu($facture['immatriculation']);
                     $duree_location = get_duree_locations($facture['immatriculation']);
                     $duree_stock = get_duree_stock($facture['immatriculation'], $type);
@@ -153,7 +153,7 @@
                     $table .= "<td>" . $facture['prix_vente_vehicule_HT'] . "</td>";
                     $table .= "<td> " . $duree_location . " </td>";
                     $table .= "<td> " . $duree_stock . " </td>";
-                    $table .= "<td class='bold_total_12'>" . $calcul_marge . "</td>";
+                    $table .= "<td class='bold_total_12'>" . $facture['marge_ht'] . "</td>";
                     $table .= "<td>" . $facture['nom_complet'] . "</td>";
                     $table .= "<td>" . $facture['nom_cvo'] . "</td>";
                     $table .= "<td>" . $facture['date_facture'] . "</td>";

@@ -678,6 +678,7 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
             $dates = get_dates_mois_encours();
             $dates_N1 = get_dates_mois_encours_N1();
             $dates_cumul = get_dates_N_encours();
+            $dates_cumul_N1 = get_dates_N1_encours();
 
             //pour N en cours
             $array_date = array(
@@ -715,6 +716,18 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
                 'filtre_date' => $array_date_cumul
             );
             $query_date_cumul = http_build_query($data_date_cumul);
+
+            //date cumul N-1
+            $array_date_cumul_N1 = array(
+                'date' => array(
+                    'date_debut' => $dates_cumul_N1['date_debut'],
+                    'date_fin' => $dates_cumul_N1['date_fin']
+                )
+            );
+            $data_date_cumul_N1 = array(
+                'filtre_date' => $array_date_cumul_N1
+            );
+            $query_date_cumul_N1 = http_build_query($data_date_cumul_N1);
             break;
 
 
@@ -723,6 +736,7 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
             $dates_last_mois = get_dates_mois_precedent();
             $dates_last_mois_N1 = get_dates_mois_precedent_N1();
             $dates_last_mois_cumul = get_dates_N_mois_precedent();
+            $dates_last_mois_cumul_N1 = get_dates_N1_mois_precedent();
 
             $array_date_last_mois = array(
                 'date' => array(
@@ -757,6 +771,17 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
                 'filtre_date' => $array_date_cumul
             );
             $query_date_cumul = http_build_query($data_date_cumul);
+
+            $array_date_cumul_N1 = array(
+                'date' => array(
+                    'date_debut' => $dates_last_mois_cumul_N1['date_debut'],
+                    'date_fin' => $dates_last_mois_cumul_N1['date_fin']
+                )
+            );
+            $data_date_cumul_N1 = array(
+                'filtre_date' => $array_date_cumul_N1
+            );
+            $query_date_cumul_N1 = http_build_query($data_date_cumul_N1);
             break;
 
 
@@ -802,6 +827,17 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
                 'filtre_date' => $array_date_cumul
             );
             $query_date_cumul = http_build_query($data_date_cumul);
+
+            $array_date_cumul_N1 = array(
+                'date' => array(
+                    'date_debut' => $dates_N1['date_debut'],
+                    'date_fin' => $dates_N1['date_fin']
+                )
+            );
+            $data_date_cumul_N1 = array(
+                'filtre_date' => $array_date_cumul_N1
+            );
+            $query_date_cumul_N1 = http_build_query($data_date_cumul_N1);
             break;
 
     }
@@ -960,7 +996,7 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
                 // $table_suivi_bdc .= "<td class='td_n'>" . $variation_moyenne . "%</td>";
                 // $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=bdc&$query_date'>" . $nbre_bdc_cumul . " </a></td>";
                 $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date'>" . $nbre_factures_cumul . "</a></td>";
-                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date'>" . $nbre_factures_cumul_N1 . "</a></td>";
+                $table_suivi_bdc .= "<td class='td_n'><a href='$url_details?cvo=" . $cvo['ID'] . "&destination_vente=$destination_vente&type_provenance=$type_provenance&type=facture&$query_date_cumul_N1'>" . $nbre_factures_cumul_N1 . "</a></td>";
                 $table_suivi_bdc .= "</tr>";
             }
 

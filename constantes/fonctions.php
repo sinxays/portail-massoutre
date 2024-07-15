@@ -3400,6 +3400,7 @@ function get_factures_detail_by_site_by_destination_vente($cvo_id, $destination_
             vsv.modele,
             vsv.prix_achat_ht,
             factures.prix_vente_vehicule_HT,
+            factures.marge_ht,
             vsv.immatriculation,
             factures.nom_acheteur,cvo.nom_cvo,
             dest.libelle AS destination_vente
@@ -3595,20 +3596,24 @@ function get_duree_locations($immatriculation)
      WHERE vh.immatriculation = '$immatriculation'");
     $result = $request->fetch(PDO::FETCH_ASSOC);
 
-    //pour les négoce on mets à 0
-    $months = 0;
+    if ($result) {
 
-    //si date premiere location alors c'est une provenance locations
-    if (isset($dates['date_premiere_location'])) {
+        //pour les négoce on mets à 0
+        $months = 0;
 
-        $date_premiere_location = new Datetime($dates['date_premiere_location']);
-        $date_dernier_bdc = new Datetime($result['date_bdc']);
+        //si date premiere location alors c'est une provenance locations
+        if (isset($dates['date_premiere_location'])) {
 
-        $interval = $date_premiere_location->diff($date_dernier_bdc);
-        $months = $interval->y * 12 + $interval->m;
+            $date_premiere_location = new Datetime($dates['date_premiere_location']);
+            $date_dernier_bdc = new Datetime($result['date_bdc']);
+
+            $interval = $date_premiere_location->diff($date_dernier_bdc);
+            $months = $interval->y * 12 + $interval->m;
+        }
+        return $months;
     }
 
-    return $months;
+    
 }
 
 function get_duree_stock($immatriculation, $type)
@@ -3753,12 +3758,44 @@ function get_dates_N_encours()
     return $result;
 }
 
+function get_dates_N1_encours()
+{
+    $tmp_date_debut = new datetime();
+    $tmp_date_debut->modify('first day of January this year');
+    $tmp_date_debut->modify('-1 year');
+    $date_debut = $tmp_date_debut->format('Y-m-d');
+    $tmp_date_fin = new datetime();
+    $tmp_date_fin->modify('-1 year');
+    $date_fin = $tmp_date_fin->format('Y-m-d');
+
+    $result['date_debut'] = $date_debut;
+    $result['date_fin'] = $date_fin;
+
+    return $result;
+}
+
 function get_dates_N_mois_precedent()
 {
     $tmp_date_debut = new datetime();
     $tmp_date_debut->modify('first day of January this year');
     $date_debut = $tmp_date_debut->format('Y-m-d');
     $tmp_date_fin = new datetime();
+    $tmp_date_fin->modify('last day of previous month');
+    $date_fin = $tmp_date_fin->format('Y-m-d');
+
+    $result['date_debut'] = $date_debut;
+    $result['date_fin'] = $date_fin;
+
+    return $result;
+}
+function get_dates_N1_mois_precedent()
+{
+    $tmp_date_debut = new datetime();
+    $tmp_date_debut->modify('first day of January this year');
+    $tmp_date_debut->modify('-1 year');
+    $date_debut = $tmp_date_debut->format('Y-m-d');
+    $tmp_date_fin = new datetime();
+    $tmp_date_fin->modify('-1 year');
     $tmp_date_fin->modify('last day of previous month');
     $date_fin = $tmp_date_fin->format('Y-m-d');
 

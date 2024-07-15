@@ -1887,6 +1887,7 @@ function filtre_date_bdc_factures_cumul_N1($filtre_date, $type)
 
             $date_debut = new DateTime();
             $date_debut->modify('first day of January this year');
+            $date_debut->modify('-1 year');
             $date['date_debut'] = $date_debut->format('Y-m-d');
 
             $date_fin = new DateTime();
