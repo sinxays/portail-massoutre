@@ -64,12 +64,10 @@
         // update_vh_invoice();
         // update_bdc_invoice();
         
-        update_marge_nette();
 
 
 
 
-        
         ?>
     </div>
 
