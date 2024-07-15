@@ -65,6 +65,8 @@
         // update_bdc_invoice();
         
 
+        update_factures_sans_vh();
+
 
 
 

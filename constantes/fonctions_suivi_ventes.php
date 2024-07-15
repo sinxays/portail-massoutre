@@ -2907,9 +2907,39 @@ function update_marge_nette()
         $stmt->execute($data_update_facture_2);
 
     }
+}
 
 
+function update_factures_sans_vh()
+{
+    //base portail_massoutre
+    $pdo = Connection::getPDO();
+
+    //récupérer toutes les factures ou le vh est à 0 
+    $request = $pdo->query("SELECT ID FROM suivi_ventes_factures WHERE id_vehicule = 0");
+    $result_list_factures = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($result_list_factures as $facture) {
+
+        //pour chaque facure recupérer le vh via le numéro de facture dans la base bleue
+        $request = $pdo->query("SELECT vh.ID FROM suivi_ventes_vehicules as vh
+            WHERE vh.facture_id = " . $facture['ID'] . "");
+        $result_vh_id = $request->fetch(PDO::FETCH_ASSOC);
+
+        $data_update_fact = [
+            'id_vehicule' => $result_vh_id['ID'],
+            'id_facture' => $facture['ID']
+        ];
+
+        $sql = "UPDATE suivi_ventes_factures SET id_vehicule =:id_vehicule WHERE ID = :id_facture";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data_update_fact);
 
 
+    }
 
 }
+
+
+
+
