@@ -14,7 +14,7 @@ $(document).ready(function () {
             data: $("#ajout_shop_exterieur_form").serialize(),
             success: function () {
                 $("#alert_shop_ext_added").show(300);
-                window.location.replace("/operations/shop_exterieurs/shop_exterieurs.php");
+                // window.location.replace("/operations/shop_exterieurs/shop_exterieurs.php");
             },
             error: function () {
                 $("#alert_shop_ext_added_fail").show(300);
