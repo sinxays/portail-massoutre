@@ -202,6 +202,10 @@ function update_shop_ext($data_shop_ext)
 {
     $pdo = Connection::getPDO();
 
+    $date_demande_recup = $data_shop_ext['date_demande_recup'] !== '' ? $data_shop_ext['date_demande_recup'] : NULL;
+    $date_recup = $data_shop_ext['date_recup'] !== '' ? $data_shop_ext['date_recup'] : NULL;
+
+
     $data = [
         'immatriculation' => $data_shop_ext['immatriculation'],
         'modele' => $data_shop_ext['modele'],
@@ -209,8 +213,8 @@ function update_shop_ext($data_shop_ext)
         'km' => $data_shop_ext['km'],
         'garantie' => $data_shop_ext['garantie'],
         'num_contrat' => $data_shop_ext['num_contrat'],
-        'date_demande_recup' => $data_shop_ext['date_demande_recup'],
-        'date_recup' => $data_shop_ext['date_recup'],
+        'date_demande_recup' => $date_demande_recup,
+        'date_recup' => $date_recup,
         'agence_recup' => $data_shop_ext['agence_recup'],
         'vehicule_id' => $data_shop_ext['vehicule_id']
     ];
