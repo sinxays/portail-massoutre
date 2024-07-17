@@ -112,7 +112,7 @@
                                 <div class="element_champ">
                                     <label for="input_modele">Modèle</label>
                                     <input type="text" class="form-control" id="input_modele" placeholder="Modèle"
-                                        name="modele" style="width: 550px;">
+                                        name="modele" style="width: 550px;" value="<?php echo $details_shop_ext['shop']['modele'] ?>">
                                 </div>
                                 <div class="radio_group">
                                     <span>Garantie </span>
@@ -155,7 +155,7 @@
                                 <div class="form-group">
                                     <label for="dateInput">Date Déclaration</label>
                                     <input type="date" class="form-control" id="dateInput" name="date_declaration"
-                                        style="width: 200px;">
+                                        style="width: 200px;" value="<?php echo $details_shop_ext['shop']['date_declaration'] ?>">
                                 </div>
 
                                 <label for="select_type_panne">Type panne</label>
