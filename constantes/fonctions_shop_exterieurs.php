@@ -85,7 +85,7 @@ function get_list_type_panne_libelle()
 
 function ajouter_shop_exterieur($array_shop_ext)
 {
-    var_dump($array_shop_ext);
+    // var_dump($array_shop_ext);
 
     $pdo = Connection::getPDO();
 
