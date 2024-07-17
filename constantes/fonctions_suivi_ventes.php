@@ -2649,13 +2649,13 @@ function update_vh_invoice()
     $pdo_base = Connection::getPDO_2();
 
     //on commence par récupérer tous les VH de ma base qui sont pas facturés
-    $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules WHERE facture_id IS NULL");
+    $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules WHERE facture_id = 0");
     $liste_vh_no_invoiced = $request->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($liste_vh_no_invoiced as $vh) {
         $id_vh = $vh['ID'];
 
-        // on recupere tous les vh qui sont sur ce bdc
+        // on recupere la facture liée
         $request = $pdo_portail->query("SELECT ID,numero_facture FROM suivi_ventes_factures WHERE id_vehicule = $id_vh");
         $facture_du_vh = $request->fetch(PDO::FETCH_ASSOC);
 
