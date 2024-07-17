@@ -179,6 +179,7 @@ function get_last_action($id)
 function ajout_action($data_new_action)
 {
 
+    
     $pdo = Connection::getPDO();
 
     $data = [
