@@ -2084,22 +2084,9 @@ function delete_factures_doublon()
     foreach ($liste_factures_doublons as $facture) {
         $id_vh_partagee = intval($facture['id_vehicule']);
 
-        //on va prendre la facture avec le plus récente date 
-        $request = $pdo_portail->query("SELECT ID,numero_facture,date_facture FROM suivi_ventes_factures WHERE id_vehicule = $id_vh_partagee ORDER BY date_facture DESC LIMIT 1");
+        //on va delete la facture sans uuid
+        $request = $pdo_portail->query("DELETE FROM suivi_ventes_factures WHERE id_vehicule = $id_vh_partagee AND uuid IS NULL");
         $facture_a_garder = $request->fetch(PDO::FETCH_ASSOC);
-
-        if ($facture_a_garder) {
-
-            //on supprime toutes les factures infèrieur à la date la plus récente.
-            $data_facture_a_delete = [
-                'id_vehicule' => $id_vh_partagee,
-                'date_facture_a_garder' => $facture_a_garder['date_facture']
-            ];
-            $sql = "DELETE FROM suivi_ventes_factures WHERE id_vehicule = :id_vehicule AND date_facture < :date_facture_a_garder ";
-            $stmt = $pdo_portail->prepare($sql);
-            $stmt->execute($data_facture_a_delete);
-
-        }
 
     }
 
