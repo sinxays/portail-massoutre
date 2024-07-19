@@ -2085,8 +2085,12 @@ function delete_factures_doublon()
         $id_vh_partagee = intval($facture['id_vehicule']);
 
         //on va delete la facture sans uuid
-        $request = $pdo_portail->query("DELETE FROM suivi_ventes_factures WHERE id_vehicule = $id_vh_partagee AND uuid IS NULL");
-        $facture_a_garder = $request->fetch(PDO::FETCH_ASSOC);
+        $data = [
+            'id_vehicule' => $id_vh_partagee
+        ];
+        $sql = "DELETE FROM suivi_ventes_factures WHERE id_vehicule = :id_vehicule AND uuid IS NULL";
+        $stmt= $pdo_portail->prepare($sql);
+        $stmt->execute($data);
 
     }
 
