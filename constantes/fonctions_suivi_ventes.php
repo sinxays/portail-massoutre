@@ -1991,9 +1991,11 @@ function update_factures_sans_vh()
         //si il existe alors on update
         if ($check_immat_exist) {
 
+            $id_vh_check = intval($check_immat_exist['ID']);
+
             //une fois le vh recup on le crée
             $data_vh_update = [
-                'id_vh' => intval($check_immat_exist['ID']),
+                'id_vh' => $id_vh_check,
                 'immatriculation' => $vh_infos['immatriculation'],
                 'provenance' => $provenance,
                 'vin' => $vh_infos['numero_chassis'],
@@ -2019,11 +2021,10 @@ function update_factures_sans_vh()
             WHERE ID = :id_vh";
             $stmt = $pdo_portail->prepare($sql);
             $stmt->execute($data_vh_update);
-            $last_insert_id_vh = $pdo_portail->lastInsertId();
 
             //une fois le vh update on update la facture
             $data_facture_update = [
-                'id_vh_update' => $last_insert_id_vh,
+                'id_vh_update' => $id_vh_check,
                 'id_facture' => $id_facture
             ];
             $sql = "UPDATE suivi_ventes_factures SET id_vehicule=:id_vh_update WHERE ID =:id_facture ";
@@ -2049,6 +2050,17 @@ function update_factures_sans_vh()
             VALUES (:immatriculation,:provenance,:vin,:marque,:modele,:version,:bdc_id,:facture_id,:ref_kepler,:prix_achat_ht)";
             $stmt = $pdo_portail->prepare($sql);
             $stmt->execute($data_vh_a_creer);
+            $last_insert_id_vh = $pdo_portail->lastInsertId();
+
+
+            //une fois le vh crée on update la facture
+            $data_facture_update = [
+                'id_vh_update' => intval($last_insert_id_vh),
+                'id_facture' => $id_facture
+            ];
+            $sql = "UPDATE suivi_ventes_factures SET id_vehicule=:id_vh_update WHERE ID =:id_facture ";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data_facture_update);
 
         }
 
