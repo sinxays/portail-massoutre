@@ -2081,17 +2081,12 @@ function delete_factures_doublon()
     HAVING COUNT(*) > 1");
     $liste_factures_doublons = $request->fetchAll(PDO::FETCH_ASSOC);
 
-    var_dump($liste_factures_doublons);
-
     foreach ($liste_factures_doublons as $facture) {
         $id_vh_partagee = intval($facture['id_vehicule']);
 
         //on va prendre la facture avec le plus récente date 
         $request = $pdo_portail->query("SELECT ID,numero_facture,date_facture FROM suivi_ventes_factures WHERE id_vehicule = $id_vh_partagee ORDER BY date_facture DESC LIMIT 1");
         $facture_a_garder = $request->fetch(PDO::FETCH_ASSOC);
-
-        saut_de_ligne();
-        var_dump($facture_a_garder);
 
         if ($facture_a_garder) {
 
@@ -2100,7 +2095,7 @@ function delete_factures_doublon()
                 'id_vehicule' => $id_vh_partagee,
                 'date_facture_a_garder' => $facture_a_garder['date_facture']
             ];
-            $sql = "DELETE FROM suivi_ventes_factures WHERE id_vehicule = :id_vehicule AND date_facture < ':date_facture_a_garder' ";
+            $sql = "DELETE FROM suivi_ventes_factures WHERE id_vehicule = :id_vehicule AND date_facture < :date_facture_a_garder ";
             $stmt = $pdo_portail->prepare($sql);
             $stmt->execute($data_facture_a_delete);
 
