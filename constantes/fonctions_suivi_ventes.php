@@ -2074,26 +2074,29 @@ function delete_immatriculation_doublon()
 {
     $pdo_portail = Connection::getPDO();
 
-    //on commence par récupérer tous les immat de ma base 
-    $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules");
-    $liste_vh = $request->fetchAll(PDO::FETCH_ASSOC);
+    //on commence par récupérer tous les doublons de facture sur le meme vehicule
+    $request = $pdo_portail->query("SELECT id_vehicule, COUNT(*) AS nb_doublons
+    FROM suivi_ventes_factures WHERE id_vehicule <> 0
+    GROUP BY id_vehicule
+    HAVING COUNT(*) > 1");
+    $liste_factures_doublons = $request->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($liste_vh as $vh) {
-        $id_vh = intval($vh['ID']);
-        $immatriculation = $vh['immatriculation'];
+    foreach ($liste_factures_doublons as $facture) {
+        $id_vh_partagee = intval($facture['id_vehicule']);
 
-        //on check si ce vh existe en doublon avec du coup un autre id
-        $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules WHERE immatriculation = '$immatriculation' and ID <> $id_vh");
-        $vh_doublon = $request->fetch(PDO::FETCH_ASSOC);
+        //on va prendre la facture avec le plus récente date 
+        $request = $pdo_portail->query("SELECT ID,numero_facture,date_facture FROM suivi_ventes_factures WHERE id_vehicule = $id_vh_partagee ORDER BY date_facture DESC LIMIT 1");
+        $facture_a_garder = $request->fetch(PDO::FETCH_ASSOC);
 
-        if ($vh_doublon) {
+        if ($facture_a_garder) {
 
-            $data_vh_a_delete = [
-                'ID' => $vh_doublon['ID']
+            $data_facture_a_delete = [
+                'id_vehicule' => $id_vh_partagee,
+                'date_facture_a_garder' => $facture_a_garder['date_facture']
             ];
-            $sql = "DELETE FROM suivi_ventes_vehicules WHERE ID =:ID";
+            $sql = "DELETE FROM suivi_ventes_factures WHERE id_vehicule = :id_vehicule AND date_facture < ':date_facture_a_garder' ";
             $stmt = $pdo_portail->prepare($sql);
-            $stmt->execute($data_vh_a_delete);
+            $stmt->execute($data_facture_a_delete);
 
         }
 
