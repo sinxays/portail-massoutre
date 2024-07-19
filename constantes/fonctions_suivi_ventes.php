@@ -1952,6 +1952,62 @@ function update_vh_factures_OS()
 
 }
 
+// fonction pour créer les vh manquants depuis les facture de N-1 
+function update_factures_sans_vh()
+{
+
+    $pdo_portail = Connection::getPDO();
+    $pdo_base = Connection::getPDO_2();
+
+    //on commence par récupérer tous les numéros de facture de ma base qui ne sont reliés a aucun vh 
+    $request = $pdo_portail->query("SELECT * FROM suivi_ventes_factures as factures 
+    LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
+    WHERE vsv.immatriculation is null");
+    $liste_num_factures = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    //on boucle pour chaque num facture
+    foreach ($liste_num_factures as $facture) {
+        $num_facture = $facture['numero_facture'];
+        $id_facture = $facture['ID'];
+
+        // on va chercher le vh via le numero de facture dans la base massoutre
+        $request = $pdo_base->query("SELECT vh.immatriculation,vh.destination_id,vh.numero_chassis,
+        marques.libelle AS marque,
+        modelescommerciaux.libelle AS modele,
+        finitions.libelle AS version_vh,
+        vh.prix_achat_ht 
+        FROM factureventes as facture
+        LEFT JOIN vehicules AS vh ON vh.ID = facture.vehicule_id
+        LEFT JOIN marques ON marques.ID = vh.marque_id
+        LEFT JOIN modelescommerciaux ON modelescommerciaux.ID = vh.modelecommercial_id
+        LEFT JOIN finitions ON finitions.ID = vh.finition_id
+        WHERE facture.dernier_numero_facture = '$num_facture'");
+        $vh_infos = $request->fetch(PDO::FETCH_ASSOC);
+
+        $provenance = get_provenance_from_destination_id_portail($vh_infos['destination_id']);
+
+        //une fois le vh recup on le crée
+        $data_vh_a_creer = [
+            'immatriculation' => $vh_infos['immatriculation'],
+            'provenance' => $provenance,
+            'vin' => $vh_infos['numero_chassis'],
+            'marque' => $vh_infos['marque'],
+            'modele' => $vh_infos['modele'],
+            'version' => $vh_infos['version_vh'],
+            'bdc_id' => NULL,
+            'facture_id' => $id_facture,
+            'ref_kepler' => NULL,
+            'prix_achat_ht' => $vh_infos['prix_achat_ht']
+        ];
+        $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,facture_id,reference_kepler,prix_achat_ht) 
+        VALUES (:immatriculation,:provenance,:vin,:marque,:modele,:version,:bdc_id,:facture_id,:ref_kepler,:prix_achat_ht)";
+        $stmt = $pdo_portail->prepare($sql);
+        $stmt->execute($data_vh_a_creer);
+    }
+
+}
+
+
 
 function update_vh_bdc_OS()
 {
@@ -2302,38 +2358,6 @@ function update_marge_nette()
 
     }
 }
-
-
-function update_factures_sans_vh()
-{
-    //base portail_massoutre
-    $pdo = Connection::getPDO();
-
-    //récupérer toutes les factures ou le vh est à 0 
-    $request = $pdo->query("SELECT ID FROM suivi_ventes_factures WHERE id_vehicule = 0");
-    $result_list_factures = $request->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach ($result_list_factures as $facture) {
-
-        //pour chaque facure recupérer le vh via le numéro de facture dans la base bleue
-        $request = $pdo->query("SELECT vh.ID FROM suivi_ventes_vehicules as vh
-            WHERE vh.facture_id = " . $facture['ID'] . "");
-        $result_vh_id = $request->fetch(PDO::FETCH_ASSOC);
-
-        $data_update_fact = [
-            'id_vehicule' => $result_vh_id['ID'],
-            'id_facture' => $facture['ID']
-        ];
-
-        $sql = "UPDATE suivi_ventes_factures SET id_vehicule =:id_vehicule WHERE ID = :id_facture";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($data_update_fact);
-
-
-    }
-
-}
-
 
 
 
