@@ -2086,12 +2086,12 @@ function delete_factures_doublon()
     foreach ($liste_factures_doublons as $facture) {
         $id_vh_partagee = intval($facture['id_vehicule']);
 
-        saut_de_ligne();
-        echo $id_vh_partagee;
-
         //on va prendre la facture avec le plus récente date 
         $request = $pdo_portail->query("SELECT ID,numero_facture,date_facture FROM suivi_ventes_factures WHERE id_vehicule = $id_vh_partagee ORDER BY date_facture DESC LIMIT 1");
         $facture_a_garder = $request->fetch(PDO::FETCH_ASSOC);
+
+        saut_de_ligne();
+        var_dump($facture_a_garder);
 
         if ($facture_a_garder) {
 
