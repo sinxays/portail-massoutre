@@ -2070,7 +2070,7 @@ function update_factures_sans_vh()
 }
 
 
-function delete_immatriculation_doublon()
+function delete_factures_doublon()
 {
     $pdo_portail = Connection::getPDO();
 
@@ -2081,8 +2081,13 @@ function delete_immatriculation_doublon()
     HAVING COUNT(*) > 1");
     $liste_factures_doublons = $request->fetchAll(PDO::FETCH_ASSOC);
 
+    var_dump($liste_factures_doublons);
+
     foreach ($liste_factures_doublons as $facture) {
         $id_vh_partagee = intval($facture['id_vehicule']);
+
+        saut_de_ligne();
+        echo $id_vh_partagee;
 
         //on va prendre la facture avec le plus récente date 
         $request = $pdo_portail->query("SELECT ID,numero_facture,date_facture FROM suivi_ventes_factures WHERE id_vehicule = $id_vh_partagee ORDER BY date_facture DESC LIMIT 1");
@@ -2090,6 +2095,7 @@ function delete_immatriculation_doublon()
 
         if ($facture_a_garder) {
 
+            //on supprime toutes les factures infèrieur à la date la plus récente.
             $data_facture_a_delete = [
                 'id_vehicule' => $id_vh_partagee,
                 'date_facture_a_garder' => $facture_a_garder['date_facture']
