@@ -2084,7 +2084,7 @@ function delete_factures_restant()
         $num_facture = $facture['numero_facture'];
         $id_facture = intval($facture['ID']);
 
-        $request = $pdo_massoutre->query("SELECT ID FROM factureventes WHERE dernier_numero_facture = $num_facture AND deleted = 1");
+        $request = $pdo_massoutre->query("SELECT ID FROM factureventes WHERE dernier_numero_facture = '$num_facture' AND deleted = 1");
         $check_deleted_facture = $request->fetch(PDO::FETCH_ASSOC);
 
         if ($check_deleted_facture) {
