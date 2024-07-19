@@ -1960,7 +1960,7 @@ function update_factures_sans_vh()
     $pdo_base = Connection::getPDO_2();
 
     //on commence par récupérer tous les numéros de facture de ma base qui ne sont reliés a aucun vh 
-    $request = $pdo_portail->query("SELECT * FROM suivi_ventes_factures as factures 
+    $request = $pdo_portail->query("SELECT factures.ID,factures.numero_facture FROM suivi_ventes_factures as factures 
     LEFT JOIN suivi_ventes_vehicules as vsv ON vsv.facture_id = factures.id
     WHERE vsv.immatriculation is null");
     $liste_num_factures = $request->fetchAll(PDO::FETCH_ASSOC);
@@ -1968,11 +1968,7 @@ function update_factures_sans_vh()
     //on boucle pour chaque num facture
     foreach ($liste_num_factures as $facture) {
         $num_facture = $facture['numero_facture'];
-        $id_facture = $facture['ID'];
-
-        var_dump($facture);
-
-        die();
+        $id_facture = intval($facture['ID']);
 
         // on va chercher le vh via le numero de facture dans la base massoutre
         $request = $pdo_base->query("SELECT vh.immatriculation,vh.destination_id,vh.numero_chassis,
@@ -1987,6 +1983,57 @@ function update_factures_sans_vh()
         LEFT JOIN finitions ON finitions.ID = vh.finition_id
         WHERE facture.dernier_numero_facture = '$num_facture'");
         $vh_infos = $request->fetch(PDO::FETCH_ASSOC);
+
+        $check_immat_exist = check_if_immatriculation_exist_suivi_ventes($vh_infos['immatriculation']);
+
+        //si il existe alors on update
+        if ($check_immat_exist) {
+
+            $provenance = get_provenance_from_destination_id_portail($vh_infos['destination_id']);
+
+            //une fois le vh recup on le crée
+            $data_vh_update = [
+                'id_vh' => intval($check_immat_exist['ID']),
+                'immatriculation' => $vh_infos['immatriculation'],
+                'provenance' => $provenance,
+                'vin' => $vh_infos['numero_chassis'],
+                'marque' => $vh_infos['marque'],
+                'modele' => $vh_infos['modele'],
+                'version_vh' => $vh_infos['version_vh'],
+                'bdc_id' => NULL,
+                'facture_id' => $id_facture,
+                'ref_kepler' => NULL,
+                'prix_achat_ht' => $vh_infos['prix_achat_ht']
+            ];
+            $sql = "UPDATE suivi_ventes_vehicules SET 
+            immatriculation=:immatriculation,
+            provenance_vo_vn =:provenance,
+            vin =:vin,
+            marque =:marque,
+            modele =:modele,
+            version =:version_vh,
+            bdc_id =:bdc_id,
+            facture_id =:facture_id,
+            reference_kepler =:ref_kepler,
+            prix_achat_ht =:prix_achat_ht 
+            WHERE ID = :id_vh";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data_vh_update);
+            $last_insert_id_vh = $pdo_portail->lastInsertId();
+
+            //une fois le vh update on update la facture
+            $data_facture_update = [
+                'id_vh_update' => $last_insert_id_vh,
+                'id_facture' => $id_facture
+            ];
+            $sql = "UPDATE suivi_ventes_factures SET id_vehicule=:id_vh_update WHERE ID =:id_facture ";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data_facture_update);
+        }
+        //sinon on le crée
+        else {
+
+        }
 
         $provenance = get_provenance_from_destination_id_portail($vh_infos['destination_id']);
 

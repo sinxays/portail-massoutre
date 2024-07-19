@@ -2349,7 +2349,7 @@ function check_if_immatriculation_exist($immat)
 function check_if_immatriculation_exist_suivi_ventes($immat)
 {
     $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT immatriculation 
+    $request = $pdo->query("SELECT ID,immatriculation 
                     from suivi_ventes_vehicules 
                     WHERE immatriculation = '$immat' ");
     $result = $request->fetch(PDO::FETCH_ASSOC);
