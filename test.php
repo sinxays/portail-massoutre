@@ -65,7 +65,7 @@
         // update_vh_invoice();
         // update_bdc_invoice();
 
-        delete_factures_doublon();
+        delete_factures_restant();
         
 
         // update_vh_invoice();

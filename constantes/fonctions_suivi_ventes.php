@@ -2070,27 +2070,32 @@ function update_factures_sans_vh()
 }
 
 
-function delete_factures_doublon()
+function delete_factures_restant()
 {
     $pdo_portail = Connection::getPDO();
+    $pdo_massoutre = Connection::getPDO_2();
 
     //on commence par récupérer tous les doublons de facture sur le meme vehicule
-    $request = $pdo_portail->query("SELECT id_vehicule, COUNT(*) AS nb_doublons
-    FROM suivi_ventes_factures WHERE id_vehicule <> 0
-    GROUP BY id_vehicule
-    HAVING COUNT(*) > 1");
-    $liste_factures_doublons = $request->fetchAll(PDO::FETCH_ASSOC);
+    $request = $pdo_portail->query("SELECT numero_facture,ID
+    FROM suivi_ventes_factures WHERE id_vehicule = 0");
+    $liste_factures = $request->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($liste_factures_doublons as $facture) {
-        $id_vh_partagee = intval($facture['id_vehicule']);
+    foreach ($liste_factures as $facture) {
+        $num_facture = $facture['numero_facture'];
+        $id_facture = intval($facture['ID']);
 
-        //on va delete la facture sans uuid
-        $data = [
-            'id_vehicule' => $id_vh_partagee
-        ];
-        $sql = "DELETE FROM suivi_ventes_factures WHERE id_vehicule = :id_vehicule AND uuid IS NULL";
-        $stmt= $pdo_portail->prepare($sql);
-        $stmt->execute($data);
+        $request = $pdo_massoutre->query("SELECT ID FROM factureventes WHERE dernier_numero_facture = $num_facture AND deleted = 1");
+        $check_deleted_facture = $request->fetch(PDO::FETCH_ASSOC);
+
+        if ($check_deleted_facture) {
+            //on va delete la facture
+            $data = [
+                'id_facture' => $id_facture
+            ];
+            $sql = "DELETE FROM suivi_ventes_factures WHERE ID = :id_facture";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data);
+        }
 
     }
 
