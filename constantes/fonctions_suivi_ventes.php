@@ -1985,11 +1985,11 @@ function update_factures_sans_vh()
         $vh_infos = $request->fetch(PDO::FETCH_ASSOC);
 
         $check_immat_exist = check_if_immatriculation_exist_suivi_ventes($vh_infos['immatriculation']);
+        $provenance = get_provenance_from_destination_id_portail($vh_infos['destination_id']);
+
 
         //si il existe alors on update
         if ($check_immat_exist) {
-
-            $provenance = get_provenance_from_destination_id_portail($vh_infos['destination_id']);
 
             //une fois le vh recup on le crée
             $data_vh_update = [
@@ -2033,31 +2033,61 @@ function update_factures_sans_vh()
         //sinon on le crée
         else {
 
+            $data_vh_a_creer = [
+                'immatriculation' => $vh_infos['immatriculation'],
+                'provenance' => $provenance,
+                'vin' => $vh_infos['numero_chassis'],
+                'marque' => $vh_infos['marque'],
+                'modele' => $vh_infos['modele'],
+                'version' => $vh_infos['version_vh'],
+                'bdc_id' => NULL,
+                'facture_id' => $id_facture,
+                'ref_kepler' => NULL,
+                'prix_achat_ht' => $vh_infos['prix_achat_ht']
+            ];
+            $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,facture_id,reference_kepler,prix_achat_ht) 
+            VALUES (:immatriculation,:provenance,:vin,:marque,:modele,:version,:bdc_id,:facture_id,:ref_kepler,:prix_achat_ht)";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data_vh_a_creer);
+
         }
 
-        $provenance = get_provenance_from_destination_id_portail($vh_infos['destination_id']);
 
-        //une fois le vh recup on le crée
-        $data_vh_a_creer = [
-            'immatriculation' => $vh_infos['immatriculation'],
-            'provenance' => $provenance,
-            'vin' => $vh_infos['numero_chassis'],
-            'marque' => $vh_infos['marque'],
-            'modele' => $vh_infos['modele'],
-            'version' => $vh_infos['version_vh'],
-            'bdc_id' => NULL,
-            'facture_id' => $id_facture,
-            'ref_kepler' => NULL,
-            'prix_achat_ht' => $vh_infos['prix_achat_ht']
-        ];
-        $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,facture_id,reference_kepler,prix_achat_ht) 
-        VALUES (:immatriculation,:provenance,:vin,:marque,:modele,:version,:bdc_id,:facture_id,:ref_kepler,:prix_achat_ht)";
-        $stmt = $pdo_portail->prepare($sql);
-        $stmt->execute($data_vh_a_creer);
     }
 
 }
 
+
+function delete_immatriculation_doublon()
+{
+    $pdo_portail = Connection::getPDO();
+
+    //on commence par récupérer tous les immat de ma base 
+    $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules");
+    $liste_vh = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($liste_vh as $vh) {
+        $id_vh = intval($vh['ID']);
+        $immatriculation = $vh['immatriculation'];
+
+        //on check si ce vh existe en doublon avec du coup un autre id
+        $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules WHERE immatriculation = $immatriculation and ID !== $id_vh");
+        $vh_doublon = $request->fetch(PDO::FETCH_ASSOC);
+
+        if ($vh_doublon) {
+
+            $data_vh_a_delete = [
+                'ID' => $vh_doublon['ID']
+            ];
+            $sql = "DELETE FROM suivi_ventes_vehicules WHERE ID =:ID";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data_vh_a_delete);
+
+        }
+
+    }
+
+}
 
 
 function update_vh_bdc_OS()
