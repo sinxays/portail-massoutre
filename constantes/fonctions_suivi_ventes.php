@@ -2071,7 +2071,7 @@ function delete_immatriculation_doublon()
         $immatriculation = $vh['immatriculation'];
 
         //on check si ce vh existe en doublon avec du coup un autre id
-        $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules WHERE immatriculation = $immatriculation and ID !== $id_vh");
+        $request = $pdo_portail->query("SELECT ID,immatriculation FROM suivi_ventes_vehicules WHERE immatriculation = '$immatriculation' and ID <> $id_vh");
         $vh_doublon = $request->fetch(PDO::FETCH_ASSOC);
 
         if ($vh_doublon) {
