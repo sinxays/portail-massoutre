@@ -1970,6 +1970,10 @@ function update_factures_sans_vh()
         $num_facture = $facture['numero_facture'];
         $id_facture = $facture['ID'];
 
+        var_dump($facture);
+
+        die();
+
         // on va chercher le vh via le numero de facture dans la base massoutre
         $request = $pdo_base->query("SELECT vh.immatriculation,vh.destination_id,vh.numero_chassis,
         marques.libelle AS marque,
