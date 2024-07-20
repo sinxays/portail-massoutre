@@ -196,7 +196,6 @@ function alimenter_suivi_ventes_factures_via_portail($date)
     foreach ($result_list_factures as $facture) {
 
         //tout dabord on check si la facture existe deja 
-        // on check si on a le vh chez nous ? 
         $request = $pdo->query("SELECT * FROM  suivi_ventes_factures
           WHERE numero_facture = '" . $facture['dernier_numero_facture'] . "'");
         $check_facture = $request->fetch(PDO::FETCH_ASSOC);
@@ -237,8 +236,6 @@ function alimenter_suivi_ventes_factures_via_portail($date)
             $uuid_facture = get_uuid_facture_from_array($array_factures, $facture['dernier_numero_facture']);
 
             $marge_ttc = $facture['marge_nette'] * 1.2;
-
-
 
             //si le vh n'existe pas
             if (empty($check_vh)) {
@@ -2358,6 +2355,17 @@ function delete_facture($array_facture_to_delete)
         $sql = "DELETE FROM suivi_ventes_factures WHERE ID=:id";
         $stmt = $pdo_portail->prepare($sql);
         $stmt->execute($data_facture_to_delete);
+
+        //supprimer aussi la valeur facture_id dans vehicule
+        $data_vh_to_tupdate = [
+            'id_facture_null' => NULL,
+            'id_facture' => $id_facture
+        ];
+
+        $sql = "UPDATE suivi_ventes_vehicule SET facture_id = :id_facture_null WHERE facture_id=:id_facture";
+        $stmt = $pdo_portail->prepare($sql);
+        $stmt->execute($data_vh_to_tupdate);
+
     }
 }
 
