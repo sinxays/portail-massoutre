@@ -90,7 +90,7 @@ $(document).ready(function () {
                 date: date_bdc
             },
             success: function () {
-                location.reload(true);
+                // location.reload(true);
             }
         });
 
