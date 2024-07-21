@@ -18,8 +18,10 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
     $pdo = Connection::getPDO();
 
     // on commence par aller chercher dans la base portail tous les bdc d'une date
+    // $request = $pdo2->query("SELECT * FROM bdcventes 
+    // WHERE date_dernier_bdc = '$date'");
     $request = $pdo2->query("SELECT * FROM bdcventes 
-    WHERE date_dernier_bdc = '$date'");
+    WHERE numero = 84676");
     // $request = $pdo2->query("SELECT * FROM bdcventes 
     // WHERE date_dernier_bdc BETWEEN $date");
     $result_list_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
