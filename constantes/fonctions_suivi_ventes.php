@@ -18,10 +18,8 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
     $pdo = Connection::getPDO();
 
     // on commence par aller chercher dans la base portail tous les bdc d'une date
-    // $request = $pdo2->query("SELECT * FROM bdcventes 
-    // WHERE date_dernier_bdc = '$date'");
     $request = $pdo2->query("SELECT * FROM bdcventes 
-    WHERE numero = 84676");
+    WHERE date_dernier_bdc = '$date'");
     // $request = $pdo2->query("SELECT * FROM bdcventes 
     // WHERE date_dernier_bdc BETWEEN $date");
     $result_list_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
@@ -29,6 +27,9 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
     // FAIRE UN APPEL BDC À KEPLER SUR LA MÊME DATE POUR AVOIR UNE LISTE DE BDC DE LA MÊME DATE ( NORMALEMENT ON DEVRAIT AVOIR LES MÊMES BDC ) 
     // STOCKER ENSUITE DANS UN ARRAY LE NUM ET SON UUID POUR POUVOIR L'UTILISER PLUS BAS
     $array_bdc = get_array_bdc_from_kepler($date);
+
+    var_dump($array_bdc);
+    die();
 
     //on boucle sur la liste des BDC récupérés
     foreach ($result_list_bdc as $bdc) {
