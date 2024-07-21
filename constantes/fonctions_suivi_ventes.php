@@ -24,12 +24,14 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
     // WHERE date_dernier_bdc BETWEEN $date");
     $result_list_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
 
-    // TO DO : FAIRE UN APPEL BDC À KEPLER SUR LA MÊME DATE POUR AVOIR UNE LISTE DE BDC DE LA MÊME DATE ( NORMALEMENT ON DEVRAIT AVOIR LES MÊMES BDC ) 
+    // FAIRE UN APPEL BDC À KEPLER SUR LA MÊME DATE POUR AVOIR UNE LISTE DE BDC DE LA MÊME DATE ( NORMALEMENT ON DEVRAIT AVOIR LES MÊMES BDC ) 
     // STOCKER ENSUITE DANS UN ARRAY LE NUM ET SON UUID POUR POUVOIR L'UTILISER PLUS BAS
     $array_bdc = get_array_bdc_from_kepler($date);
 
     //on boucle sur la liste des BDC récupérés
     foreach ($result_list_bdc as $bdc) {
+
+        $num_bdc = intval($bdc['numero']);
 
         //on va d'abord chercher les données véhicules du portail dans la table vehicules
         $request = $pdo2->query("SELECT vh.immatriculation,vh.destination_id,vh.numero_chassis,marques.libelle AS marque,
@@ -44,7 +46,7 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
 
         //on check déja si le bdc existe ou pas
         $request = $pdo->query("SELECT numero_bdc FROM suivi_ventes_bdc AS bdc
-        WHERE bdc.numero_bdc = " . intval($bdc['numero']) . "");
+        WHERE bdc.numero_bdc = " .$num_bdc . "");
         $result_check_bdc_num = $request->fetch(PDO::FETCH_COLUMN);
 
         //si pas de BDC alors on le crée
@@ -60,12 +62,12 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
             $reference_vh_kepler = NULL;
 
             //uuid
-            $uuid_bdc = get_uuid_bdc_from_array($array_bdc, $bdc['numero']);
+            $uuid_bdc = get_uuid_bdc_from_array($array_bdc,$num_bdc);
 
 
             //insert du bdc dans suivi_ventes_bdc
             $data_bdc = [
-                'num_bdc' => $bdc['numero'],
+                'num_bdc' => $num_bdc,
                 'nom_acheteur' => $bdc['nom_client'],
                 'prixTotalHT' => $bdc['montant_ht'],
                 'prixTTC' => $bdc['montant_ttc'],
@@ -135,6 +137,7 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
                 VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler,:prix_achat_ht)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($data_vh);
+
 
                 /** on update ensuite les prix ht et TTC du BDC **/
 
