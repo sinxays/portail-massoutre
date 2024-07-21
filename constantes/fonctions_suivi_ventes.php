@@ -51,17 +51,13 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
         WHERE bdc.numero_bdc = " .$num_bdc . "");
         $result_check_bdc_num = $request->fetch(PDO::FETCH_COLUMN);
 
+        $provenance = get_provenance_from_destination_id_portail($result_vh['destination_id']);
+
         //si pas de BDC alors on le crée
         if (empty($result_check_bdc_num)) {
 
             $vendeur_id = get_id_collaborateur_payplan_by_name($bdc['nom_vendeur']);
             $destination_sortie = get_destination_sortie($bdc['destination_sortie']);
-
-            /**** REFERENCE VH KEPLER ( pas vraiment utile mais à garder au cas ou ) ****/
-            // $infos_bdc_kepler = get_bdc_from_kepler_by_number($bdc['numero']);
-            // $uuid_bdc = $infos_bdc_kepler->uuid;
-            // $reference_vh_kepler = $infos_bdc_kepler->items[0]->reference;
-            $reference_vh_kepler = NULL;
 
             //uuid
             $uuid_bdc = get_uuid_bdc_from_array($array_bdc,$num_bdc);
@@ -85,7 +81,6 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
             $id_bdc_last_inserted = $pdo->lastInsertId();
 
             /******* On ajoute ensuite le 1er véhicule ( il peut y avoir plusieurs véhicule dans un BDC ) *******/
-            $provenance = get_provenance_from_destination_id_portail($result_vh['destination_id']);
 
             //insert du vh dans suivi_ventes_vh
             $data_vh = [
@@ -96,12 +91,11 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
                 'modele' => $result_vh['modele'],
                 'version_vh' => $result_vh['version_vh'],
                 'bdc_id' => $id_bdc_last_inserted,
-                'reference_kepler' => $reference_vh_kepler,
                 'prix_achat_ht' => $result_vh['prix_achat_ht']
             ];
 
-            $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
-            VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler,:prix_achat_ht)";
+            $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,prix_achat_ht) 
+            VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:prix_achat_ht)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($data_vh);
 
@@ -132,11 +126,10 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
                     'modele' => strtoupper($result_vh['modele']),
                     'version_vh' => $result_vh['version_vh'],
                     'bdc_id' => $id_bdc,
-                    'reference_kepler' => $reference_vh_kepler,
                     'prix_achat_ht' => $result_vh['prix_achat_ht']
                 ];
-                $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,reference_kepler,prix_achat_ht) 
-                VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:reference_kepler,:prix_achat_ht)";
+                $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,prix_achat_ht) 
+                VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:prix_achat_ht)";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($data_vh);
 
