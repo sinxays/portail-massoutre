@@ -95,9 +95,6 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
                 'prix_achat_ht' => $result_vh['prix_achat_ht']
             ];
 
-            var_dump($data_vh);
-            die();
-
             $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,prix_achat_ht) 
             VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:prix_achat_ht)";
             $stmt = $pdo->prepare($sql);
