@@ -28,8 +28,6 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
     // STOCKER ENSUITE DANS UN ARRAY LE NUM ET SON UUID POUR POUVOIR L'UTILISER PLUS BAS
     $array_bdc = get_array_bdc_from_kepler($date);
 
-    var_dump($array_bdc);
-    die();
 
     //on boucle sur la liste des BDC récupérés
     foreach ($result_list_bdc as $bdc) {
@@ -75,6 +73,11 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
                 'destination_sortie' => $destination_sortie,
                 'uuid' => $uuid_bdc
             ];
+
+            var_dump($data_bdc);
+            die();
+
+            
             $sql = "INSERT INTO suivi_ventes_bdc (numero_bdc,nom_acheteur,prix_vente_ht,prix_vente_ttc,vendeur_id,date_bdc,destination_vente,uuid) 
             VALUES (:num_bdc, :nom_acheteur,:prixTotalHT, :prixTTC,:nom_vendeur, :dateBC,:destination_sortie, :uuid)";
             $stmt = $pdo->prepare($sql);
