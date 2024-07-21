@@ -74,10 +74,7 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
                 'uuid' => $uuid_bdc
             ];
 
-            var_dump($data_bdc);
-            die();
 
-            
             $sql = "INSERT INTO suivi_ventes_bdc (numero_bdc,nom_acheteur,prix_vente_ht,prix_vente_ttc,vendeur_id,date_bdc,destination_vente,uuid) 
             VALUES (:num_bdc, :nom_acheteur,:prixTotalHT, :prixTTC,:nom_vendeur, :dateBC,:destination_sortie, :uuid)";
             $stmt = $pdo->prepare($sql);
@@ -97,6 +94,9 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
                 'bdc_id' => $id_bdc_last_inserted,
                 'prix_achat_ht' => $result_vh['prix_achat_ht']
             ];
+
+            var_dump($data_vh);
+            die();
 
             $sql = "INSERT INTO suivi_ventes_vehicules (immatriculation,provenance_vo_vn,vin,marque,modele,version,bdc_id,prix_achat_ht) 
             VALUES (:immatriculation, :provenance,:VIN, :marque,:modele, :version_vh,:bdc_id,:prix_achat_ht)";
