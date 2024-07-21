@@ -60,12 +60,12 @@
         ini_set('max_execution_time', 0);
 
         /****** UPDATE ALL ******/
-        // update_vh_bdc_OS();
-        // update_vh_factures_OS();
-        // update_vh_invoice();
-        // update_bdc_invoice();
+        update_vh_bdc_OS();
+        update_vh_factures_OS();
+        update_vh_invoice();
+        update_bdc_invoice();
 
-        delete_factures_restant();
+        // delete_factures_restant();
         
 
         // update_vh_invoice();

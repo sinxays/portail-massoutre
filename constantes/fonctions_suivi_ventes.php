@@ -343,12 +343,12 @@ function alimenter_suivi_ventes_factures_via_portail($date)
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($data);
 
-                //il faut ensuite check si le vh facturé était le seul du bdc dans ce cas on passe le bdc a facturé
-                $request = $pdo->query("SELECT bdc_id FROM suivi_ventes_vehicules WHERE ID = $id_vehicule");
-                $bdc_id = $request->fetch(PDO::FETCH_ASSOC);
-                check_and_update_if_bdc_invoiced_by_id_bdc(intval($bdc_id['ID']));
-
             }
+
+            //il faut ensuite check si le vh facturé était le seul du bdc dans ce cas on passe le bdc a facturé
+            $request = $pdo->query("SELECT bdc_id FROM suivi_ventes_vehicules WHERE ID = $id_vehicule");
+            $bdc_id = $request->fetch(PDO::FETCH_ASSOC);
+            check_and_update_if_bdc_invoiced_by_id_bdc(intval($bdc_id['ID']));
         }
     }
 }
@@ -1945,6 +1945,8 @@ function update_vh_factures_OS()
         $sql = "UPDATE suivi_ventes_factures SET id_vehicule=:id_vehicule WHERE ID=:id";
         $stmt = $pdo_portail->prepare($sql);
         $stmt->execute($data);
+
+
     }
 
 }
@@ -2120,20 +2122,24 @@ function update_vh_bdc_OS()
         WHERE vh.immatriculation = '$vh_immat'");
         $num_bdc = $request->fetch(PDO::FETCH_COLUMN);
 
-        //une fois l'immat on va récupérer l'id du vh de suivi vente vh pour le rattacher à la facture. 
+        //une fois le numero bdc recup on va récupérer l'id du vh de suivi vente vh pour le rattacher au bdc. 
         $request = $pdo_portail->query("SELECT ID FROM suivi_ventes_bdc
         WHERE numero_bdc = '$num_bdc'");
         $result = $request->fetch(PDO::FETCH_COLUMN);
         $id_bdc = intval($result);
 
-        //on va update le vh
-        $data = [
-            'id_bdc' => $id_bdc,
-            'id' => $vh_id
-        ];
-        $sql = "UPDATE suivi_ventes_vehicules SET bdc_id=:id_bdc WHERE ID=:id";
-        $stmt = $pdo_portail->prepare($sql);
-        $stmt->execute($data);
+        //si on a le BDC dans ma base
+        if ($id_bdc) {
+            //on va update le vh
+            $data = [
+                'id_bdc' => $id_bdc,
+                'id' => $vh_id
+            ];
+            $sql = "UPDATE suivi_ventes_vehicules SET bdc_id=:id_bdc WHERE ID=:id";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data);
+
+        }
     }
 
 }
