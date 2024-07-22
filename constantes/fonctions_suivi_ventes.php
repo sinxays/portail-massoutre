@@ -347,7 +347,7 @@ function alimenter_suivi_ventes_factures_via_portail($date)
             //il faut ensuite check si le vh facturé était le seul du bdc dans ce cas on passe le bdc a facturé
             $request = $pdo->query("SELECT bdc_id FROM suivi_ventes_vehicules WHERE ID = $id_vehicule");
             $bdc_id = $request->fetch(PDO::FETCH_ASSOC);
-            check_and_update_if_bdc_invoiced_by_id_bdc(intval($bdc_id['ID']));
+            check_and_update_if_bdc_invoiced_by_id_bdc(intval($bdc_id['bdc_id']));
         }
     }
 }
