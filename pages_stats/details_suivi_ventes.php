@@ -76,7 +76,8 @@
         $table .= "<th class='th1'>Montant</th>";
         $table .= "<th class='th1'>Durée Location (mois)</th>";
         $table .= "<th class='th1'>Durée Stock (jours)</th>";
-        $table .= "<th class='th1'>Cout Detention / Marge</th>";
+        if ($type == 'facture')
+            $table .= "<th class='th1'>Cout Detention / Marge</th>";
         $table .= "<th class='th1'>Vendeur</th>";
         $table .= "<th class='th1'>CVO</th>";
         $table .= "<th class='th1'>Date dernier BDC</th>";
@@ -108,7 +109,6 @@
                     $table .= "<td>" . $bdc['prix_vente_ht'] . "</td>";
                     $table .= "<td> " . $duree_location . " </td>";
                     $table .= "<td> " . $duree_stock . " </td>";
-                    $table .= "<td> marge </td>";
                     $table .= "<td>" . $bdc['nom_complet'] . "</td>";
                     $table .= "<td>" . $bdc['nom_cvo'] . "</td>";
                     $table .= "<td>" . $bdc['date_bdc'] . "</td>";
