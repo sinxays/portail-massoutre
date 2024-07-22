@@ -3218,6 +3218,7 @@ function get_bdc_by_site_by_destination_vente($cvo_id, $destination_vente, $type
             vsv.prix_achat_ht,
             bdc.prix_vente_ht,
             bdc.nom_acheteur,
+            bdc.numero_bdc,
             vsv.immatriculation,
             cvo.nom_cvo,
             bdc.date_bdc,

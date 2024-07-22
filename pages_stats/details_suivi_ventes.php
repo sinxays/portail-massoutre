@@ -96,7 +96,7 @@
                     $duree_stock = get_duree_stock($bdc['immatriculation'], $type);
 
                     $table .= "<tr>";
-                    $table .= "<td>" . (isset($bdc['numero_bdc']) ? $bdc['numero_bdc'] : $bdc['immatriculation']) . "</td>";
+                    $table .= "<td>" . (isset($bdc['numero_bdc']) ? $bdc['numero_bdc'] : $bdc['immatriculation']) . " <br/>(" . $bdc['immatriculation'] . ")</td>";
                     $table .= "<td>" . $bdc['marque'] . "</td>";
                     $table .= "<td>" . $bdc['modele'] . "</td>";
                     $table .= "<td>" . $vh_infos['categorie'] . "</td>";
@@ -129,9 +129,9 @@
                     // echo $destination_vente;
                     // var_dump($facture);
                     // echo $frais_vo;
-
+        
                     // die();
-
+        
                     // $calcul_marge = calcul_marge($type_provenance, $destination_vente, $facture, $frais_vo);
                     $vh_infos = get_infos_vehicules_portail_bleu($facture['immatriculation']);
                     $duree_location = get_duree_locations($facture['immatriculation']);
