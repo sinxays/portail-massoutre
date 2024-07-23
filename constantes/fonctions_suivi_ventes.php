@@ -181,7 +181,6 @@ function alimenter_suivi_ventes_factures_via_portail($date)
     LEFT JOIN pays ON pays.id = adresse.pays_id
     LEFT JOIN utilisateurs ON utilisateurs.id = factventes.vendeur_id
     WHERE factventes.date_facturation = '$date'");
-    // WHERE factventes.date_facturation BETWEEN $date");
     $result_list_factures = $request->fetchAll(PDO::FETCH_ASSOC);
 
     // var_dump($result_list_factures);

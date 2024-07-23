@@ -70,10 +70,6 @@
 
         // update_vh_invoice();
 
-        check_and_update_if_bdc_invoiced_by_id_bdc(1988);
-
-
-
 
         ?>
     </div>
