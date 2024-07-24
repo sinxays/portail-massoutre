@@ -186,8 +186,8 @@
 
                                 <div class="form-floating">
                                     <textarea class="form-control" placeholder="Detail(s) de la panne"
-                                        id="textarea_detail_panne"
-                                        style="height: 90px;resize:none;"><?php echo $details_shop_ext['shop']['detail_panne']; ?></textarea>
+                                        id="textarea_detail_panne" style="height: 90px;resize:none;"
+                                        name="detail_panne"><?php echo $details_shop_ext['shop']['detail_panne']; ?></textarea>
                                     <label for="textarea_detail_panne">Detail(s) de la panne</label>
                                 </div>
 
