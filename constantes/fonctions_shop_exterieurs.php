@@ -16,7 +16,7 @@ function get_liste_shop_exterieurs($categorie)
     $request = $pdo->query("SELECT vh.ID,vh.immatriculation,vh.modele,vh.num_contrat,vh.mva,vh.kilometrage,vh.garantie,vh.date_demande_recup,vh.date_recup,vh.agence_recup,
     cat.libelle,
     type_panne.type_panne_libelle,
-    panne.localisation,panne.date_declaration
+    panne.localisation,panne.date_declaration,panne.detail_panne
       FROM shop_ext_vehicules as vh
       LEFT JOIN shop_ext_categories as cat ON vh.categorie_id = cat.id
       LEFT JOIN shop_ext_panne as panne ON vh.id = panne.vehicule_id

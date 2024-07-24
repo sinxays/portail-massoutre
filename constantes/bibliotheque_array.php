@@ -144,7 +144,7 @@ $collaborateurs_payplan_header_row = array("Collaborateur", "Reprise");
 
 $table_payplan_reprise_achat_header_row = array("Collaborateur", "Repreneur final", "Achat", "Achat MVC", "PACK_FIRST");
 
-$shop_exterieurs_table_header_row = array("Immatriculation", "Modele", "MVA", "KM", "Garantie", "Numéro contrat", "Compteur Immo", "Date déclaration", "Type Panne", "Localisation", "Date + Derniere action", "Remarque", "Payé?", "Montant(€)", "Date demande récup", "Date récup + code agence", "  ");
+$shop_exterieurs_table_header_row = array("Immatriculation", "Modele", "MVA", "KM", "Garantie", "Numéro contrat", "Compteur Immo", "Date déclaration", "Type Panne", "Detail Panne", "Localisation", "Date + Derniere action", "Remarque", "Payé?", "Montant(€)", "Date demande récup", "Date récup + code agence", "  ");
 
 
 $imprimantes_table_header_row = array(

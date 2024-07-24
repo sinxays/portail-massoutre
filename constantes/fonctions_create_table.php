@@ -1064,6 +1064,7 @@ function create_table_shop_exterieurs($header, $categorie)
         $table_shop_exterieurs .= "<td class='td_n' style='max-width:30px'> " . $compteur_immo . " </td>";
         $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['date_declaration'] . " </td>";
         $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['type_panne_libelle'] . " </td>";
+        $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['detail_panne'] . " </td>";
         $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['localisation'] . " </td>";
 
         if (isset($shop_ext['last_action']) && $shop_ext['last_action'] !== '') {
