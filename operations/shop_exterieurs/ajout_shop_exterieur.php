@@ -121,8 +121,8 @@
 
                         <div class="form-floating">
                             <textarea class="form-control" placeholder="Detail(s) de la panne"
-                                id="detail_panne"></textarea>
-                            <label for="detail_panne">Detail(s) de la panne</label>
+                                id="textarea_detail_panne" name="detail_panne"></textarea>
+                            <label for="textarea_detail_panne">Detail(s) de la panne</label>
                         </div>
 
                         <input type="text" class="form-control" id="input_localisation" placeholder="Localisation"
