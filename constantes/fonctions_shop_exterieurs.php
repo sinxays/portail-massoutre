@@ -238,12 +238,14 @@ function update_shop_ext($data_shop_ext)
     $data = [
         'date_declaration' => $data_shop_ext['date_declaration'],
         'type_panne' => $data_shop_ext['type_panne'],
+        'detail_panne' => $data_shop_ext['detail_panne'],
         'localisation' => $data_shop_ext['localisation'],
         'vehicule_id' => $data_shop_ext['vehicule_id']
     ];
     $sql = "UPDATE shop_ext_panne 
     SET date_declaration=:date_declaration, 
     type_panne_id=:type_panne,
+    detail_panne=:detail_panne,
     localisation=:localisation
     WHERE vehicule_id=:vehicule_id";
     $stmt = $pdo->prepare($sql);
