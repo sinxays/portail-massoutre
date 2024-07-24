@@ -31,7 +31,6 @@ $(document).ready(function () {
             success: function () {
                 window.location.replace("/operations/shop_exterieurs/shop_exterieurs.php");
                 $("#alert_shop_ext_modif_success").show(300);
-
             },
             error: function () {
                 $("#alert_shop_ext_modif_fail").show(300);

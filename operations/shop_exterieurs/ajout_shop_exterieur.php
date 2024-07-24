@@ -54,7 +54,7 @@
         <br />
 
         <H2> AJOUT SHOP EXTERIEUR </H2>
-        
+
         <br />
 
         <div id="div_retour_detail_collaborateur">
@@ -98,8 +98,8 @@
                 <div class="ajout_shop_categorie">
 
                     <div class="div_form_vh_label"><span>Panne</span></div>
-                    <div class="div_form_vh_column">
 
+                    <div class="div_form_vh_column">
                         <div class="form-group">
                             <label for="dateInput">Date Déclaration:</label>
                             <input type="date" class="form-control" id="dateInput" name="date_declaration"
@@ -118,9 +118,17 @@
                             }
                             ?>
                         </select>
+
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Detail(s) de la panne"
+                                id="textarea_detail_panne"></textarea>
+                            <label for="textarea_detail_panne">Detail(s) de la panne</label>
+                        </div>
+
                         <input type="text" class="form-control" id="input_localisation" placeholder="Localisation"
                             name="localisation" style="width: 350px;">
                     </div>
+
                 </div>
                 <div class="div_validation_ajout">
                     <button type="button" class="btn btn-success" id="btn_ajout_shop_ext">Ajouter</button>

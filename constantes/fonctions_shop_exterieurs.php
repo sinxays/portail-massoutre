@@ -106,11 +106,12 @@ function ajouter_shop_exterieur($array_shop_ext)
     $data_vh = [
         'date_declaration' => $array_shop_ext['date_declaration'],
         'type_panne' => $array_shop_ext['type_panne'],
+        'detail_panne' => $array_shop_ext['type_panne'],
         'localisation' => $array_shop_ext['localisation'],
         'vehicule_id' => $lastID
     ];
-    $sql = "INSERT INTO shop_ext_panne (date_declaration,type_panne_id,localisation,vehicule_id) 
-    VALUES (:date_declaration, :type_panne, :localisation, :vehicule_id)";
+    $sql = "INSERT INTO shop_ext_panne (date_declaration,type_panne_id,localisation,vehicule_id,detail_panne) 
+    VALUES (:date_declaration, :type_panne, :localisation, :vehicule_id,:detail_panne)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data_vh);
 
