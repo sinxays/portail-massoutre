@@ -80,7 +80,7 @@
                         <input type="text" class="form-control" id="input_modele" placeholder="Modèle" name="modele"
                             style="width: 370px;">
                         <div class="radio-group">
-                            <span>Garantie </span>
+                            <span>Garantie : </span>
                             <label>
                                 <input type="radio" name="garantie" value="1"> Oui
                             </label>

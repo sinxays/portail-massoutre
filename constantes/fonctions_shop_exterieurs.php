@@ -106,7 +106,7 @@ function ajouter_shop_exterieur($array_shop_ext)
     $data_vh = [
         'date_declaration' => $array_shop_ext['date_declaration'],
         'type_panne' => $array_shop_ext['type_panne'],
-        'detail_panne' => $array_shop_ext['type_panne'],
+        'detail_panne' => $array_shop_ext['detail_panne'],
         'localisation' => $array_shop_ext['localisation'],
         'vehicule_id' => $lastID
     ];
