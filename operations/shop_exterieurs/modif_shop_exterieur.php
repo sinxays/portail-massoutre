@@ -112,7 +112,8 @@
                                 <div class="element_champ">
                                     <label for="input_modele">Modèle</label>
                                     <input type="text" class="form-control" id="input_modele" placeholder="Modèle"
-                                        name="modele" style="width: 550px;" value="<?php echo $details_shop_ext['shop']['modele'] ?>">
+                                        name="modele" style="width: 550px;"
+                                        value="<?php echo $details_shop_ext['shop']['modele'] ?>">
                                 </div>
                                 <div class="radio_group">
                                     <span>Garantie </span>
@@ -152,10 +153,21 @@
                         <div class="div_contenu_label">
                             <div class="div_form_vh_column">
 
-                                <div class="form-group">
-                                    <label for="dateInput">Date Déclaration</label>
-                                    <input type="date" class="form-control" id="dateInput" name="date_declaration"
-                                        style="width: 200px;" value="<?php echo $details_shop_ext['shop']['date_declaration'] ?>">
+                                <div class="element_champ_row">
+
+                                    <div class="form-group">
+                                        <label for="dateInput">Date Déclaration</label>
+                                        <input type="date" class="form-control" id="dateInput" name="date_declaration"
+                                            style="width: 200px;"
+                                            value="<?php echo $details_shop_ext['shop']['date_declaration'] ?>">
+                                    </div>
+
+                                    <div class="element_champ">
+                                        <label for="dateInput">Localisation</label>
+                                        <input type="text" class="form-control" id="input_localisation"
+                                            placeholder="Localisation" name="localisation" style="width: 350px;"
+                                            value="<?php echo $details_shop_ext['shop']['localisation'] ?>">
+                                    </div>
                                 </div>
 
                                 <label for="select_type_panne">Type panne</label>
@@ -171,12 +183,16 @@
                                     }
                                     ?>
                                 </select>
-                                <div class="element_champ">
-                                    <label for="dateInput">Localisation</label>
-                                    <input type="text" class="form-control" id="input_localisation"
-                                        placeholder="Localisation" name="localisation" style="width: 350px;"
-                                        value="<?php echo $details_shop_ext['shop']['localisation'] ?>">
+
+                                <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Detail(s) de la panne"
+                                        id="textarea_detail_panne"
+                                        value="<?php echo $details_shop_ext['shop']['detail_panne'] ?>"
+                                        style="height: 90px;resize:none;"></textarea>
+                                    <label for="textarea_detail_panne">Detail(s) de la panne</label>
                                 </div>
+
+
                             </div>
                         </div>
                     </div>

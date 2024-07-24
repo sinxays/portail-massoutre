@@ -1093,6 +1093,13 @@ img {
   flex-direction: column;
 }
 
+.element_champ_row {
+  display: flex;
+  flex-direction: row;
+  align-content: space-between;
+  gap: 20px;
+}
+
 .div_form_vh_column {
   padding: 20px;
   display: flex;
