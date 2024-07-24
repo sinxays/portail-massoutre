@@ -1086,11 +1086,11 @@ function create_table_shop_exterieurs($header, $categorie)
         } else {
             $table_shop_exterieurs .= "<td class='td_n'>  </td>";
         }
-        $table_shop_exterieurs .= "<td class='td_n' style='width:80px'>";
+        $table_shop_exterieurs .= "<td class='td_n' style='width:50px'>";
         $table_shop_exterieurs .= "<a href='modif_shop_exterieur.php?id=" . $shop_ext['ID'] . "' style='margin-right:10px' title='Modifier'>
         <box-icon name='edit'></box-icon>
         </a>";
-        $table_shop_exterieurs .= "<a title='lecture en détail' href='lecture_shop_exterieur.php?id=" . $shop_ext['ID'] . "'><box-icon name='file-find'></box-icon></a>";
+        // $table_shop_exterieurs .= "<a title='lecture en détail' href='lecture_shop_exterieur.php?id=" . $shop_ext['ID'] . "'><box-icon name='file-find'></box-icon></a>";
 
         $table_shop_exterieurs .= "</td>";
 
