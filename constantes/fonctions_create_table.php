@@ -652,7 +652,7 @@ function create_header_row_shop_ext($header)
     $return = "";
     $return .= "<tr class='tr_header_shop_ext'>";
     $return .= "<td colspan='7' id='td_info_vehicule'>Infos véhicule</td>";
-    $return .= "<td colspan='3' id='td_info_panne'>Infos Panne</td>";
+    $return .= "<td colspan='4' id='td_info_panne'>Infos Panne</td>";
     $return .= "<td colspan='6' id='td_info_action'>Actions</td>";
     $return .= "</tr>";
     $return .= "<tr class='tr_sticky'>";
