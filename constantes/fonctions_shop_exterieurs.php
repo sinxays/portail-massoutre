@@ -45,7 +45,7 @@ function get_detail_shop_ext($id)
 {
     $pdo = Connection::getPDO();
 
-    $request = $pdo->query("SELECT vh.ID,vh.immatriculation,vh.modele,vh.num_contrat,vh.mva,vh.kilometrage,vh.garantie,vh.date_demande_recup,vh.date_recup,vh.agence_recup,
+    $request = $pdo->query("SELECT vh.ID,vh.immatriculation,vh.modele,vh.num_contrat,vh.mva,vh.kilometrage,vh.garantie,vh.date_demande_recup,vh.date_recup,vh.agence_recup,vh.categorie_id,
     type_panne.type_panne_libelle,
     panne.localisation,panne.date_declaration,panne.detail_panne,
     cat.libelle
@@ -84,8 +84,6 @@ function get_list_type_panne_libelle()
 
 function ajouter_shop_exterieur($array_shop_ext)
 {
-    // var_dump($array_shop_ext);
-
     $pdo = Connection::getPDO();
 
     $data_vh = [
@@ -201,12 +199,14 @@ function ajout_action($data_new_action)
 
 function update_shop_ext($data_shop_ext)
 {
+
     $pdo = Connection::getPDO();
 
     $date_demande_recup = $data_shop_ext['date_demande_recup'] !== '' ? $data_shop_ext['date_demande_recup'] : NULL;
     $date_recup = $data_shop_ext['date_recup'] !== '' ? $data_shop_ext['date_recup'] : NULL;
 
 
+    //update du véhicule
     $data = [
         'immatriculation' => $data_shop_ext['immatriculation'],
         'modele' => $data_shop_ext['modele'],
@@ -217,7 +217,8 @@ function update_shop_ext($data_shop_ext)
         'date_demande_recup' => $date_demande_recup,
         'date_recup' => $date_recup,
         'agence_recup' => $data_shop_ext['agence_recup'],
-        'vehicule_id' => $data_shop_ext['vehicule_id']
+        'vehicule_id' => $data_shop_ext['vehicule_id'],
+        'categorie_shop_ext' => $data_shop_ext['categorie_shop_ext']
     ];
 
     $sql = "UPDATE shop_ext_vehicules 
@@ -229,12 +230,14 @@ function update_shop_ext($data_shop_ext)
     num_contrat=:num_contrat,
     date_demande_recup=:date_demande_recup,
     date_recup=:date_recup,
-    agence_recup=:agence_recup
+    agence_recup=:agence_recup,
+    categorie_id=:categorie_shop_ext 
     WHERE id=:vehicule_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
 
 
+    //update Panne
     $data = [
         'date_declaration' => $data_shop_ext['date_declaration'],
         'type_panne' => $data_shop_ext['type_panne'],
@@ -249,8 +252,6 @@ function update_shop_ext($data_shop_ext)
     localisation=:localisation
     WHERE vehicule_id=:vehicule_id";
     $stmt = $pdo->prepare($sql);
-
-    var_dump($stmt);
     $stmt->execute($data);
 
 }

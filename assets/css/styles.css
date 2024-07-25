@@ -1088,6 +1088,15 @@ img {
   /* margin-bottom: 20px; */
 }
 
+.div_container_flex_row_categories_shop_ext {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* border: 2px solid #fe8f8f; */
+  /* height: 70px; */
+  /* margin-bottom: 20px; */
+}
 .element_champ {
   display: flex;
   flex-direction: column;
@@ -1109,9 +1118,6 @@ img {
   height: 100%;
 }
 
-.div_form_vh_column input {
-  margin-bottom: 10px;
-}
 
 .div_form_vh_label {
   border: 2px solid #ffffff;
@@ -1527,4 +1533,8 @@ img {
 #td_info_action {
   background-color: #31a6ff;
   color: #bcffc2;
+}
+
+#my_checkbox_categories{
+  margin: 50px;
 }

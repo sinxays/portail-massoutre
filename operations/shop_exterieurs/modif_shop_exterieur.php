@@ -224,55 +224,92 @@
                 <!-- Champ caché pour envoyer la valeur du vehicule id -->
                 <input type="hidden" name="vehicule_id" <?php echo "value='$id'" ?>>
 
-            </form>
 
-            <div class="container_form_modif_lecture_shop_ext_2">
-                <div class="ajout_shop_categorie_action">
-                    <div class="div_form_vh_label"><span>Actions</span></div>
-                    <div class="div_contenu_label_action">
-                        <table class="my_tab_shop_ext_action">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Action Effectuée</th>
-                                    <th>Remarque</th>
-                                    <th>Facturé ?</th>
-                                    <th>Montant</th>
-                                </tr>
-                            </thead>
 
-                            <?php
-                            foreach ($details_shop_ext['actions'] as $nb_action => $action) {
-                                echo "<tr>";
-                                echo "<td style='width:120px'>" . $action['date_action'] . "</td>";
-                                echo "<td>" . $action['action'] . "</td>";
-                                echo "<td>" . $action['remarque'] . "</td>";
-                                echo "<td>" . $action['is_factured'] . "</td>";
-                                echo "<td>" . $action['montant_facture'] . "</td>";
+                <div class="container_form_modif_lecture_shop_ext_2">
+                    <div class="ajout_shop_categorie_action">
+                        <div class="div_form_vh_label"><span>Actions</span></div>
+                        <div class="div_contenu_label_action">
+                            <table class="my_tab_shop_ext_action">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Action Effectuée</th>
+                                        <th>Remarque</th>
+                                        <th>Facturé ?</th>
+                                        <th>Montant</th>
+                                    </tr>
+                                </thead>
 
-                                echo "<td class='td_n'style='width:150px'>";
-                                echo "<a title='modifier action' href='modif_action.php?id=" . $action['id'] . "' style='margin-right:30px' title='Modifier'>
+                                <?php
+                                foreach ($details_shop_ext['actions'] as $nb_action => $action) {
+                                    echo "<tr>";
+                                    echo "<td style='width:120px'>" . $action['date_action'] . "</td>";
+                                    echo "<td>" . $action['action'] . "</td>";
+                                    echo "<td>" . $action['remarque'] . "</td>";
+                                    echo "<td>" . $action['is_factured'] . "</td>";
+                                    echo "<td>" . $action['montant_facture'] . "</td>";
+
+                                    echo "<td class='td_n'style='width:150px'>";
+                                    echo "<a title='modifier action' href='modif_action.php?id=" . $action['id'] . "' style='margin-right:30px' title='Modifier'>
                                     <i class='bx bx-edit bx-sm' ></i>
                                     </a>";
-                                echo "<a title='supprimer action' href='#'>
+                                    echo "<a title='supprimer action' href='#'>
                                     <box-icon name='trash' color='red'></box-icon>                                    
                                     </a>";
-                                echo "</td>";
-                                echo "</tr>";
-                            }
-                            ?>
+                                    echo "</td>";
+                                    echo "</tr>";
+                                }
+                                ?>
 
-                        </table>
-                    </div>
+                            </table>
+                        </div>
 
-                    <div class="div_ajout_action">
-                        <button type="button" class="btn btn-success" id="btn_ajout_action"
-                            style="background: #33B5FF ;" data-toggle="modal" data-target="#modal_ajout_action">Ajouter
-                            Action</button>
+                        <div class="div_ajout_action">
+                            <button type="button" class="btn btn-success" id="btn_ajout_action"
+                                style="background: #33B5FF ;" data-toggle="modal"
+                                data-target="#modal_ajout_action">Ajouter
+                                Action</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+                <div class="div_container_flex_row_categories_shop_ext">
+                    <div class="btn-group btn-group-lg" role="group" id="my_checkbox_categories">
+
+                        <?php
+                        $radio_checked = 'checked';
+                        $categorie_id = intval($details_shop_ext['shop']['categorie_id']);
+                        ?>
+
+                        <input type="radio" class="btn-check" id="btnradio1" name="categorie_shop_ext" value="1" <?php echo $categorie_id == 1 ? $radio_checked : '' ?>>
+                        <label class="btn btn-outline-success" for="btnradio1">Assistance en cours</label>
+
+                        <input type="radio" class="btn-check" id="btnradio2" name="categorie_shop_ext" value="2" <?php echo $categorie_id == 2 ? $radio_checked : '' ?>>
+                        <label class="btn btn-outline-warning" for="btnradio2">En attente devis</label>
+
+                        <input type="radio" class="btn-check" id="btnradio3" name="categorie_shop_ext" value="3" <?php echo $categorie_id == 3 ? $radio_checked : '' ?>>
+                        <label class="btn btn-outline-primary" for="btnradio3">en attente validation BDC</label>
+
+                        <input type="radio" class="btn-check" id="btnradio4" name="categorie_shop_ext" value="4" <?php echo $categorie_id == 4 ? $radio_checked : '' ?>>
+                        <label class="btn btn-outline-dark" for="btnradio4">BDC envoyé</label>
+
+                        <input type="radio" class="btn-check" id="btnradio5" name="categorie_shop_ext" value="5" <?php echo $categorie_id == 5 ? $radio_checked : '' ?>>
+                        <label class="btn btn-outline-info" for="btnradio5">En attente facture</label>
+
+                        <input type="radio" class="btn-check" id="btnradio6" name="categorie_shop_ext" value="6" <?php echo $categorie_id == 6 ? $radio_checked : '' ?>>
+                        <label class="btn btn-outline-success" for="btnradio6">En cours de règlement</label>
+
+                        <input type="radio" class="btn-check" id="btnradio7" name="categorie_shop_ext" value="7" <?php echo $categorie_id == 7 ? $radio_checked : '' ?>>
+                        <label class="btn btn-outline-secondary" for="btnradio7">En cours de recup</label>
+
+                        <input type="radio" class="btn-check" id="btnradio8" name="categorie_shop_ext" value="8" <?php echo $categorie_id == 8 ? $radio_checked : '' ?>>
+                        <label class="btn btn-outline-danger" for="btnradio8">En attente vérif RA</label>
+
+                    </div>
+                </div>
+
+            </form>
 
 
             <div class="div_validation_modif">
