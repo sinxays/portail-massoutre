@@ -12,16 +12,16 @@
 
     <!--========== CSS ==========-->
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="../../assets/css/styles.css">
 
 
+    <!--========== JS ==========-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 
 
@@ -200,7 +200,9 @@
                 <div class="container_form_modif_lecture_shop_ext_3">
                     <div class="input-group" style="width: 550px;">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" style="height: 80px;background: #fb8f4b ;">Date demande de
+                            <span class="input-group-text"
+                                style="height: 60px;background: #e86513 ; color:white ; font-weight:bold">Date demande
+                                de
                                 récuperation</span>
                         </div>
                         <input type="date" class="form-control" id="date_demande_recup" name="date_demande_recup"
@@ -209,7 +211,8 @@
 
                     <div class="input-group" style="width: 750px;">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" style="height: 80px; background: #6fff7b">Date de
+                            <span class="input-group-text"
+                                style="height: 60px; background: #087411;color:white;font-weight: bold;">Date de
                                 récuperation
                                 et Agence</span>
                         </div>
@@ -247,16 +250,30 @@
                                     echo "<td style='width:120px'>" . $action['date_action'] . "</td>";
                                     echo "<td>" . $action['action'] . "</td>";
                                     echo "<td>" . $action['remarque'] . "</td>";
-                                    echo "<td>" . $action['is_factured'] . "</td>";
-                                    echo "<td>" . $action['montant_facture'] . "</td>";
+                                    echo "<td>" . ($action['is_factured'] == '1' ? 'oui' : 'non') . "</td>";
+                                    echo "<td>" . $action['montant_facture'] . " € </td>";
 
-                                    echo "<td class='td_n'style='width:150px'>";
-                                    echo "<a title='modifier action' href='modif_action.php?id=" . $action['id'] . "' style='margin-right:30px' title='Modifier'>
-                                    <i class='bx bx-edit bx-sm' ></i>
+                                    echo "<td class='td_n'style='width:50px'>";
+                                    // echo "<a title='modifier action' href='modifier_action.php?id=" . $action['id'] . "' style='margin-right:30px' title='Modifier'>
+                                    // <i class='bx bx-edit bx-sm' ></i>
+                                    // </a>";
+                                    echo "<a title='modifier action' data-bs-toggle='modal' data-bs-target='#modal_ajout_modif_action' data-actionid='" . $action['id'] . "'>
+                                    <i class='bx bx-edit bx-sm' style='color:blue;' ></i>
                                     </a>";
-                                    echo "<a title='supprimer action' href='#'>
-                                    <box-icon name='trash' color='red'></box-icon>                                    
-                                    </a>";
+
+                                    ?>
+
+                                    <!-- Button trigger modal -->
+                                    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">
+                                        Launch demo modal
+                                    </button> -->
+
+                                    <?php
+
+                                    // echo "<a title='supprimer action' href='#'>
+                                    // <box-icon name='trash' color='red'></box-icon>                                    
+                                    // </a>";
                                     echo "</td>";
                                     echo "</tr>";
                                 }
@@ -266,9 +283,13 @@
                         </div>
 
                         <div class="div_ajout_action">
-                            <button type="button" class="btn btn-success" id="btn_ajout_action"
+                            <!-- <button type="button" class="btn btn-success" id="btn_ajout_action"
                                 style="background: #33B5FF ;" data-toggle="modal"
-                                data-target="#modal_ajout_action">Ajouter
+                                data-target="#modal_ajout_modif_action">Ajouter
+                                Action</button> -->
+                            <button type="button" class="btn btn-success" id="btn_ajout_action"
+                                style="background: #33B5FF ;" data-bs-toggle="modal"
+                                data-bs-target="#modal_ajout_modif_action">Ajouter
                                 Action</button>
                         </div>
                     </div>
@@ -321,25 +342,27 @@
                     <div></div>
                 </div>
             </div>
+
+        </div>
+
         </div>
 
 
 
         </br>
 
-
         <!-- Modal ajout Action-->
 
-        <div class="modal fade bd-example-modal-lg" id="modal_ajout_action" tabindex="-1" role="dialog"
+        <div class="modal fade bd-example-modal-lg" id="modal_ajout_modif_action" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content" style="width: 1000px;">
                     <div class="modal-header" id="my_modal_header_ajout_action">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Ajouter Une action</h5>
+                        <h5 class="modal-title" id="title_ajout_modif_action">Ajouter Une action</h5>
                     </div>
                     <form id="form_ajout_action">
 
-                        <div class="modal_ajout_action_body">
+                        <div class="modal_ajout_modif_action_body">
                             <div class="form-group">
                                 <label for="dateInput">Date Action:</label>
                                 <input type="date" class="form-control" id="dateInput" name="date_action"
@@ -384,7 +407,7 @@
                     </form>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                         <button type="button" class="btn btn-primary" id="button_ajouter_action">Ajouter
                             Action</button>
                     </div>
@@ -395,6 +418,7 @@
         </div>
 
         <!-- FIN MODAL Ajout Action -->
+
 
         <div class="alert alert-success" role="alert" id="alert_shop_ext_modif_success" style="display:none;">
             Modifié
@@ -407,13 +431,14 @@
             Erreur : Action non ajoutée
         </div>
 
+
     </main>
 
 
 
     <!--========== MAIN JS ==========-->
 
-    <script src="/assets/js/jquery-3.6.0.min.js"></script>
+    <!-- <script src="/assets/js/jquery-3.6.0.min.js"></script> -->
     <script src="/assets/js/main.js"></script>
     <script src="/assets/js/shop_exterieurs_modif.js"></script>
 </body>

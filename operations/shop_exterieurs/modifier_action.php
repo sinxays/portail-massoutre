@@ -7,40 +7,41 @@
 
     <!--========== BOX ICONS ==========-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
 
     <!--========== CSS ==========-->
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../assets/css/styles.css">
+
+
+    <!--========== JS ==========-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../assets/css/styles.css">
-
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-</head>
 
 
 
-<title>test</title>
+
+
+    <title>Portail Massoutre - Modif Shop Ext</title>
 </head>
 
 <body>
-
     <!--========== HEADER ==========-->
     <header class="header">
         <div class="header__container">
-            <strong>page de test</strong>
-            <img src="../assets/img/perfil.jpg" alt="" class="header__img">
+            <img src="../../assets/img/perfil.jpg" alt="" class="header__img">
 
             <a href="#" class="header__logo"> </a>
 
-            <!-- <div class="header__search">
+            <div class="header__search">
                 <input type="search" placeholder="Search" class="header__input">
                 <i class='bx bx-search header__icon'></i>
-            </div> -->
+            </div>
 
             <div class="header__toggle">
                 <i class='bx bx-menu' id="header-toggle"></i>
@@ -49,32 +50,24 @@
     </header>
 
     <!--========== NAV ==========-->
+    <?php include "../../right_menubar.php";
+    include "../../include.php"; ?>
 
-    <div id="div_test">
+
+
+
+    <!--============================== CONTENTS ==============================-->
+    <main>
+
         <?php
 
-        include "right_menubar.php";
-        include "include.php";
+        $action_vh = get_action_from_id($_GET['id']);
+        var_dump($action_vh);
 
-
-        ini_set('max_execution_time', 0);
-
-        /****** UPDATE ALL ******/
-        // update_vh_bdc_OS();
-        // update_vh_factures_OS();
-        // update_vh_invoice();
-        // update_bdc_invoice();
-        
-        // delete_factures_restant();
-        
-
-        // update_vh_invoice();
-        
 
 
 
         ?>
-
 
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -99,13 +92,18 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <br />
-    <br />
-    <br />
+        </div>
 
 
+    </main>
+
+
+
+    <!--========== MAIN JS ==========-->
+
+    <!-- <script src="/assets/js/jquery-3.6.0.min.js"></script> -->
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/shop_exterieurs_modif.js"></script>
 </body>
 
 </html>

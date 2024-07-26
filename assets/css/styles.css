@@ -1097,6 +1097,7 @@ img {
   /* height: 70px; */
   /* margin-bottom: 20px; */
 }
+
 .element_champ {
   display: flex;
   flex-direction: column;
@@ -1158,7 +1159,7 @@ img {
   width: 350px;
 }
 
-/* #modal_ajout_action {
+/* #modal_ajout_modif_action {
   display: none; 
 } */
 
@@ -1167,13 +1168,19 @@ img {
   color: white;
 }
 
-.modal_ajout_action_body {
+
+#my_modal_header_modif_action {
+  background: #ff5e31;
+  color: white;
+}
+
+.modal_ajout_modif_action_body {
   display: flex;
   flex-direction: column;
   padding: 40px;
 }
 
-.modal_ajout_action_body>div {
+.modal_ajout_modif_action_body>div {
   margin-bottom: 15px;
 }
 
@@ -1523,18 +1530,24 @@ img {
 #td_info_vehicule {
   background-color: #7affa4;
   color: white;
+  border-radius: 5px;
+  border: 0px;
 }
 
 #td_info_panne {
   background-color: #8e0000;
-  color: yellow;
+  color: white;
+  border-radius: 5px;
+  border: 0px;
 }
 
 #td_info_action {
   background-color: #31a6ff;
-  color: #bcffc2;
+  color: white;
+  border-radius: 5px;
+  border: 0px;
 }
 
-#my_checkbox_categories{
+#my_checkbox_categories {
   margin: 50px;
 }

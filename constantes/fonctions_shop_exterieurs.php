@@ -30,7 +30,7 @@ function get_liste_shop_exterieurs($categorie)
         JOIN ( SELECT MAX(action2.ID) as max_id
               FROM shop_ext_action as action2
               LEFT JOIN shop_ext_vehicules AS vh ON vh.ID = action2.vehicule_id
-              WHERE date_action = (SELECT MAX(date_action) FROM shop_ext_action WHERE vehicule_id = " . $vehicule['ID'] . ") AND vh.ID = ".$vehicule['ID'].") AS subquery ON subquery.max_id = action.ID");
+              WHERE date_action = (SELECT MAX(date_action) FROM shop_ext_action WHERE vehicule_id = " . $vehicule['ID'] . ") AND vh.ID = " . $vehicule['ID'] . ") AS subquery ON subquery.max_id = action.ID");
 
         $result_last_action = $request->fetch(PDO::FETCH_ASSOC);
 
@@ -178,7 +178,7 @@ function get_last_action($id)
 function ajout_action($data_new_action)
 {
 
-    
+
     $pdo = Connection::getPDO();
 
     $data = [
@@ -254,4 +254,15 @@ function update_shop_ext($data_shop_ext)
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
 
+}
+
+function get_action_from_id($id)
+{
+    $pdo = Connection::getPDO();
+
+    $request = $pdo->query("SELECT * FROM shop_ext_action WHERE ID = $id");
+
+    $result_action = $request->fetch(PDO::FETCH_ASSOC);
+
+    return $result_action;
 }

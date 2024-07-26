@@ -38,5 +38,23 @@ $(document).ready(function () {
         });
     });
 
+    $('#modal_ajout_modif_action').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // element qui ouvre le modal ici c'est le <a>
+        var action_id = button.data('actionid');
+        var modal = $(this);
+    
+        // console.log(action_id);
+
+        //si on modifie une action 
+        if (action_id) {
+            modal.find('#title_ajout_modif_action').text('Modifier une action');
+        }
+        //si c'est une bouvelle action 
+        else {
+            modal.find('#title_ajout_modif_action').text('Ajouter une action');
+        }
+
+    })
+
 
 });

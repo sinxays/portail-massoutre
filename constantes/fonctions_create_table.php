@@ -803,8 +803,8 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
             );
             $query_date = http_build_query($data_date);
 
-             // pour N-1
-             $array_date_N1 = array(
+            // pour N-1
+            $array_date_N1 = array(
                 'date' => array(
                     'date_debut' => $dates_N1['date_debut'],
                     'date_fin' => $dates_N1['date_fin']
@@ -1070,7 +1070,7 @@ function create_table_shop_exterieurs($header, $categorie)
         if (isset($shop_ext['last_action']) && $shop_ext['last_action'] !== '') {
             $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['last_action']['date_action'] . " - " . $shop_ext['last_action']['action'] . " </td>";
             $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['last_action']['remarque'] . " </td>";
-            $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['last_action']['is_factured'] . " </td>";
+            $table_shop_exterieurs .= "<td class='td_n'> " . ($shop_ext['last_action']['is_factured'] == '1' ? 'oui' : 'non') . " </td>";
             $table_shop_exterieurs .= "<td class='td_n'> " . $shop_ext['last_action']['montant_facture'] . " </td>";
         } else {
             $table_shop_exterieurs .= "<td class='td_n'> </td>";
