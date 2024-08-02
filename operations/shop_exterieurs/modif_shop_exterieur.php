@@ -253,27 +253,16 @@
                                     echo "<td>" . ($action['is_factured'] == '1' ? 'oui' : 'non') . "</td>";
                                     echo "<td>" . $action['montant_facture'] . " € </td>";
 
-                                    echo "<td class='td_n'style='width:50px'>";
-                                    // echo "<a title='modifier action' href='modifier_action.php?id=" . $action['id'] . "' style='margin-right:30px' title='Modifier'>
-                                    // <i class='bx bx-edit bx-sm' ></i>
-                                    // </a>";
-                                    echo "<a title='modifier action' data-bs-toggle='modal' data-bs-target='#modal_ajout_modif_action' data-actionid='" . $action['id'] . "'>
+                                    echo "<td class='td_n'style='width:80px'>";
+
+                                    echo "<a title='modifier action' data-bs-toggle='modal' data-bs-target='#modal_ajout_modif_action' data-actionid='" . $action['id'] . "' data-typemodal='modifier'>
                                     <i class='bx bx-edit bx-sm' style='color:blue;' ></i>
                                     </a>";
 
-                                    ?>
+                                    echo "<a title='supprimer action' data-bs-toggle='modal' data-bs-target='#modal_ajout_modif_action' data-actionid='" . $action['id'] . "' data-typemodal='delete' >
+                                    <i class='bx bx-trash bx-sm' style='color:red;'></i>
+                                    </a>";
 
-                                    <!-- Button trigger modal -->
-                                    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">
-                                        Launch demo modal
-                                    </button> -->
-
-                                    <?php
-
-                                    // echo "<a title='supprimer action' href='#'>
-                                    // <box-icon name='trash' color='red'></box-icon>                                    
-                                    // </a>";
                                     echo "</td>";
                                     echo "</tr>";
                                 }
@@ -289,7 +278,7 @@
                                 Action</button> -->
                             <button type="button" class="btn btn-success" id="btn_ajout_action"
                                 style="background: #33B5FF ;" data-bs-toggle="modal"
-                                data-bs-target="#modal_ajout_modif_action">Ajouter
+                                data-bs-target="#modal_ajout_modif_action" data-typemodal="ajouter">Ajouter
                                 Action</button>
                         </div>
                     </div>
@@ -347,8 +336,6 @@
 
         </div>
 
-
-
         </br>
 
         <!-- Modal ajout Action-->
@@ -360,9 +347,9 @@
                     <div class="modal-header" id="my_modal_header_ajout_action">
                         <h5 class="modal-title" id="title_ajout_modif_action">Ajouter Une action</h5>
                     </div>
-                    <form id="form_ajout_action">
 
-                        <div class="modal_ajout_modif_action_body">
+                    <div class="modal_ajout_modif_action_body">
+                        <form id="form_ajout_action">
                             <div class="form-group">
                                 <label for="dateInput">Date Action:</label>
                                 <input type="date" class="form-control" id="dateInput" name="date_action"
@@ -397,18 +384,24 @@
                                             €</span>
                                     </div>
                                     <input type="text" class="form-control" aria-label="Montant"
-                                        aria-describedby="basic-addon1" style="max-width: 100px;" name="montant_action">
+                                        aria-describedby="basic-addon1" style="max-width: 100px;" name="montant_action"
+                                        id="montant_action">
                                 </div>
                             </div>
 
-                            <span name="id_vehicule" <?php echo "value='$id'" ?>></span>
                             <!-- Champ caché pour envoyer la valeur du vehicule id -->
-                            <input type="hidden" name="vehicule_id" <?php echo "value='$id'" ?>>
-                    </form>
+                            <input type="hidden" name="vehicule_id" id="vehicule_id" <?php echo "value='$id'" ?>>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="button" class="btn btn-primary" id="button_ajouter_action">Ajouter
+                            <!-- Champ caché pour envoyer la valeur id action qu'on va alimenter en value en js si on veut modifier une action -->
+                            <input type="hidden" name="action_id" id="action_id_to_modif">
+                        </form>
+                    </div>
+
+
+                    <div class="modal-footer" id="modal_footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            id="button_annuler">Annuler</button>
+                        <button type="button" class="btn btn-primary" id="button_ajouter_modifier_action">Ajouter
                             Action</button>
                     </div>
 

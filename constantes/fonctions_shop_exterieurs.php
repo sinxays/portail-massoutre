@@ -3,12 +3,16 @@
 
 use app\Connection;
 
-function get_liste_shop_exterieurs($categorie)
+function get_liste_shop_exterieurs($categorie = '', $immatriculation = '', $mva = '')
 {
 
     $where = "";
-    if ($categorie !== 0) {
+    if ($categorie && $categorie !== 0) {
         $where = " WHERE vh.categorie_id = $categorie";
+    } else if ($immatriculation && $immatriculation !== '') {
+        $where = " WHERE vh.immatriculation LIKE '%$immatriculation%'";
+    } else if ($mva && $mva !== '') {
+        $where = " WHERE vh.mva LIKE '%$mva%'";
     }
 
     $pdo = Connection::getPDO();
@@ -23,6 +27,9 @@ function get_liste_shop_exterieurs($categorie)
       LEFT JOIN shop_ext_type_panne as type_panne ON type_panne.id = panne.type_panne_id
       $where");
     $result_liste = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    // var_dump($request->queryString);
+
 
     foreach ($result_liste as $index => $vehicule) {
         $request = $pdo->query("SELECT action.* 
@@ -175,26 +182,77 @@ function get_last_action($id)
 
 }
 
-function ajout_action($data_new_action)
+function ajout_modif_action($data_new_action)
 {
 
+    $pdo = Connection::getPDO();
+
+    // si on trouve un ID alors on modifie une action déja existante
+    if (isset($data_new_action['action_id']) && $data_new_action['action_id'] !== '') {
+        $data = [
+            'id_action' => $data_new_action['action_id'],
+            'date_action' => $data_new_action['date_action'],
+            'action_effectuee' => $data_new_action['action_effectuee'],
+            'remarque' => $data_new_action['remarque'],
+            'is_action_factured' => $data_new_action['is_action_factured'],
+            'montant_action' => $data_new_action['montant_action'],
+            'vehicule_id' => $data_new_action['vehicule_id']
+        ];
+
+        $sql = "UPDATE shop_ext_action SET action = :action_effectuee,
+        date_action =:date_action ,
+        remarque=:remarque,
+        is_factured=:is_action_factured,
+        montant_facture=:montant_action,
+        vehicule_id=:vehicule_id 
+        WHERE ID =:id_action";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+
+    }
+    //sinon c'est une nouvelle action
+    else {
+        $data = [
+            'date_action' => $data_new_action['date_action'],
+            'action_effectuee' => $data_new_action['action_effectuee'],
+            'remarque' => $data_new_action['remarque'],
+            'is_action_factured' => $data_new_action['is_action_factured'],
+            'montant_action' => $data_new_action['montant_action'],
+            'vehicule_id' => $data_new_action['vehicule_id']
+        ];
+
+        $sql = "INSERT INTO shop_ext_action (action,date_action,remarque,is_factured,montant_facture,vehicule_id) 
+        VALUES (:action_effectuee, :date_action,:remarque, :is_action_factured,:montant_action, :vehicule_id)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+
+    }
+}
+
+function delete_action_by_id($id_action)
+{
 
     $pdo = Connection::getPDO();
 
     $data = [
-        'date_action' => $data_new_action['date_action'],
-        'action_effectuee' => $data_new_action['action_effectuee'],
-        'remarque' => $data_new_action['remarque'],
-        'is_action_factured' => $data_new_action['is_action_factured'],
-        'montant_action' => $data_new_action['montant_action'],
-        'vehicule_id' => $data_new_action['vehicule_id']
+        'action_id' => $id_action
     ];
 
-    $sql = "INSERT INTO shop_ext_action (action,date_action,remarque,is_factured,montant_facture,vehicule_id) 
-    VALUES (:action_effectuee, :date_action,:remarque, :is_action_factured,:montant_action, :vehicule_id)";
+    $sql = 'DELETE FROM shop_ext_action WHERE ID=:action_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
 
+}
+
+function get_shop_ext_categories()
+{
+    $pdo = Connection::getPDO();
+
+    $request = $pdo->query("SELECT * FROM shop_ext_categories");
+
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    return $result;
 }
 
 function update_shop_ext($data_shop_ext)
@@ -260,7 +318,9 @@ function get_action_from_id($id)
 {
     $pdo = Connection::getPDO();
 
-    $request = $pdo->query("SELECT * FROM shop_ext_action WHERE ID = $id");
+    $id_action = intval($id);
+
+    $request = $pdo->query("SELECT * FROM shop_ext_action WHERE ID = $id_action");
 
     $result_action = $request->fetch(PDO::FETCH_ASSOC);
 

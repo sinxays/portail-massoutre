@@ -67,6 +67,18 @@
                     <input type="text" class="form-control" id="mva_input" placeholder="Entrer MVA">
 
                 </div>
+                <div id="div_shop_ext_1_3">
+                    <label for="categories">Categories</label>
+                    <select class="form-select" id="categories" style="width: 150px;" name="select_categories">
+                        <?php
+                        $list_categories = get_shop_ext_categories();
+                        echo "<option value='0'> </option>";
+                        foreach ($list_categories as $categorie) {
+                            echo "<option value='" . $categorie['ID'] . "'>" . $categorie['libelle'] . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
             </div>
             <div id="div_shop_ext_2">
                 <div id="div_shop_ext_2_1">
@@ -79,8 +91,14 @@
 
 
         <br />
-        <div id="loader" style="display:none;">Chargement...</div>
-        <br />
+        <div class="elements_row">
+            <div class="lds-ellipsis" id="loader" style="display:none;">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div> <br />
 
         <span id="table_shop_exterieur"></span>
 

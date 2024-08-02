@@ -3,5 +3,5 @@
 include "../../../include.php";
 
 if (isset($_POST)) {
-    ajout_action($_POST);
+    ajout_modif_action($_POST);
 }

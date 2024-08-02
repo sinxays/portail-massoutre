@@ -749,8 +749,13 @@ img {
     height: auto;
     align-items: center;
     justify-content: space-between;
-    width: 600px;
   }
+
+  #div_shop_ext_1 div {
+    margin-right: 20px;
+  }
+
+
 
   #div_shop_ext_1_1 {
     margin-right: 20px;
@@ -1550,4 +1555,8 @@ img {
 
 #my_checkbox_categories {
   margin: 50px;
+}
+
+#form_ajout_action .form-group {
+  margin: 10px;
 }
