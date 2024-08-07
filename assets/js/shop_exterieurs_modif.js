@@ -113,6 +113,7 @@ function clear_elements_action() {
     modal.find('#remarque').val('');
     modal.find('#is_action_factured').val('');
     modal.find('#montant_action').val('');
+    modal.find('#action_id_to_modif').val('');
 
     $("#button_delete_action").remove();
     $("#span_action_to_delete").remove();
