@@ -326,3 +326,18 @@ function get_action_from_id($id)
 
     return $result_action;
 }
+
+function archiver_shop_ext($vehicule_id)
+{
+
+    $pdo = Connection::getPDO();
+    //update Panne
+    $data = [
+        'id_vehicule' => $vehicule_id,
+    ];
+    $sql = "UPDATE shop_ext_vehicules SET archive = TRUE WHERE ID=:id_vehicule";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($data);
+
+
+}

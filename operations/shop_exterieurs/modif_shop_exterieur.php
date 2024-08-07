@@ -76,8 +76,6 @@
             <i class='bx bx-left-arrow-circle bx-md'></i><span>Retour</span>
         </div>
 
-
-
         <div class="container_form_modif_lecture_shop_ext">
             <form id="form_shop_ext">
 
@@ -324,13 +322,20 @@
 
             <div class="div_validation_modif">
                 <button type="button" class="btn btn-success" id="btn_modif_shop_ext">Enregistrer</button>
-                <div class="lds-ellipsis" id="loader" style="display:none;">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
             </div>
+
+            <div class="lds-ellipsis" id="loader" style="display:none;">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
+
+            <div class="div_validation_modif">
+                <button type="button" class="btn btn-danger" id="btn_sortir_vh_shop_ext">Archiver VH</button>
+            </div>
+
 
         </div>
 

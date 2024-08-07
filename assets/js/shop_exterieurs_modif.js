@@ -22,6 +22,26 @@ $(document).ready(function () {
     });
 
 
+
+    $("#btn_sortir_vh_shop_ext").click(function (e) {
+        e.preventDefault();
+        console.log($("#form_shop_ext").serialize());
+
+        $.ajax({
+            url: "../../operations/shop_exterieurs/req/req_archiver_shop_ext.php",
+            type: "POST",
+            data: $("#form_shop_ext").serialize(),
+            success: function () {
+                window.location.replace("/operations/shop_exterieurs/shop_exterieurs.php");
+                $("#alert_shop_ext_modif_success").show(300);
+            },
+            error: function () {
+                $("#alert_shop_ext_modif_fail").show(300);
+            }
+        });
+    });
+
+
     $("#btn_modif_shop_ext").click(function (e) {
         e.preventDefault();
         console.log($("#form_shop_ext").serialize());

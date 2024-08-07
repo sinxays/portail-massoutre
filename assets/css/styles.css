@@ -1208,6 +1208,7 @@ img {
   justify-content: center;
   align-items: center;
   width: 100%;
+  margin-bottom: 20px;
 }
 
 
@@ -1486,6 +1487,21 @@ img {
   flex-direction: row;
   align-items: center;
   width: fit-content;
+  margin-bottom: 10px;
+
+}
+
+#div_btn_sortir_shop_ext {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  justify-content: end;
+  width: 1250px;
+}
+
+#btn_sortir_vh_shop_ext {
+  width: 200px;
+  height: 50px;
 }
 
 #div_retour_detail_collaborateur:hover {
