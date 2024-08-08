@@ -744,11 +744,21 @@ img {
     background: #e6e6e6;
   }
 
+  .div_filtre_shop_ext {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+
+  }
+
   #div_shop_ext_1 {
     display: flex;
     height: auto;
     align-items: center;
     justify-content: space-between;
+    width: auto;
   }
 
   #div_shop_ext_1 div {
@@ -759,7 +769,23 @@ img {
 
   #div_shop_ext_1_1 {
     margin-right: 20px;
+    width: 150px;
   }
+
+  #div_shop_ext_1_2 {
+    margin-right: 20px;
+    width: 150px;
+  }
+
+  #div_shop_ext_1_3 {
+    margin-right: 20px;
+    width: 250px;
+  }
+  #div_shop_ext_1_4 {
+    margin-right: 20px;
+    width: 150px;
+  }
+
 
   #div_shop_ext_2 {
     display: flex;

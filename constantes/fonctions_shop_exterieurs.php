@@ -8,11 +8,11 @@ function get_liste_shop_exterieurs($categorie = '', $immatriculation = '', $mva 
 
     $where = "";
     if ($categorie && $categorie !== 0) {
-        $where = " WHERE vh.categorie_id = $categorie";
+        $where = "AND vh.categorie_id = $categorie";
     } else if ($immatriculation && $immatriculation !== '') {
-        $where = " WHERE vh.immatriculation LIKE '%$immatriculation%'";
+        $where = "AND vh.immatriculation LIKE '%$immatriculation%'";
     } else if ($mva && $mva !== '') {
-        $where = " WHERE vh.mva LIKE '%$mva%'";
+        $where = "AND vh.mva LIKE '%$mva%'";
     }
 
     $pdo = Connection::getPDO();
@@ -25,7 +25,7 @@ function get_liste_shop_exterieurs($categorie = '', $immatriculation = '', $mva 
       LEFT JOIN shop_ext_categories as cat ON vh.categorie_id = cat.id
       LEFT JOIN shop_ext_panne as panne ON vh.id = panne.vehicule_id
       LEFT JOIN shop_ext_type_panne as type_panne ON type_panne.id = panne.type_panne_id
-      $where");
+      WHERE vh.archive = 0 $where ");
     $result_liste = $request->fetchAll(PDO::FETCH_ASSOC);
 
     // var_dump($request->queryString);

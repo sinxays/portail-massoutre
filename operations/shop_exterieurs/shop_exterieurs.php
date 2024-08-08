@@ -56,34 +56,43 @@
 
         <form class="my_form_shop_ext">
 
-            <div id="div_shop_ext_1">
-                <div id="div_shop_ext_1_1">
-                    <label for="immatriculation_input">Immatriculation</label>
-                    <input type="text" class="form-control" id="immatriculation_input"
-                        placeholder="Entrer immatriculation">
-                </div>
-                <div id="div_shop_ext_1_2">
-                    <label for="mva_input">MVA</label>
-                    <input type="text" class="form-control" id="mva_input" placeholder="Entrer MVA">
+            <div class="div_filtre_shop_ext">
 
+                <div id="div_shop_ext_1">
+                    <div id="div_shop_ext_1_1">
+                        <label for="immatriculation_input">Immatriculation</label>
+                        <input type="text" class="form-control" id="immatriculation_input" placeholder="Immat">
+                    </div>
+                    <div id="div_shop_ext_1_2">
+                        <label for="mva_input">MVA</label>
+                        <input type="text" class="form-control" id="mva_input" placeholder="MVA">
+                    </div>
+                    <div id="div_shop_ext_1_3">
+                        <label for="categories">Categories</label>
+                        <select class="form-select" id="select_categories" name="select_categories">
+                            <?php
+                            $list_categories = get_shop_ext_categories();
+                            echo "<option value='0'> </option>";
+                            foreach ($list_categories as $categorie) {
+                                echo "<option value='" . $categorie['ID'] . "'>" . $categorie['libelle'] . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div id="div_shop_ext_1_4">
+                        <label for="categories">Type Shop Ext</label>
+                        <select class="form-select" id="categories" name="select_categories">
+                            <option value='0'> En cours </option>
+                            <option value='1'> Archivés </option>
+                        </select>
+                    </div>
                 </div>
-                <div id="div_shop_ext_1_3">
-                    <label for="categories">Categories</label>
-                    <select class="form-select" id="categories" style="width: 150px;" name="select_categories">
-                        <?php
-                        $list_categories = get_shop_ext_categories();
-                        echo "<option value='0'> </option>";
-                        foreach ($list_categories as $categorie) {
-                            echo "<option value='" . $categorie['ID'] . "'>" . $categorie['libelle'] . "</option>";
-                        }
-                        ?>
-                    </select>
+                <div id="div_shop_ext_2">
+                    <div id="div_shop_ext_2_1">
+                        <button type="button" class="btn btn-success" id="btn_creer_shop_ext">Ajout Shop Ext</button>
+                    </div>
                 </div>
-            </div>
-            <div id="div_shop_ext_2">
-                <div id="div_shop_ext_2_1">
-                    <button type="button" class="btn btn-success" id="btn_creer_shop_ext">Ajout Shop Ext</button>
-                </div>
+
             </div>
 
 

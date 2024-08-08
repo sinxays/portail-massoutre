@@ -63,7 +63,7 @@ $(document).ready(function () {
         });
 
     });
-    $("#categories").change(function (e) {
+    $("#select_categories").change(function (e) {
         let select_categorie = $(this).val();
         console.log(select_categorie);
         loader.show();
