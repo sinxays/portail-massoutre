@@ -99,10 +99,11 @@ function ajouter_shop_exterieur($array_shop_ext)
         'km' => $array_shop_ext['km'],
         'modele' => $array_shop_ext['modele'],
         'garantie' => $array_shop_ext['garantie'],
-        'num_contrat' => $array_shop_ext['num_contrat']
+        'num_contrat' => $array_shop_ext['num_contrat'],
+        'archive' => 0
     ];
-    $sql = "INSERT INTO shop_ext_vehicules (immatriculation,modele,mva,kilometrage,garantie,num_contrat) 
-    VALUES (:immatriculation, :modele,:mva, :km,:garantie, :num_contrat)";
+    $sql = "INSERT INTO shop_ext_vehicules (immatriculation,modele,mva,kilometrage,garantie,num_contrat,archive) 
+    VALUES (:immatriculation, :modele,:mva, :km,:garantie, :num_contrat,:archive)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data_vh);
     $lastID = $pdo->lastInsertId();
