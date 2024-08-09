@@ -100,10 +100,11 @@ function ajouter_shop_exterieur($array_shop_ext)
         'modele' => $array_shop_ext['modele'],
         'garantie' => $array_shop_ext['garantie'],
         'num_contrat' => $array_shop_ext['num_contrat'],
-        'archive' => 0
+        'archive' => 0,
+        'date_creation' => date('Y-m-d H:i')
     ];
-    $sql = "INSERT INTO shop_ext_vehicules (immatriculation,modele,mva,kilometrage,garantie,num_contrat,archive) 
-    VALUES (:immatriculation, :modele,:mva, :km,:garantie, :num_contrat,:archive)";
+    $sql = "INSERT INTO shop_ext_vehicules (immatriculation,modele,mva,kilometrage,garantie,num_contrat,archive,date_creation) 
+    VALUES (:immatriculation, :modele,:mva, :km,:garantie, :num_contrat,:archive,:date_creation)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data_vh);
     $lastID = $pdo->lastInsertId();
@@ -336,7 +337,7 @@ function archiver_shop_ext($vehicule_id)
     $data = [
         'id_vehicule' => $vehicule_id,
     ];
-    $sql = "UPDATE shop_ext_vehicules SET archive = TRUE WHERE ID=:id_vehicule";
+    $sql = "UPDATE shop_ext_vehicules SET archive = 1 WHERE ID=:id_vehicule";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
 

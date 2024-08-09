@@ -1533,7 +1533,7 @@ function get_payplan_date_facturation($filtre = '')
     //premiere arrivée sur la page 
     else {
         $mois_en_cours = date("Y-m-01");
-        $where_initial = "date_facturation >='$mois_en_cours'";
+        $where_initial = "date_facturation >= '$mois_en_cours'";
     }
 
     $where = (isset($where_filtre) && $where_filtre !== '') ? $where_filtre : $where_initial;
@@ -3615,7 +3615,7 @@ function get_duree_locations($immatriculation)
         return $months;
     }
 
-    
+
 }
 
 function get_duree_stock($immatriculation, $type)
