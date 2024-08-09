@@ -32,13 +32,14 @@ $(document).ready(function () {
 
     $("#immatriculation_input").keyup(function (e) {
         let input_immat = $(this).val();
+        let type_select = $("#select_type").val();
         console.log(input_immat);
         loader.show();
 
         $.ajax({
             url: "/operations/shop_exterieurs/req/req_tableau_shop_exterieurs.php",
             type: "POST",
-            data: { input_immat: input_immat },
+            data: { input_immat: input_immat, type: type_select },
             success: function (data) {
                 $("#table_shop_exterieur").html(data);
                 loader.hide();
@@ -48,13 +49,14 @@ $(document).ready(function () {
     });
     $("#mva_input").keyup(function (e) {
         let input_mva = $(this).val();
+        let type_select = $("#select_type").val();
         console.log(input_mva);
         loader.show();
 
         $.ajax({
             url: "/operations/shop_exterieurs/req/req_tableau_shop_exterieurs.php",
             type: "POST",
-            data: { input_mva: input_mva },
+            data: { input_mva: input_mva, type: type_select },
             success: function (data) {
                 $("#table_shop_exterieur").html(data);
                 loader.hide();
@@ -78,6 +80,26 @@ $(document).ready(function () {
         });
 
     });
+
+
+    $("#select_type").change(function (e) {
+        let select_type = $(this).val();
+        console.log(select_type);
+        loader.show();
+
+        $.ajax({
+            url: "/operations/shop_exterieurs/req/req_tableau_shop_exterieurs.php",
+            type: "POST",
+            data: { type: select_type },
+            success: function (data) {
+                $("#table_shop_exterieur").html(data);
+                loader.hide();
+            }
+        });
+
+    });
+
+
 
 });
 

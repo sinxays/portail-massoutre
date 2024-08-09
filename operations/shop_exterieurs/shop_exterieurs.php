@@ -80,8 +80,8 @@
                         </select>
                     </div>
                     <div id="div_shop_ext_1_4">
-                        <label for="categories">Type Shop Ext</label>
-                        <select class="form-select" id="categories" name="select_categories">
+                        <label for="select_type">Type Shop Ext</label>
+                        <select class="form-select" id="select_type" name="select_type">
                             <option value='0'> En cours </option>
                             <option value='1'> Archivés </option>
                         </select>

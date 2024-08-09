@@ -1035,10 +1035,10 @@ function create_table_suivi_bdc($header, $type_provenance, $destination_vente, $
 }
 
 
-function create_table_shop_exterieurs($header, $categorie = '', $immatriculation = '', $mva = '')
+function create_table_shop_exterieurs($header, $categorie = '', $immatriculation = '', $mva = '', $type = '')
 {
     //données
-    $liste_shop_exterieurs = get_liste_shop_exterieurs($categorie, $immatriculation, $mva);
+    $liste_shop_exterieurs = get_liste_shop_exterieurs($categorie, $immatriculation, $mva, $type);
 
     $table_shop_exterieurs = "";
 

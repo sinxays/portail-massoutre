@@ -3,16 +3,20 @@
 
 use app\Connection;
 
-function get_liste_shop_exterieurs($categorie = '', $immatriculation = '', $mva = '')
+function get_liste_shop_exterieurs($categorie = '', $immatriculation = '', $mva = '', $type)
 {
 
-    $where = "";
+    $where = "vh.archive = $type";
     if ($categorie && $categorie !== 0) {
-        $where = "AND vh.categorie_id = $categorie";
+        $where = "vh.categorie_id = $categorie AND vh.archive = $type";
     } else if ($immatriculation && $immatriculation !== '') {
-        $where = "AND vh.immatriculation LIKE '%$immatriculation%'";
+        $where = "vh.immatriculation LIKE '%$immatriculation%' AND vh.archive = $type";
     } else if ($mva && $mva !== '') {
-        $where = "AND vh.mva LIKE '%$mva%'";
+        $where = "vh.mva LIKE '%$mva%' AND vh.archive = $type";
+    }
+    //archivé ou non
+    else if ($type && $type !== '') {
+        $where = "vh.archive = $type";
     }
 
     $pdo = Connection::getPDO();
@@ -25,7 +29,7 @@ function get_liste_shop_exterieurs($categorie = '', $immatriculation = '', $mva 
       LEFT JOIN shop_ext_categories as cat ON vh.categorie_id = cat.id
       LEFT JOIN shop_ext_panne as panne ON vh.id = panne.vehicule_id
       LEFT JOIN shop_ext_type_panne as type_panne ON type_panne.id = panne.type_panne_id
-      WHERE vh.archive = 0 $where ");
+      WHERE $where ");
     $result_liste = $request->fetchAll(PDO::FETCH_ASSOC);
 
     // var_dump($request->queryString);

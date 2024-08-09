@@ -549,8 +549,6 @@ img {
   }
 
   .my_tab_perso .th3 {
-    padding-top: 12px;
-    padding-bottom: 12px;
     text-align: left;
     background-color: #67b3ef;
     color: white;
@@ -1023,6 +1021,11 @@ img {
   /* Inverse de 80% pour compenser la réduction */
   overflow: hidden;
   /* Pour éviter les barres de défilement */
+}
+
+#ajout_shop_exterieur_form{
+  transform: scale(0.8);
+  transform-origin: top left;
 }
 
 
