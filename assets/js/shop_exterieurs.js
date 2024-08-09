@@ -4,10 +4,6 @@ $(document).ready(function () {
     let loader = $('#loader');
     loader.show();
 
-    $("#alert_shop_ext_added").show(300);
-
-
-
     $.ajax({
         url: "/operations/shop_exterieurs/req/req_tableau_shop_exterieurs.php",
         type: "POST",

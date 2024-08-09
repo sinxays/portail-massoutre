@@ -3,9 +3,6 @@ $(document).ready(function () {
 
     let loader = $('#loader');
 
-    $("#alert_shop_ext_added").show(300);
-
-
     $("#btn_ajout_shop_ext").click(function (e) {
         e.preventDefault();
 
