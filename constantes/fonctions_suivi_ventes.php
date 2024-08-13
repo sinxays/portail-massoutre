@@ -2366,7 +2366,7 @@ function delete_facture($array_facture_to_delete)
             'id_facture' => $id_facture
         ];
 
-        $sql = "UPDATE suivi_ventes_vehicule SET facture_id = :id_facture_null WHERE facture_id=:id_facture";
+        $sql = "UPDATE suivi_ventes_vehicules SET facture_id = :id_facture_null WHERE facture_id=:id_facture";
         $stmt = $pdo_portail->prepare($sql);
         $stmt->execute($data_vh_to_tupdate);
 
