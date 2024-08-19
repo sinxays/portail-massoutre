@@ -82,8 +82,7 @@
                 <select class="form-select" id="select_pretataire">
                     <option selected value="tous">Tous</option>
                     <option value="AE">AE</option>
-                    <option value="ASI" style="color:green;font-weight:bold;">ASI</option>
-                    <option value="ESUS" style="color:red;font-weight:bold;">ESUS</option>
+                    <option value="CONCEPTA" style="color:green;font-weight:bold;">CONCEPTA</option>
                 </select>
             </div>
         </div>
