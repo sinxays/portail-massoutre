@@ -5,7 +5,7 @@
                 <i class='bx bxs-disc nav__icon'></i>
                 <span class="nav__logo-name">Massoutre</span>
             </a>
-            <h3 class="nav__subtitle">Profile</h3>
+            <!-- <h3 class="nav__subtitle">Profile</h3>
             </br>
             <div class="nav__dropdown">
                 <a href="#" class="nav__link">
@@ -21,10 +21,7 @@
                         <a href="#" class="nav__dropdown-item">Accounts</a>
                     </div>
                 </div>
-            </div>
-
-            </br>
-
+            </div> -->
             <div class="nav__list">
                 <div class="nav__items">
                     <h3 class="nav__subtitle">Menu</h3>
@@ -77,11 +74,11 @@
                             <span class="nav__name">Opérationnel</span>
                             <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
                         </a>
-
                         <div class="nav__dropdown-collapse">
                             <div class="nav__dropdown-content">
-                                <a href="/operations/shop_exterieurs/shop_exterieurs.php" class="nav__dropdown-item"
-                                    id="bouton_stats_loc">Shop exterieurs</a>
+                                <a href="/operations/shop_exterieurs/shop_exterieurs.php"
+                                    class="nav__dropdown-item">Shop exterieurs</a>
+                                <a href="/operations/traqueurs/traqueurs.php" class="nav__dropdown-item">Traqueurs</a>
                             </div>
                         </div>
                     </div>

@@ -1104,3 +1104,76 @@ function create_table_shop_exterieurs($header, $categorie = '', $immatriculation
 
     return $table_shop_exterieurs;
 }
+
+
+// function create_table_traqueurs($header, $immatriculation = '', $mva = '', $type = '')
+// {
+
+//     //données
+//     $liste_traqueurs = get_liste_traqueurs($categorie, $immatriculation, $mva, $type);
+
+//     $table_traqueurs = "";
+
+//     $table_traqueurs .= "<table class='my_tab_perso'>";
+//     //header
+//     $table_traqueurs .= create_header_row_shop_ext($header);
+//     //fin header
+
+//     //contenu
+//     foreach ($liste_traqueurs as $traqueur) {
+
+//         $compteur_immo = get_compteur_immo($traqueur['date_declaration'], $traqueur['ID']);
+//         $last_action = get_last_action($traqueur['ID']);
+
+//         //remplissage tableau
+//         $table_traqueurs .= "<tr>";
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['immatriculation'] . " </td>";
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['modele'] . " </td>";
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['mva'] . " </td>";
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['kilometrage'] . " </td>";
+//         $table_traqueurs .= "<td class='td_n'> " . ($traqueur['garantie'] == 0 ? 'non' : 'oui') . " </td>";
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['num_contrat'] . " </td>";
+//         $table_traqueurs .= "<td class='td_n' style='max-width:30px'> " . $compteur_immo . " </td>";
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['date_declaration'] . " </td>";
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['type_panne_libelle'] . " </td>";
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['detail_panne'] . " </td>";
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['localisation'] . " </td>";
+
+//         if (isset($traqueur['last_action']) && $traqueur['last_action'] !== '') {
+//             $table_traqueurs .= "<td class='td_n'> " . $traqueur['last_action']['date_action'] . " - " . $traqueur['last_action']['action'] . " </td>";
+//             $table_traqueurs .= "<td class='td_n'> " . $traqueur['last_action']['remarque'] . " </td>";
+//             $table_traqueurs .= "<td class='td_n'> " . ($traqueur['last_action']['is_factured'] == '1' ? 'oui' : 'non') . " </td>";
+//             $table_traqueurs .= "<td class='td_n'> " . $traqueur['last_action']['montant_facture'] . " </td>";
+//         } else {
+//             $table_traqueurs .= "<td class='td_n'> </td>";
+//             $table_traqueurs .= "<td class='td_n'> </td>";
+//             $table_traqueurs .= "<td class='td_n'> </td>";
+//             $table_traqueurs .= "<td class='td_n'> </td>";
+//         }
+
+//         $table_traqueurs .= "<td class='td_n'> " . $traqueur['date_demande_recup'] . " </td>";
+
+//         if ($traqueur['date_recup'] && $traqueur['agence_recup']) {
+//             $table_traqueurs .= "<td class='td_n'> " . $traqueur['date_recup'] . " (" . $traqueur['agence_recup'] . ") </td>";
+//         } else {
+//             $table_traqueurs .= "<td class='td_n'>  </td>";
+//         }
+//         $table_traqueurs .= "<td class='td_n' style='width:50px'>";
+//         $table_traqueurs .= "<a href='modif_shop_exterieur.php?id=" . $traqueur['ID'] . "' style='margin-right:10px' title='Modifier'>
+//         <box-icon name='edit'></box-icon>
+//         </a>";
+//         // $table_traqueurs .= "<a title='lecture en détail' href='lecture_shop_exterieur.php?id=" . $shop_ext['ID'] . "'><box-icon name='file-find'></box-icon></a>";
+
+//         $table_traqueurs .= "</td>";
+
+//         $table_traqueurs .= "</tr>";
+//     }
+//     //fin contenu
+//     $table_traqueurs .= "</table> ";
+
+
+//     // var_dump($table_traqueurs);
+
+//     return $table_traqueurs;
+
+// }

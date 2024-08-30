@@ -33,7 +33,6 @@ $(document).ready(function () {
     $("#immatriculation_input").keyup(function (e) {
         let input_immat = $(this).val();
         let type_select = $("#select_type").val();
-        console.log(input_immat);
         loader.show();
 
         $.ajax({
@@ -50,7 +49,6 @@ $(document).ready(function () {
     $("#mva_input").keyup(function (e) {
         let input_mva = $(this).val();
         let type_select = $("#select_type").val();
-        console.log(input_mva);
         loader.show();
 
         $.ajax({
@@ -66,7 +64,6 @@ $(document).ready(function () {
     });
     $("#select_categories").change(function (e) {
         let select_categorie = $(this).val();
-        console.log(select_categorie);
         loader.show();
 
         $.ajax({
