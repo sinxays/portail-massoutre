@@ -177,8 +177,15 @@
                                     foreach ($list_type_panne_libelle as $type_panne) {
                                         $libelle_id = $type_panne['ID'];
                                         $libelle = $type_panne['type_panne_libelle'];
-                                        echo "<option value='$libelle_id'> $libelle </option>";
+                                        if ($details_shop_ext['shop']['type_panne_id'] == $libelle_id) {
+                                            echo "<option value='$libelle_id' selected> $libelle </option>";
+                                        } else {
+                                            echo "<option value='$libelle_id'> $libelle </option>";
+                                        }
+
                                     }
+
+
                                     ?>
                                 </select>
 

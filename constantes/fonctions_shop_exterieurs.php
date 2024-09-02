@@ -57,7 +57,7 @@ function get_detail_shop_ext($id)
     $pdo = Connection::getPDO();
 
     $request = $pdo->query("SELECT vh.ID,vh.immatriculation,vh.modele,vh.num_contrat,vh.mva,vh.kilometrage,vh.garantie,vh.date_demande_recup,vh.date_recup,vh.agence_recup,vh.categorie_id,
-    type_panne.type_panne_libelle,
+    type_panne.type_panne_libelle,type_panne.ID as type_panne_id,
     panne.localisation,panne.date_declaration,panne.detail_panne,
     cat.libelle
       FROM shop_ext_vehicules as vh

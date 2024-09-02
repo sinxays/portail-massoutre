@@ -70,7 +70,10 @@
                 </div>
                 <div id="div_shop_ext_2">
                     <div id="div_shop_ext_2_1">
-                        <button type="button" class="btn btn-success" id="btn_creer_shop_ext">Ajout Traqueur</button>
+                        <button type="button" class="btn btn-success" id="btn_ajout_montage_traqueur"
+                            data-bs-toggle="modal" data-bs-target="#modal_ajout_montage_traqueur"
+                            data-typemodal="ajouter">
+                            Ajouter montage traqueur </button>
                     </div>
                 </div>
 
@@ -97,6 +100,82 @@
 
 
     </main>
+
+    <!-- Modal ajout Traqueur -->
+
+    <div class="modal fade bd-example-modal-lg" id="modal_ajout_montage_traqueur" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="width: 1000px;">
+                <div class="modal-header" id="my_modal_header_ajout_montage">
+                    <h5 class="modal-title" id="title_ajout_modif_action">Ajouter montage traqueur</h5>
+                </div>
+
+                <div class="modal_ajout_modif_action_body">
+                    <form id="form_ajout_action">
+
+                    <div class="form-group">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1" style="border-radius: 0px;">Numéro de série</span>
+                                </div>
+                                <input type="text" class="form-control" aria-label="S/N"
+                                    aria-describedby="basic-addon1" style="max-width: 250px;" name="serial_number"
+                                    id="serial_number">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="dateInput">Date Action:</label>
+                            <input type="date" class="form-control" id="dateInput" name="date_action"
+                                style="width: 200px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="action_effectuee">Action effectuée</label>
+                            <textarea class="form-control" id="action_effectuee" rows="3"
+                                name="action_effectuee"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="remarque">Remarque</label>
+                            <input type="text" class="form-control" id="remarque" name="remarque">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="is_action_factured">Facturé</label>
+                            <select class="form-select" style="width : 200px;" id="is_action_factured"
+                                name="is_action_factured">
+                                <option value="1" selected> Oui </option>
+                                <option value="0"> Non </option>
+                            </select>
+                        </div>
+
+                        
+
+                        <!-- Champ caché pour envoyer la valeur du vehicule id -->
+                        <input type="hidden" name="vehicule_id" id="vehicule_id" <?php echo "value='$id'" ?>>
+
+                        <!-- Champ caché pour envoyer la valeur id action qu'on va alimenter en value en js si on veut modifier une action -->
+                        <input type="hidden" name="action_id" id="action_id_to_modif">
+                    </form>
+                </div>
+
+
+                <div class="modal-footer" id="modal_footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        id="button_annuler">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="button_ajouter_modifier_action">Ajouter
+                        Montage</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- FIN MODAL Ajout Traqueur -->
 
 
 
