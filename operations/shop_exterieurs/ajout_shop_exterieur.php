@@ -69,16 +69,35 @@
 
                     <div class="div_form_vh_label"><span>Vehicule</span></div>
                     <div class="div_form_vh_row">
-                        <input type="text" class="form-control" id="input_immat" placeholder="Immatriculation"
-                            name="immatriculation" style="width: 200px;">
-                        <input type="text" class="form-control" id="input_mva" placeholder="MVA" name="mva"
-                            style="width: 150px;">
-                        <input type="text" class="form-control" id="input_km" placeholder="Kilométrage" name="km"
-                            style="width: 150px;">
+                        <div class="form-group">
+                            <label for="input_immat">Immatriculation</label>
+                            <input type="text" class="form-control" id="input_immat" placeholder="Immatriculation"
+                                name="immatriculation" style="width: 200px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="input_mva">MVA</label>
+                            <input type="text" class="form-control" id="input_mva" placeholder="MVA" name="mva"
+                                style="width: 150px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="input_km">Km</label>
+                            <input type="text" class="form-control" id="input_km" placeholder="Kilométrage" name="km"
+                                style="width: 150px;">
+                        </div>
                     </div>
                     <div class="div_form_vh_row">
-                        <input type="text" class="form-control" id="input_modele" placeholder="Modèle" name="modele"
-                            style="width: 370px;">
+                        <div class="form-group">
+                            <label for="input_modele">Modèle</label>
+                            <input type="text" class="form-control" id="input_modele" placeholder="Modèle" name="modele"
+                                style="width: 370px;">
+                        </div>
+
+                    </div>
+
+                    <div class="div_form_vh_row">
+
                         <div class="radio-group">
                             <span>Garantie : </span>
                             <label>
@@ -89,6 +108,8 @@
                             </label>
                         </div>
                     </div>
+
+
                     <div class="div_form_vh_row">
                         <input type="text" class="form-control" id="input_contrat" placeholder="Numéro de contrat"
                             name="num_contrat" style="width: 200px;">
@@ -121,12 +142,14 @@
 
                         <div class="form-floating">
                             <textarea class="form-control" placeholder="Detail(s) de la panne"
-                                id="textarea_detail_panne" name="detail_panne"></textarea>
+                                id="textarea_detail_panne" name="detail_panne" style="min-height: 100px;"></textarea>
                             <label for="textarea_detail_panne">Detail(s) de la panne</label>
                         </div>
-
-                        <input type="text" class="form-control" id="input_localisation" placeholder="Localisation"
-                            name="localisation" style="width: 350px;">
+                        <div class="form-group">
+                            <label for="input_localisation">Localisation</label>
+                            <input type="text" class="form-control" id="input_localisation" placeholder="Localisation"
+                                name="localisation" style="width: 350px;">
+                        </div>
                     </div>
 
                 </div>

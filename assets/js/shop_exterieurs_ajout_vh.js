@@ -22,6 +22,33 @@ $(document).ready(function () {
     });
 
 
+    $("#input_immat").keyup(function (e) {
+        if ($(this).val().length === 7) {
+            // Code à exécuter lorsque 7 caractères sont saisis
+            console.log("7 caractères ont été saisis !");
+
+            $.ajax({
+                url: "../../operations/shop_exterieurs/req/req_ajout_mva_km_automatique.php",
+                type: "POST",
+                data: { immatriculation: $(this).val() },
+                success: function (data) {
+                    var parsed = JSON.parse(data);
+                    $("#input_mva").val(parsed["mva"]);
+                    $("#input_km").val(parsed["km"]);
+                },
+                error: function () {
+                    //todo if error
+                }
+            });
+
+
+        }
+    });
+
+
+
+
+
     $("#div_retour_detail_collaborateur").click(function (e) {
         history.back();
     });
