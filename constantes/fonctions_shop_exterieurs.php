@@ -355,7 +355,7 @@ function get_mva_and_km_from_immatriculation($immatriculation)
     $pdo2 = Connection::getPDO_2();
 
     // on va chercher le mva et le kilometrage d'un vh dans le portail
-    $request = $pdo2->query("SELECT vh.km_depart,mva.numero FROM vehicules as vh
+    $request = $pdo2->query("SELECT vh.km_wizard,mva.numero FROM vehicules as vh
     LEFT JOIN mva ON vh.mva_id = mva.id
     WHERE vh.immatriculation = '$immatriculation'");
     $result = $request->fetch(PDO::FETCH_ASSOC);
