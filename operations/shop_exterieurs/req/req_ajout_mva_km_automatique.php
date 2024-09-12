@@ -7,7 +7,7 @@ if (isset($_POST)) {
     //todo 12/09
 
 
-    echo json_encode(array("mva" => $data_mva_and_km['numero'], "km" => $data_mva_and_km["km_depart"]));
+    echo json_encode(array("mva" => $data_mva_and_km['numero'], "km" => $data_mva_and_km["km_wizard"]));
 
 }
 
