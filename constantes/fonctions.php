@@ -1656,7 +1656,7 @@ function test2()
 
 
 
-function define_payplan($commission, $filtre)
+function update_payplan($commission, $filtre)
 {
 
     // On commence par récupérer des vh dans le cas ou la date de facturation a changé ( une refacturation )

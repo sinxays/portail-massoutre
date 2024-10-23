@@ -10,8 +10,11 @@
 
     <!--========== CSS ==========-->
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../assets/css/styles.css">
 
 
@@ -44,13 +47,6 @@
 
 
 
-
-
-
-
-
-
-
     <!--============================== CONTENTS ==============================-->
     <main>
 
@@ -59,20 +55,19 @@
 
         <div class="div_payplan_update">
             <div class="div_payplan_update1">
-                <select id="select_update" class="form-select" style="width: 180px;   ">
-                    <?php
-                    echo "<option value=0> mois en cours </option>";
-                    echo "<option value=1> mois précédent </option>";
-                    ?>
-                </select>
-                <button type="button" class="btn btn-success" style="text-align: center;" id="bouton_update_payplan"><span>Update</span> <i class='bx bx-refresh bx-sm bx-tada'></i></button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                    data-bs-target="#modal_update_payplan" id="btn_open_modal_update_payplan"
+                    style="max-width:200px;min-width: 200px;">Update</button>
                 <span id="text_chargement_update"></span>
             </div>
             <div class="div_payplan_update2">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary" id="bouton_tableau_reprise_achat_collaborateur" value="collaborateurs">Reprise/Achat/Pack collaborateurs</button>
-                    <button type="button" class="btn btn-success" id="bouton_tableau_payplan" value="payplan">Payplan</button>
-                    <button type="button" class="btn btn-warning" id="bouton_tableau_commision" value="commission">Commission Total</button>
+                    <button type="button" class="btn btn-primary" id="bouton_tableau_reprise_achat_collaborateur"
+                        value="collaborateurs">Reprise/Achat/Pack collaborateurs</button>
+                    <button type="button" class="btn btn-success" id="bouton_tableau_payplan"
+                        value="payplan">Payplan</button>
+                    <button type="button" class="btn btn-warning" id="bouton_tableau_commision"
+                        value="commission">Commission Total</button>
                 </div>
             </div>
             <!--<div class="div_payplan_update3">
@@ -82,7 +77,7 @@
             </div>-->
         </div>
 
-        <span id="tableau_selected" style="visibility: hidden;">commission</span>
+        <span id="tableau_selected" style="visibility: hidden;"></span>
 
         <form class="my_form_payplan">
             <?php
@@ -97,7 +92,7 @@
                 $all_collaborateurs_cvo = get_all_collaborateurs_cvo_for_select();
                 // var_dump($all_collaborateurs_cvo);
                 // die();
-
+                
                 echo "<select class='form-select' style='width : 200px;' id='select_collaborateur_payplan' data-id='id_collaborateur'>";
                 echo "<option value=0> Tout </option>";
                 foreach ($all_collaborateurs_cvo as $site_cvo) {
@@ -172,11 +167,13 @@
             <div class="my_div_form" id="date_personnalisees_div" style="display:none">
                 <div class="my_div_form" id="div_date_debut">
                     <label for="date_payplan_debut">Date Début</label>
-                    <input type="date" id="date_payplan_debut" style="border-radius: 5px;" placeholder="Date de début payplan" />
+                    <input type="date" id="date_payplan_debut" style="border-radius: 5px;"
+                        placeholder="Date de début payplan" />
                 </div>
                 <div class="my_div_form" id="div_date_fin" style="display:none">
                     <label for="date_payplan_fin">Date Fin</label>
-                    <input type="date" id="date_payplan_fin" style="border-radius: 5px;" placeholder="Date de fin payplan" />
+                    <input type="date" id="date_payplan_fin" style="border-radius: 5px;"
+                        placeholder="Date de fin payplan" />
                 </div>
                 <button type="button" class="btn btn-success" disabled id="btn_valider_date_perso">Valider date</button>
             </div>
@@ -227,7 +224,7 @@
 
         // $payplan = get_commission();
         // var_dump($payplan);
-
+        
         ?>
 
 
@@ -237,6 +234,54 @@
         <!-- amener un date placeholder -->
 
     </main>
+
+
+    <!---------------------------------- Modal UPDATE PAYPLAN ---------------------------------->
+
+
+    <div class="modal" id="modal_update_payplan" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" id="my_modal_header_update_payplan">
+                    <h5 class="modal-title" id="exampleModalLongTitle">UPDATE PAYPLAN</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal_body">
+                    <form id="form_update_payplan">
+                        <span class="info_modal_body">Update mois ou un véhicule particulier</span>
+                        <br />
+                        <br />
+                        <div class="element_modal_body">
+                            <label for="select_mois_update_payplan"> Update mois/mois M-1</label>
+                            <select id="select_mois_update_payplan" class="form-select" style="width: 180px;"
+                                name="select_update_payplan_mois">
+                                <?php
+                                echo "<option ></option>";
+                                echo "<option value=0> mois en cours </option>";
+                                echo "<option value=1> mois précédent </option>";
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="element_modal_body">
+                            <label for="update_immatriculation">update une immatriculation (format XXXXXXX)</label>
+                            <input type="text" class="form-control" id="update_payplan_immatriculation"
+                                name="input_update_immat" style="width: 200px;">
+                        </div>
+                        <input type="text" name="type_update" id="type_update" value="update_payplan" hidden>
+                    </form>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-success" id="button_modal_update_payplan">UPDATE</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
 
 
 

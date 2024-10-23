@@ -415,7 +415,7 @@ $(document).ready(function () {
         $.ajax({
             url: "/payplan/req/import_immat.php",
             type: "POST",
-            data: { immat_to_import: immat_to_import},
+            data: { immat_to_import: immat_to_import },
             // success: function () {
             //     $("#label_export").text("Export");
             //     $('#toast_export').toast('show');
@@ -430,6 +430,42 @@ $(document).ready(function () {
         });
 
     });
+
+
+    /************ MODAL *****************/
+
+    // Recherche BDC 
+    $("#button_modal_update_payplan").click(function (e) {
+        $("#text_chargement_update").text("Update en cours...");
+        let select_mois_update = $("#select_mois_update_payplan").val();
+        let immatriculation_update = $("#update_payplan_immatriculation").val();
+        // let type_recherche = $("#type_recherche_bdc").val();
+        remove_modal($("#modal_update_payplan"));
+        $.ajax({
+            url: "req/req_update_payplan.php",
+            type: "POST",
+            data: { mois_update: select_mois_update, immat_update: immatriculation_update },
+            success: function (data) {
+                $("#text_chargement_update").text("");
+                $("#table_commission").html(data);
+            },
+            error: function () {
+                window.location.replace('index.php');
+            }
+        });
+
+    });
+
+
+    $("#select_mois_update_payplan").change(function (e) {
+        $("#update_payplan_immatriculation").val("");
+    });
+
+
+    $("#update_payplan_immatriculation").click(function (e) {
+        $("#select_mois_update_payplan").val("");
+    });
+
 
 
 });
@@ -453,4 +489,15 @@ function hide_tables() {
 }
 
 
+function remove_modal(instance) {
+    var modal_actif = bootstrap.Modal.getInstance(instance);
+    modal_actif.hide();
+    $('.modal').modal('hide');
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
 
+    // Sélectionnez le corps
+    var body = $("body");
+    // Enlevez l'attribut style
+    body.removeAttr("style");
+}
