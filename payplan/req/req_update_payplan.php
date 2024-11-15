@@ -9,7 +9,7 @@ ini_set('max_execution_time', 0);
 //update MOIS
 if (isset($_POST['mois_update']) && $_POST['mois_update'] !== '') {
 
-    switch ($_POST['choix_update']) {
+    switch ($_POST['mois_update']) {
         //mois en cours
         case 0:
             $filtre['mois_en_cours'] = array();
