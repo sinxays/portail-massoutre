@@ -24,6 +24,7 @@ if (isset($_POST['mois_update']) && $_POST['mois_update'] !== '') {
 }
 //update par immatriculation
 else if (isset($_POST['immat_update']) && $_POST['immat_update'] !== '') {
+    $commission = get_commission($filtre);
     update_payplan_by_immat($_POST['immat_update']);
 }
 
