@@ -440,6 +440,8 @@ $(document).ready(function () {
         let select_mois_update = $("#select_mois_update_payplan").val();
         let immatriculation_update = $("#update_payplan_immatriculation").val();
         // let type_recherche = $("#type_recherche_bdc").val();
+        console.log(select_mois_update);
+        console.log(immatriculation_update);
         remove_modal($("#modal_update_payplan"));
         $.ajax({
             url: "req/req_update_payplan.php",
