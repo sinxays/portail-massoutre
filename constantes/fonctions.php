@@ -2470,16 +2470,12 @@ function update_date_facturation_by_immat($vh_immat, $date_facturation)
 
 function update_payplan_by_immat($vh_immat)
 {
-
     $pdo = Connection::getPDO();
-
 
     $datas_commission = get_commission_by_immat($vh_immat);
 
-
     // var_dump($datas_commission);
     // die();
-
 
     $commissionable = 1;
     $parc_achat = strtolower($datas_commission['Parc_Achat']);
@@ -2496,8 +2492,6 @@ function update_payplan_by_immat($vh_immat)
     $type_achat = get_type_achat($datas_commission['Type_Achat']);
     $destination = get_destination($datas_commission['Destination']);
 
-
-
     $data = [
         'id' => $id,
         'parc_achat' => $datas_commission['Parc_Achat'],
@@ -2511,14 +2505,13 @@ function update_payplan_by_immat($vh_immat)
         'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
         'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
         'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
+        'date_facturation' => $datas_commission['date_facturation'],
         'date_achat' => $date_achat,
         'type_achat' => $type_achat,
         'destination' => $destination
-
     ];
 
     // var_dump($data);
-
 
     $sql = "UPDATE payplan SET 
         parc_achat = :parc_achat,
@@ -2532,6 +2525,7 @@ function update_payplan_by_immat($vh_immat)
         vendeur_collaborateur_id = :vendeur_collaborateur_id,
         type_com_vendeur = :type_com_vendeur,
         valeur_com_vendeur = :valeur_com_vendeur,
+        date_facturation = :date_facturation,
         date_achat = :date_achat,
         type_achat = :type_achat,
         destination = :destination 
