@@ -2505,7 +2505,7 @@ function update_payplan_by_immat($vh_immat)
         'vendeur_collaborateur_id' => $vendeur_id_collaborateur,
         'type_com_vendeur' => $type_com_and_valeur_vendeur['type_com'],
         'valeur_com_vendeur' => $type_com_and_valeur_vendeur['valeur'],
-        'date_facturation' => $datas_commission['date_facturation'],
+        'date_facturation' => $datas_commission['Date_facturation'],
         'date_achat' => $date_achat,
         'type_achat' => $type_achat,
         'destination' => $destination
