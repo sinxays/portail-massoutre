@@ -69,13 +69,17 @@
         
 
         // update_vh_invoice();
+        
 
+        // update_payplan_by_immat("FM173XN");
+        
+        $filtre["filtre"]["actif"] = 1;
 
-        update_payplan_by_immat("FM173XN");
+        var_dump($filtre);
 
 
         ?>
-       
+
     </div>
 
     <br />

@@ -55,40 +55,56 @@ function ajouter_montage_traqueur($datas)
 
 }
 
-function get_liste_traqueurs($imei = '', $sn = '', $sim = '')
+function get_liste_traqueurs($filtre = '')
 {
 
-    $where = "";
-    if ($imei && $imei !== '') {
-        $where = " AND imei LIKE '%$imei%'";
-    } else if ($sn && $sn !== '') {
-        $where = " AND serial_number LIKE '%$sn%'";
-    } else if ($sim && $sim !== '') {
-        $where = " AND sin LIKE '%$sim%'";
+    $where = '';
+
+    if (isset($filtre) && !empty($filtre)) {
+        // Extraire la clé du tableau 'filtre'
+        $cle = key($filtre['filtre']); // Retourne 'actif'
+        $value = $filtre['filtre'][$cle];
+
+        switch ($cle) {
+            case 'actif':
+                $where = "WHERE actif = $value";
+                break;
+            case 'serial_number':
+                $where = "WHERE serial_number LIKE '%$value%'";
+                break;
+            case 'imei':
+                $where = "WHERE imei LIKE '%$value%'";
+                break;
+
+            // par défaut prendre tout les actifs/inactifs
+            default:
+                $where = "";
+                break;
+        }
     }
+
+
 
     $pdo = Connection::getPDO();
 
-    $request = $pdo->query("SELECT * FROM geoloc_traqueurs WHERE actif = 1 $where ");
+    $request = $pdo->query("SELECT * FROM geoloc_traqueurs $where ");
     $result_liste = $request->fetchAll(PDO::FETCH_ASSOC);
-
     // var_dump(->queryString);
 
     return $result_liste;
-
 }
 
 function get_details_traqueur($id)
 {
     $pdo = Connection::getPDO();
 
-    $request = $pdo->query("SELECT gm.ID,gm.date_installation,gm.date_maj_site,gm.montage,gm.montage_nom,gm.montage_position,gm.obd,gm.obd_nom,gm.soudure,
-    gt.serial_number,gt.imei,gt.sim,
-    gv.immatriculation,gv.type,gv.mva 
-      FROM geoloc_montage AS gm
-      LEFT JOIN geoloc_traqueurs AS gt ON gt.ID = gm.id_traqueur
-      LEFT JOIN geoloc_vehicules AS gv ON gv.ID = gm.id_vehicule
-      WHERE gm.actif = 1 AND gm.ID = $id ");
+    $request = $pdo->query("SELECT gt.ID,gt.serial_number,gt.imei,gt.actif,
+    gm.date_installation,gm.date_maj_site,gm.montage,gm.montage_nom,gm.montage_position,gm.obd,gm.obd_nom,gm.soudure,
+    gv.immatriculation,gv.type,gv.mva
+    FROM geoloc_traqueurs AS gt
+    LEFT JOIN geoloc_montage AS gm ON gt.ID = gm.id_traqueur
+    LEFT JOIN geoloc_vehicules AS gv ON gv.ID = gm.id_vehicule
+    WHERE gt.ID = $id ");
     $traqueur = $request->fetch(PDO::FETCH_ASSOC);
 
     return $traqueur;

@@ -1171,11 +1171,11 @@ function create_table_traqueurs($header, $immatriculation = '', $mva = '')
 }
 
 
-function create_table_liste_traqueurs($header, $imei = '', $sn = '', $sim = '')
+function create_table_liste_traqueurs($header, $filtre = '')
 {
 
     //données
-    $liste_traqueurs = get_liste_traqueurs($imei, $sn, $sim);
+    $liste_traqueurs = get_liste_traqueurs($filtre);
 
     $table_traqueurs = "";
 
@@ -1191,15 +1191,14 @@ function create_table_liste_traqueurs($header, $imei = '', $sn = '', $sim = '')
         $table_traqueurs .= "<tr>";
         $table_traqueurs .= "<td class='td_n' style='width:250px;'> " . $traqueur['serial_number'] . " </td>";
         $table_traqueurs .= "<td class='td_n' style='width:250px;'> " . $traqueur['imei'] . " </td>";
-        $table_traqueurs .= "<td class='td_n' style='width:250px;'> " . $traqueur['sim'] . " </td>";
-        // $table_traqueurs .= "<td class='td_n'> " . $traqueur['type'] . " </td>";
-        // $table_traqueurs .= "<td class='td_n'> " . $traqueur['mva'] . " </td>";
+        // $table_traqueurs .= "<td class='td_n' style='width:250px;'> " . $traqueur['sim'] . " </td>";
+
         $table_traqueurs .= "<td class='td_n'>  Actif  </td>";
-        $table_traqueurs .= "<td class='td_n'> monté </td>";
+        $table_traqueurs .= "<td class='td_n'> N/C </td>";
 
         $table_traqueurs .= "<td class='td_n' style='width:50px'>";
-        $table_traqueurs .= "<a href='modif_traqueur.php?id=" . $traqueur['ID'] . "' style='margin-right:10px' title='Modifier'>
-        <box-icon name='edit'></box-icon>
+        $table_traqueurs .= "<a href='modif_traqueur.php?id=" . $traqueur['ID'] . "' >
+        <button type='button' class='btn btn-success btn-sm'> Monter </button>
         </a>";
         // $table_traqueurs .= "<a title='lecture en détail' href='lecture_shop_exterieur.php?id=" . $shop_ext['ID'] . "'><box-icon name='file-find'></box-icon></a>";
 

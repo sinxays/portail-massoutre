@@ -79,10 +79,10 @@
                         <label for="imei_input">IMEI</label>
                         <input type="text" class="form-control" id="imei_input" placeholder="imei" name="imei">
                     </div>
-                    <div id="div_shop_ext_1_2">
+                    <!-- <div id="div_shop_ext_1_2">
                         <label for="sim_input">SIM</label>
                         <input type="text" class="form-control" id="sim_input" placeholder="sim" name="sim">
-                    </div>
+                    </div> -->
 
                     <div id="div_shop_ext_1_2">
                         <label for="select_actif_traqueur">Actif</label>
@@ -98,7 +98,7 @@
 
                         <form action="upload_csv_traqueurs.php" method="post" enctype="multipart/form-data"
                             id="csvForm">
-                            <span>Importer un CSV</span>
+                            <span>Importer un CSV traqueurs (séparateur ";")</span>
                             <div class="input-group">
                                 <input type="file" class="form-control" aria-label="Upload" name="csv_file"
                                     id="csv_file" accept=".csv" required>

@@ -2,27 +2,30 @@
 
 include "../../../include.php";
 
-var_dump($_POST);
+// var_dump($_POST);
 
 $key = array_key_first($_POST);
 
 
 switch ($key) {
     case "select_actif":
-        $select_actif = $_POST["select_actif"];
-        $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, $imei, '');
-        break;
-    case "input_sim":
-        $select_actif = $_POST["input_sim"];
-        $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, '', '', $sim);
+        $value_select_actif = $_POST["select_actif"];
+        $filtre["filtre"]["actif"] = $value_select_actif;
+        $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, $filtre);
         break;
     case "input_sn":
-        $select_actif = $_POST["input_sn"];
-        $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, '', $sn, '');
+        $value_input_sn = $_POST["input_sn"];
+        $filtre["filtre"]["serial_number"] = $value_input_sn;
+        $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, $filtre);
         break;
     case "input_imei":
-        $select_actif = $_POST["input_imei"];
-        $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, $imei, '');
+        $value_input_imei = $_POST["input_imei"];
+        $filtre["filtre"]["imei"] = $value_input_imei;
+        $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, $filtre);
+        break;
+
+    default:
+        $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row);
         break;
 
 }

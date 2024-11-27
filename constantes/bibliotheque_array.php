@@ -148,7 +148,7 @@ $shop_exterieurs_table_header_row = array("Immatriculation", "Modele", "MVA", "K
 
 $traqueurs_table_header_row = array("Immatriculation", "S/N", "Imei", "Sim", "Type", "MVA", "Installation", "MAJ site", "Montage", "Nom", "Position", "OBD", "Nom", "Soudure");
 
-$liste_traqueurs_table_header_row = array("S/N", "Imei", "Sim", "Actif", "Monté");
+$liste_traqueurs_table_header_row = array("S/N", "Imei", "Actif", "Monté");
 
 $imprimantes_table_header_row = array(
     "N° Série",

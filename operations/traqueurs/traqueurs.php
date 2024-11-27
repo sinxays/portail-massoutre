@@ -52,7 +52,7 @@
     <!--============================== CONTENTS ==============================-->
     <main>
 
-        <H2> TRAQUEURS </H2>
+        <H2> TRAQUEURS MONTES </H2>
 
         <form class="my_form_shop_ext">
 
