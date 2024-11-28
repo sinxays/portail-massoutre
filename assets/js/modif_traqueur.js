@@ -48,71 +48,7 @@ $(document).ready(function () {
 
 
 
-    //filtres
-    $("#serial_number_input").keyup(function (e) {
-        let sn_input_value = $(this).val();
-        loader.show();
-
-        $.ajax({
-            url: "/operations/traqueurs/req/req_tableau_liste_traqueurs.php",
-            type: "POST",
-            data: { input_sn: sn_input_value },
-            success: function (data) {
-                $("#table_liste_traqueurs").html(data);
-                loader.hide();
-            }
-        });
-
-    });
-    $("#imei_input").keyup(function (e) {
-        let imei_input_value = $(this).val();
-        loader.show();
-
-        $.ajax({
-            url: "/operations/traqueurs/req/req_tableau_liste_traqueurs.php",
-            type: "POST",
-            data: { input_imei: imei_input_value },
-            success: function (data) {
-                $("#table_liste_traqueurs").html(data);
-                loader.hide();
-            }
-        });
-
-    });
-    $("#sim_input").keyup(function (e) {
-        let input_sim_value = $(this).val();
-        loader.show();
-
-        $.ajax({
-            url: "/operations/traqueurs/req/req_tableau_liste_traqueurs.php",
-            type: "POST",
-            data: { input_sim: input_sim_value },
-            success: function (data) {
-                $("#table_liste_traqueurs").html(data);
-                loader.hide();
-            }
-        });
-
-    });
-
-    $("#select_actif_traqueur").change(function (e) {
-        let select_actif_traqueur = $(this).val();
-        loader.show();
-        console.log(select_actif_traqueur);
-
-        $.ajax({
-            url: "/operations/traqueurs/req/req_tableau_liste_traqueurs.php",
-            type: "POST",
-            data: { select_actif: select_actif_traqueur },
-            success: function (data) {
-                $("#table_liste_traqueurs").html(data);
-                loader.hide();
-            }
-        });
-
-    });
-
-
+ // click sur le bouton créer un montage traqueur
     $("#button_ajouter_montage_traqueur").click(function (e) {
         e.preventDefault();
 
@@ -151,7 +87,7 @@ $(document).ready(function () {
 
 
     $("#div_retour_liste_traqueurs").click(function (e) {
-        window.location.replace("/operations/traqueurs/traqueurs.php");
+        window.location.replace("/operations/traqueurs/liste_traqueurs.php");
     });
 
 });

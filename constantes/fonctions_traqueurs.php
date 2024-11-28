@@ -62,8 +62,8 @@ function get_liste_traqueurs($filtre = '')
 
     if (isset($filtre) && !empty($filtre)) {
         // Extraire la clé du tableau 'filtre'
-        $cle = key($filtre['filtre']); // Retourne 'actif'
-        $value = $filtre['filtre'][$cle];
+        $cle = key($filtre['filtre']); // Retourne le type de filtre 
+        $value = $filtre['filtre'][$cle]; // retourne la valeur du filtre 
 
         switch ($cle) {
             case 'actif':
@@ -126,5 +126,47 @@ function insert_traqueur($serial_number, $imei)
     $sql = "INSERT INTO geoloc_traqueurs (serial_number,imei) VALUES (:serial_number, :imei)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($datas_traqueur);
+
+}
+
+function update_montage_traqueur($data)
+{
+
+}
+
+function get_liste_montage_traqueurs($filtre = '')
+{
+    $where = '';
+
+    if (isset($filtre) && !empty($filtre)) {
+        // Extraire la clé du tableau 'filtre'
+        $cle = key($filtre['filtre']); // Retourne le type de filtre 
+        $value = $filtre['filtre'][$cle]; // retourne la valeur du filtre 
+
+        switch ($cle) {
+            case 'immatriculation':
+                $where = "WHERE actif = $value";
+                break;
+            case 'mva':
+                $where = "WHERE serial_number LIKE '%$value%'";
+                break;
+
+            // par défaut prendre tout les actifs/inactifs
+            default:
+                $where = "";
+                break;
+        }
+    }
+
+    $pdo = Connection::getPDO();
+
+    $request = $pdo->query("SELECT * FROM geoloc_montage AS gm
+    LEFT JOIN geoloc_vehicules AS gv ON gm.id_vehicule = gv.ID
+    LEFT JOIN geoloc_traqueurs AS gt ON gm.id_traqueur = gt.ID
+      $where ");
+    $result_liste = $request->fetchAll(PDO::FETCH_ASSOC);
+    // var_dump(->queryString);
+
+    return $result_liste;
 
 }

@@ -328,7 +328,7 @@
 
 
             <div class="div_validation_modif">
-                <button type="button" class="btn btn-success" id="btn_modif_shop_ext">Enregistrer</button>
+                <button type="button" class="btn btn-success" id="btn_modif_enregistrer">Enregistrer</button>
             </div>
 
             <div class="lds-ellipsis" id="loader" style="display:none;">

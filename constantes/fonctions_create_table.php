@@ -1117,11 +1117,15 @@ function create_table_shop_exterieurs($header, $categorie = '', $immatriculation
 }
 
 
-function create_table_traqueurs($header, $immatriculation = '', $mva = '')
+function create_table_montage_traqueurs($header, $filtre = '')
 {
 
     //données
-    $liste_traqueurs = get_liste_traqueurs($immatriculation, $mva);
+    if (isset($filtre)) {
+        $liste_traqueurs = get_liste_montage_traqueurs($filtre);
+    } else {
+        $liste_traqueurs = get_liste_montage_traqueurs();
+    }
 
     $table_traqueurs = "";
 

@@ -798,6 +798,14 @@ img {
     width: 150px;
   }
 
+  .div_barre_filtre_element {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: auto;
+    margin-right: 20px;
+  }
+
   #div_shop_ext_1_3 {
     margin-right: 20px;
     width: 250px;
@@ -1157,6 +1165,11 @@ img {
   height: 200px;
 }
 
+.div_contenu_box_traqueurs_L {
+  height: 300px;
+}
+
+
 .div_contenu_label_action {
   height: 100%;
   text-align: center;
@@ -1287,7 +1300,8 @@ img {
 }
 
 
-#btn_modif_shop_ext {
+
+#btn_modif_enregistrer {
   height: 100px;
   width: 550px;
   background: #50D14A;
@@ -1743,4 +1757,11 @@ img {
 
 .div_element {
   margin-right: 20px;
+}
+
+#btn_ajout_montage_traqueur {
+  height: 50px;
+  width: 250px;
+  background-color: #009f08;
+  border-color: #009f08;
 }

@@ -74,12 +74,12 @@
 
         <br />
 
-        <div id="div_retour_detail_collaborateur">
+        <div id="div_retour_liste_traqueurs">
             <i class='bx bx-left-arrow-circle bx-md'></i><span>Retour</span>
         </div>
 
         <div class="container_form_modif_lecture_shop_ext">
-            <form id="form_traqueurs">
+            <form id="form_montage_traqueurs">
 
                 <div class="row_box_traqueurs_modif">
 
@@ -149,7 +149,7 @@
                 <div class="row_box_traqueurs_modif">
                     <div class="box_traqueurs_modif">
                         <div class="div_form_traqueurs_label"><span>Montage</span></div>
-                        <div class="div_contenu_box_traqueurs">
+                        <div class="div_contenu_box_traqueurs_L">
                             <div class="div_form_vh_column">
 
                                 <div class="element_champ_row">
@@ -169,14 +169,50 @@
                                     </div>
                                 </div>
 
+                                <div class="element_champ_row">
+                                    <div class="element_champ">
+                                        <label for="lieu_montage_input">Lieu Montage</label>
+                                        <input type="text" class="form-control" id="lieu_montage_input"
+                                            name="lieu_montage" style="width: 150px;"
+                                            value="<?php echo $details_traqueur['montage'] ?>">
+
+                                    </div>
+                                    <div class="element_champ">
+                                        <label for="nom_monteur_input">Nom Mecano Montage</label>
+                                        <input type="text" class="form-control" id="nom_monteur_input"
+                                            name="nom_monteur" style="width: 250px;"
+                                            value="<?php echo $details_traqueur['montage_nom'] ?>">
+                                    </div>
+                                    <div class="element_champ">
+                                        <label for="position_montage_input">Position de montage</label>
+                                        <input type="text" class="form-control" id="position_montage_input"
+                                            name="position_montage" style="width: 500px;"
+                                            value="<?php echo $details_traqueur['montage_position'] ?>">
+                                    </div>
+                                </div>
 
                                 <div class="element_champ_row">
                                     <div class="element_champ">
-                                        <label for="type_input">Type</label>
-                                        <input type="text" class="form-control" id="type_input" name="type"
-                                            style="width: 150px;" value="<?php echo $details_traqueur['type'] ?>">
+                                        <label for="obd_input">OBD</label>
+                                        <input type="text" class="form-control" id="obd_input"
+                                            name="obd" style="width: 150px;"
+                                            value="<?php echo $details_traqueur['obd'] ?>">
+
+                                    </div>
+                                    <div class="element_champ">
+                                        <label for="nom_obd_input">Nom Mecano OBD</label>
+                                        <input type="text" class="form-control" id="nom_obd_input"
+                                            name="nom_obd" style="width: 250px;"
+                                            value="<?php echo $details_traqueur['obd_nom'] ?>">
+                                    </div>
+                                    <div class="element_champ">
+                                        <label for="soudure_input">Soudure</label>
+                                        <input type="text" class="form-control" id="soudure_input"
+                                            name="soudure" style="width: 500px;"
+                                            value="<?php echo $details_traqueur['soudure'] ?>">
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -188,7 +224,11 @@
 
 
             <div class="div_validation_modif">
-                <button type="button" class="btn btn-success" id="btn_modif_shop_ext">Enregistrer</button>
+                <button type="button" class="btn btn-success" id="btn_modif_enregistrer">Enregistrer</button>
+            </div>
+
+            <div class="div_validation_modif">
+                <button type="button" class="btn btn-success" id="btn_create_montage_traqueur" hidden>Créer</button>
             </div>
 
             <div class="div_validation_modif">
@@ -207,7 +247,7 @@
 
     <!-- <script src="/assets/js/jquery-3.6.0.min.js"></script> -->
     <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/shop_exterieurs_modif.js"></script>
+    <script src="/assets/js/modif_traqueur.js"></script>
 </body>
 
 </html>

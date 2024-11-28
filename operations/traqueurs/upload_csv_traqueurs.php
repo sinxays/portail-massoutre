@@ -5,7 +5,7 @@ include "../../include.php";
 
 if (isset($_POST)) {
 
-    $table_traqueurs = create_table_traqueurs($traqueurs_table_header_row, '', '');
+    $table_traqueurs = create_table_montage_traqueurs($traqueurs_table_header_row, '', '');
     $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, '', '');
 
     // Vérifier si un fichier a été uploadé sans erreur

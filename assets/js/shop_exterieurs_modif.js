@@ -42,7 +42,7 @@ $(document).ready(function () {
     });
 
 
-    $("#btn_modif_shop_ext").click(function (e) {
+    $("#btn_modif_enregistrer").click(function (e) {
         e.preventDefault();
         console.log($("#form_shop_ext").serialize());
         $.ajax({
