@@ -1,6 +1,10 @@
 <?php
 
-include "../../include.php";
+//echo __DIR__ . "../../include.php";
+
+include __DIR__ . "/../../include.php";
+
+
 
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
