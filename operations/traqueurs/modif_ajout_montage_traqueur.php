@@ -79,7 +79,7 @@
         </div>
 
         <div class="container_form_modif_lecture_shop_ext">
-            <form id="form_montage_traqueurs">
+            <form id="form_ajout_montage_traqueur">
 
                 <div class="row_box_traqueurs_modif">
 
@@ -194,22 +194,19 @@
                                 <div class="element_champ_row">
                                     <div class="element_champ">
                                         <label for="obd_input">OBD</label>
-                                        <input type="text" class="form-control" id="obd_input"
-                                            name="obd" style="width: 150px;"
-                                            value="<?php echo $details_traqueur['obd'] ?>">
+                                        <input type="text" class="form-control" id="obd_input" name="obd"
+                                            style="width: 150px;" value="<?php echo $details_traqueur['obd'] ?>">
 
                                     </div>
                                     <div class="element_champ">
                                         <label for="nom_obd_input">Nom Mecano OBD</label>
-                                        <input type="text" class="form-control" id="nom_obd_input"
-                                            name="nom_obd" style="width: 250px;"
-                                            value="<?php echo $details_traqueur['obd_nom'] ?>">
+                                        <input type="text" class="form-control" id="nom_obd_input" name="nom_obd"
+                                            style="width: 250px;" value="<?php echo $details_traqueur['obd_nom'] ?>">
                                     </div>
                                     <div class="element_champ">
                                         <label for="soudure_input">Soudure</label>
-                                        <input type="text" class="form-control" id="soudure_input"
-                                            name="soudure" style="width: 500px;"
-                                            value="<?php echo $details_traqueur['soudure'] ?>">
+                                        <input type="text" class="form-control" id="soudure_input" name="soudure"
+                                            style="width: 500px;" value="<?php echo $details_traqueur['soudure'] ?>">
                                     </div>
                                 </div>
 
@@ -217,20 +214,24 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Champ caché pour envoyer la valeur du traqueur id -->
+                <input type="hidden" name="traqueur_id" <?php echo "value=" . $_GET['id']; ?>>
             </form>
 
-            <!-- Champ caché pour envoyer la valeur du vehicule id -->
-            <input type="hidden" name="vehicule_id" <?php echo "value='$id'" ?>>
+            <!-- Si c'est un nouveau montage ou une modification d'un montage existant on affiche le bouton de modif ou de création-->
+            <?php
+            if (isset($details_traqueur['ID_montage']) && !is_null($details_traqueur['ID_montage'])) {
+                echo "<div class='div_validation_modif' id='div_bouton_update_modif_traqueur'>";
+                echo "<button type='button' class='btn btn-success' id='btn_modif_montage_traqueur'>Enregistrer</button>";
+                echo "</div>";
+            } else {
+                echo "<div class='div_validation_modif' id='div_bouton_creer_montage_traqueur'>";
+                echo "<button type='button' class='btn btn-success' id='btn_create_montage_traqueur'>Créer Montage</button>";
+                echo "</div>";
 
-
-            <div class="div_validation_modif">
-                <button type="button" class="btn btn-success" id="btn_modif_enregistrer">Enregistrer</button>
-            </div>
-
-            <div class="div_validation_modif">
-                <button type="button" class="btn btn-success" id="btn_create_montage_traqueur" hidden>Créer</button>
-            </div>
-
+            }
+            ?>
             <div class="div_validation_modif">
                 <button type="button" class="btn btn-danger" id="btn_sortir_vh_shop_ext">ANNULER</button>
             </div>
@@ -247,7 +248,7 @@
 
     <!-- <script src="/assets/js/jquery-3.6.0.min.js"></script> -->
     <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/modif_traqueur.js"></script>
+    <script src="/assets/js/modif_ajout_montage_traqueur.js"></script>
 </body>
 
 </html>

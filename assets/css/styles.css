@@ -1300,9 +1300,20 @@ img {
 }
 
 
-
 #btn_modif_enregistrer {
   height: 100px;
+  width: 550px;
+  background: #50D14A;
+}
+
+#btn_modif_montage_traqueur {
+  height: 80px;
+  width: 550px;
+  background: #50D14A;
+}
+
+#btn_create_montage_traqueur {
+  height: 80px;
   width: 550px;
   background: #50D14A;
 }

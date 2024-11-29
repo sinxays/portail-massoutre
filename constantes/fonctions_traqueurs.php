@@ -7,7 +7,6 @@ function ajouter_montage_traqueur($datas)
 {
     $pdo = Connection::getPDO();
 
-
     //on ajoute d'abord dans la table traqueur
     $datas_traqueur = [
         'serial_number' => $datas['serial_number'],
@@ -100,7 +99,7 @@ function get_details_traqueur($id)
 
     $request = $pdo->query("SELECT gt.ID,gt.serial_number,gt.imei,gt.actif,
     gm.date_installation,gm.date_maj_site,gm.montage,gm.montage_nom,gm.montage_position,gm.obd,gm.obd_nom,gm.soudure,
-    gv.immatriculation,gv.type,gv.mva
+    gv.immatriculation,gv.type,gv.mva,gm.ID AS ID_montage
     FROM geoloc_traqueurs AS gt
     LEFT JOIN geoloc_montage AS gm ON gt.ID = gm.id_traqueur
     LEFT JOIN geoloc_vehicules AS gv ON gv.ID = gm.id_vehicule
@@ -119,18 +118,74 @@ function insert_traqueur($serial_number, $imei)
     //on ajoute d'abord dans la table traqueur
     $datas_traqueur = [
         'serial_number' => $serial_number,
-        'imei' => $imei
+        'imei' => $imei,
+        'actif' => 0
     ];
 
 
-    $sql = "INSERT INTO geoloc_traqueurs (serial_number,imei) VALUES (:serial_number, :imei)";
+    $sql = "INSERT INTO geoloc_traqueurs (serial_number,imei,actif) VALUES (:serial_number, :imei,:actif)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($datas_traqueur);
 
 }
 
-function update_montage_traqueur($data)
+function update_create_montage_traqueur($data, $type)
 {
+    $pdo = Connection::getPDO();
+
+    switch ($type) {
+        case 'create':
+            // on crée d'abord le véhicule
+            $data_vh_to_create = [
+                'immatriculation' => $data['immatriculation'],
+                'type_vh' => $data['type'],
+                'mva' => $data['mva']
+            ];
+
+            $sql = "INSERT INTO geoloc_vehicules(immatriculation,type,mva) VALUES (:immatriculation, :type_vh, :mva)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($data_vh_to_create);
+            $get_last_id_vh_inserted = $pdo->lastInsertId();
+
+            //on ajoute ensuite dans la table geoloc_montage
+            $datas_to_insert = [
+                'traqueur_id' => $data['traqueur_id'],
+                'vehicule_id' => $get_last_id_vh_inserted,
+                'date_installation' => $data['date_installation'],
+                'date_maj_site' => $data['date_maj_site'],
+                'lieu_montage' => $data['lieu_montage'],
+                'nom_monteur' => $data['nom_monteur'],
+                'position_montage' => $data['position_montage'],
+                'obd' => $data['obd'],
+                'nom_obd' => $data['nom_obd'],
+                'soudure' => $data['soudure'],
+                'actif' => 1
+            ];
+            $sql = "INSERT INTO geoloc_montage(id_traqueur,id_vehicule,date_installation,date_maj_site,montage,montage_nom,montage_position,obd,obd_nom,soudure,actif) 
+            VALUES (:traqueur_id, :vehicule_id,:date_installation,:date_maj_site,:lieu_montage,:nom_monteur,:position_montage,:obd,:nom_obd,:soudure,:actif)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($datas_to_insert);
+
+            //on update le traqueur en le passant à actif
+            $datas_to_insert = [
+                'traqueur_id' => $data['traqueur_id'],
+                'actif' => 1
+            ];
+            $sql = "UPDATE geoloc_traqueurs SET actif = 1 WHERE ID = " . $data['traqueur_id'];
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+
+
+            break;
+        case 'update':
+            # code...
+            break;
+
+        default:
+            # code...
+            break;
+    }
+
 
 }
 

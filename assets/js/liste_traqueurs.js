@@ -135,7 +135,7 @@ $(document).ready(function () {
         e.preventDefault();
         console.log($("#form_montage_traqueurs").serialize());
         $.ajax({
-            url: "../../operations/traqueurs/req/req_modif_montage_traqueurs.php",
+            url: "../../operations/traqueurs/req/req_modif_ajout_montage_traqueurs.php",
             type: "POST",
             data: $("#form_shop_ext").serialize(),
             success: function () {
