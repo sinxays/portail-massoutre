@@ -1750,8 +1750,14 @@ function GoCurl_Recup_BDC_canceled($token, $page, $date_bdc = '')
     }
     curl_close($ch);
 
-    $obj = json_decode($result);
-    return $obj->datas;
+    if ($result) {
+        $obj = json_decode($result);
+        return $obj->datas;
+    } else {
+        return False;
+    }
+
+
 
 }
 
