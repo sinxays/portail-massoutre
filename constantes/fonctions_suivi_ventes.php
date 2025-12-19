@@ -1527,11 +1527,6 @@ function calcul_variation($type, $data_calcul_n1, $data_n)
 
 }
 
-function snapshot_suivi_ventes_pour_histo()
-{
-
-}
-
 
 function get_uuid_from_num_bdc($num_bdc)
 {
@@ -2390,6 +2385,7 @@ function update_bdc_canceled($date)
     $j = 1;
     $token = goCurlToken();
     $liste_bdc_canceled = GoCurl_Recup_BDC_canceled($token, $j, $date);
+    var_dump($liste_bdc_canceled);
     if ($liste_bdc_canceled) {
         delete_bdc($liste_bdc_canceled);
     }
