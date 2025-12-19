@@ -73,9 +73,12 @@
 
         // update_payplan_by_immat("FM173XN");
         
-        $filtre["filtre"]["actif"] = 1;
+        $date = date('Y-m-d', strtotime('-3 day'));
 
-        var_dump($filtre);
+        update_bdc_canceled($date);
+
+
+
 
 
         ?>
