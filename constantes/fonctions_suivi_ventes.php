@@ -47,7 +47,7 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
 
         //on check déja si le bdc existe ou pas
         $request = $pdo->query("SELECT numero_bdc FROM suivi_ventes_bdc AS bdc
-        WHERE bdc.numero_bdc = " .$num_bdc . "");
+        WHERE bdc.numero_bdc = " . $num_bdc . "");
         $result_check_bdc_num = $request->fetch(PDO::FETCH_COLUMN);
 
         $provenance = get_provenance_from_destination_id_portail($result_vh['destination_id']);
@@ -59,7 +59,7 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
             $destination_sortie = get_destination_sortie($bdc['destination_sortie']);
 
             //uuid
-            $uuid_bdc = get_uuid_bdc_from_array($array_bdc,$num_bdc);
+            $uuid_bdc = get_uuid_bdc_from_array($array_bdc, $num_bdc);
 
 
             //insert du bdc dans suivi_ventes_bdc
@@ -2395,26 +2395,31 @@ function delete_bdc($array_bdc_to_delete)
 {
     foreach ($array_bdc_to_delete as $bdc) {
         $bdc_id_and_num = get_id_and_num_bdc_by_uuid_bdc($bdc->uuid);
-        $num_bdc = $bdc_id_and_num['numero_bdc'];
-        $id_bdc = intval($bdc_id_and_num['ID']);
 
-        $pdo_portail = Connection::getPDO();
+        // si on trouve un bdc dans la base
+        if ($bdc_id_and_num) {
 
-        $data_bdc_to_delete = [
-            'id' => $id_bdc
-        ];
+            $num_bdc = $bdc_id_and_num['numero_bdc'];
+            $id_bdc = intval($bdc_id_and_num['ID']);
 
-        $sql = "DELETE FROM suivi_ventes_bdc WHERE ID=:id";
-        $stmt = $pdo_portail->prepare($sql);
-        $stmt->execute($data_bdc_to_delete);
+            $pdo_portail = Connection::getPDO();
 
-        //il faut aussi supprimer tous les vh du BDC
-        $data_vh_liee_bdc_to_delete = [
-            'id' => $id_bdc
-        ];
-        $sql = "DELETE FROM suivi_ventes_vehicules WHERE bdc_id=:id";
-        $stmt = $pdo_portail->prepare($sql);
-        $stmt->execute($data_vh_liee_bdc_to_delete);
+            $data_bdc_to_delete = [
+                'id' => $id_bdc
+            ];
+
+            $sql = "DELETE FROM suivi_ventes_bdc WHERE ID=:id";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data_bdc_to_delete);
+
+            //il faut aussi supprimer tous les vh du BDC
+            $data_vh_liee_bdc_to_delete = [
+                'id' => $id_bdc
+            ];
+            $sql = "DELETE FROM suivi_ventes_vehicules WHERE bdc_id=:id";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data_vh_liee_bdc_to_delete);
+        }
     }
 }
 
