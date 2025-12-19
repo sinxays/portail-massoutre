@@ -2342,29 +2342,32 @@ function delete_facture($array_facture_to_delete)
 {
     foreach ($array_facture_to_delete as $facture) {
         $facture_id_and_num = get_id_and_num_facture_by_uuid_facture($facture->uuid);
-        $num_facture = $facture_id_and_num['numero_facture'];
-        $id_facture = intval($facture_id_and_num['ID']);
 
-        $pdo_portail = Connection::getPDO();
+        if ($facture_id_and_num) {
 
-        $data_facture_to_delete = [
-            'id' => $id_facture
-        ];
+            $num_facture = $facture_id_and_num['numero_facture'];
+            $id_facture = intval($facture_id_and_num['ID']);
 
-        $sql = "DELETE FROM suivi_ventes_factures WHERE ID=:id";
-        $stmt = $pdo_portail->prepare($sql);
-        $stmt->execute($data_facture_to_delete);
+            $pdo_portail = Connection::getPDO();
 
-        //supprimer aussi la valeur facture_id dans vehicule
-        $data_vh_to_tupdate = [
-            'id_facture_null' => NULL,
-            'id_facture' => $id_facture
-        ];
+            $data_facture_to_delete = [
+                'id' => $id_facture
+            ];
 
-        $sql = "UPDATE suivi_ventes_vehicules SET facture_id = :id_facture_null WHERE facture_id=:id_facture";
-        $stmt = $pdo_portail->prepare($sql);
-        $stmt->execute($data_vh_to_tupdate);
+            $sql = "DELETE FROM suivi_ventes_factures WHERE ID=:id";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data_facture_to_delete);
 
+            //supprimer aussi la valeur facture_id dans vehicule
+            $data_vh_to_tupdate = [
+                'id_facture_null' => NULL,
+                'id_facture' => $id_facture
+            ];
+
+            $sql = "UPDATE suivi_ventes_vehicules SET facture_id = :id_facture_null WHERE facture_id=:id_facture";
+            $stmt = $pdo_portail->prepare($sql);
+            $stmt->execute($data_vh_to_tupdate);
+        }
     }
 }
 
