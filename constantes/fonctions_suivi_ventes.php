@@ -2385,7 +2385,7 @@ function update_bdc_canceled($date)
     $j = 1;
     $token = goCurlToken();
     $liste_bdc_canceled = GoCurl_Recup_BDC_canceled($token, $j, $date);
-    print_r($liste_bdc_canceled[0]);
+    print_r($liste_bdc_canceled);
     if ($liste_bdc_canceled) {
         delete_bdc($liste_bdc_canceled);
     }
