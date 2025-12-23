@@ -72,10 +72,11 @@
         
 
         // update_payplan_by_immat("FM173XN");
-        
-        $date = date('Y-m-d', strtotime('-3 day'));
 
-        update_bdc_canceled($date);
+
+        update_id_collaborateur_in_facturesventes();
+        
+         
 
 
 
