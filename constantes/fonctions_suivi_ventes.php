@@ -539,7 +539,7 @@ function GoCurl_Recup_Factures($token, $page, $date = '', $num_facture = '')
 
 }
 
-function GoCurl_Recup_Factures_Canceled($token, $page, $date = '')
+function GoCurl_Recup_Factures_Canceled($token, $page, $date_factures = '')
 {
 
     $ch = curl_init();
@@ -550,23 +550,23 @@ function GoCurl_Recup_Factures_Canceled($token, $page, $date = '')
     $header[] = 'X-Auth-Token:' . $token;
     $header[] = 'Content-Type:text/html;charset=utf-8';
 
-    if (isset($date) && $date !== '') {
+    if (isset($date_factures) && $date_factures !== '') {
         //sur une date
         $dataArray = array(
             "state" => 'invoice.state.canceled',
-            "invoiceDateFrom" => $date,
-            "invoiceDateTo" => $date,
-            "count" => "100",
+            "invoiceDateFrom" => $date_factures,
+            "invoiceDateTo" => $date_factures,
+            "count" => 100,
             "page" => $page
         );
     } else {
         //sinon on prend à J-1
-        $date = date('Y-m-d', strtotime('-1 day'));
+        $date_factures = date('Y-m-d', strtotime('-1 day'));
         $dataArray = array(
-            "state" => 'invoice.state.edit',
-            "invoiceDateFrom" => $date,
-            "invoiceDateTo" => $date,
-            "count" => "100",
+            "state" => 'invoice.state.canceled',
+            "invoiceDateFrom" => $date_factures,
+            "invoiceDateTo" => $date_factures,
+            "count" => 100,
             "page" => $page
         );
     }
@@ -599,6 +599,10 @@ function GoCurl_Recup_Factures_Canceled($token, $page, $date = '')
 
     $obj = json_decode($result);
     return $obj->datas;
+
+
+
+
 }
 
 function getvehiculeInfo($reference, $token, $state, $is_not_available_for_sell = '')
@@ -1713,13 +1717,13 @@ function GoCurl_Recup_BDC_canceled($token, $page, $date_bdc = '')
     }
     //si pas de date alors on prend de début avril à hier
     else {
-        $date = date('Y-m-d', strtotime('-1 day'));
+        $date_bdc = date('Y-m-d', strtotime('-1 day'));
         $dataArray = array(
             "state" => "administrative_selling.state.canceled",
             // "orderFormDateFrom" => "$date_from",
             // "orderFormDateTo" => "$date_to",
-            "updateDateFrom" => "$date",
-            "updateDateTo" => "$date",
+            "updateDateFrom" => "$date_bdc",
+            "updateDateTo" => "$date_bdc",
             "count" => 100,
             "page" => $page
         );
@@ -1744,6 +1748,10 @@ function GoCurl_Recup_BDC_canceled($token, $page, $date_bdc = '')
 
     $result = curl_exec($ch);
 
+    // si ya rien alors ça retourne un string "[]"
+
+    var_dump($result);
+
     if (curl_error($ch)) {
         $result = curl_error($ch);
         print_r($result);
@@ -1751,11 +1759,12 @@ function GoCurl_Recup_BDC_canceled($token, $page, $date_bdc = '')
     }
     curl_close($ch);
 
-    if ($result) {
+    if ($result == "[]") {
+        echo " pas de bdc annulé sur la date du $date_bdc";
+        return False;
+    } else {
         $obj = json_decode($result);
         return $obj->datas;
-    } else {
-        return False;
     }
 
 
@@ -2340,8 +2349,11 @@ function update_factures_canceled($date)
     $j = 1;
     $token = goCurlToken();
     $liste_facture_canceled = GoCurl_Recup_Factures_canceled($token, $j, $date);
+    var_dump($liste_facture_canceled);
     if ($liste_facture_canceled) {
         delete_facture($liste_facture_canceled);
+    } else {
+        echo "pas de factures annulés sur la date du $date";
     }
 }
 
