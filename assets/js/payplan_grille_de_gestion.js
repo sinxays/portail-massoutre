@@ -20,6 +20,10 @@ $(document).ready(function () {
 
     /***** Filtre DATE ******/
     $("#select_date_grille_de_gestion").change(function (e) {
+        fadeOut_grille_de_gestion(200);
+
+        $("#date_debut").val("");
+        $("#date_fin").val("");
 
         let date_select = {};
         date_select['value_selected'] = parseInt($(this).val());
@@ -59,7 +63,7 @@ $(document).ready(function () {
 
     //affichage ou non de date fin selon la valeur de la date début 
     $("#date_debut").change(function (e) {
-        date_debut = $("#date_debut").val();
+        date_debut = this.value;
         date_fin = $("#date_fin").val();
         if (date_debut !== '') {
             $("#div_date_fin").fadeIn(200);
@@ -70,50 +74,53 @@ $(document).ready(function () {
     });
 
 
-    //
-    $("#date_suivi_bdc_fin").change(function (e) {
-        date_debut = $("#date_suivi_bdc_debut").val();
-        date_fin = this.value;
-        tableau_selected = $("#tableau_selected").text();
-
-        $("#btn_valider_date_perso").prop('disabled', false);
+    //au changement sur la date de fin
+    $("#date_fin").change(function (e) {
+        date_fin = this.value
+        if (date_fin !== '') {
+            $("#btn_valider_date_perso").prop('disabled', false);
+        } else {
+            $("#btn_valider_date_perso").prop('disabled', true);
+        }
     });
 
 
 
     $("#btn_valider_date_perso").click(function (e) {
-        date_debut = $("#date_suivi_bdc_debut").val();
-        date_fin = $("#date_suivi_bdc_fin").val();
-        tableau_selected = $("#tableau_selected").text();
+        date_type_selected = $("#select_date_grille_de_gestion").val();
+        date_debut = $("#date_debut").val();
+        date_fin = $("#date_fin").val();
+        collaborateur_selected = $("#select_collaborateur_grille_de_gestion").val();
 
         fadeOut_grille_de_gestion(300);
 
         console.log(date_debut);
         console.log(date_fin);
+        console.log(collaborateur_selected);
 
 
-        let value_dates_perso = {};
-        value_dates_perso['value_selected'] = 2;
-        value_dates_perso['date'] = {}; // Initialiser l'objet 'date'
-        value_dates_perso['date']['date_personnalise_debut'] = date_debut;
-        value_dates_perso['date']['date_personnalise_fin'] = date_fin;
+        let value_dates_perso = {
+            value_selected: date_type_selected,
+            dates: {
+                debut: date_debut,
+                fin: date_fin
+            }
+        };
 
         console.log(value_dates_perso);
 
-        switch (provenance_selected) {
-            case 1:
-            case 2:
-                $.ajax({
-                    url: "/payplan/req/req_tableau_payplan_grille_de_gestion.php",
-                    type: "POST",
-                    data: { type_tableau: provenance_selected, type_date: value_dates_perso },
-                    success: function (data) {
-                        $("#table_payplan_grille_de_gestion").html(data);
-                        fadeIn_grille_de_gestion(200);
-                    }
-                });
-                break;
-        }
+
+        $.ajax({
+            url: "/payplan/req/req_tableau_payplan_grille_de_gestion.php",
+            type: "POST",
+            data: { collaborateur: collaborateur_selected, date: value_dates_perso },
+            success: function (data) {
+                $("#table_payplan_grille_de_gestion").html(data);
+                fadeIn_grille_de_gestion(200);
+            }
+        });
+
+
 
     });
 

@@ -2182,8 +2182,8 @@ function get_payplan_v2_detail_bdc_factures_collaborateur($id_collaborateur, $da
             break;
 
         case 2:
-            $date_debut = $date['value_selected']['debut'];
-            $date_fin = $date['value_selected']['fin'];
+            $date_debut = $date['dates']['debut'];
+            $date_fin = $date['dates']['fin'];
             $filtre_date_bdc = "AND suivi_ventes_bdc.date_bdc BETWEEN '$date_debut' AND '$date_fin'";
             $filtre_date_factures = "AND suivi_ventes_factures.date_facture BETWEEN '$date_debut' AND '$date_fin'";
             break;
@@ -2247,8 +2247,8 @@ function get_payplan_v2_detail_reprises_collaborateur($id_collaborateur, $date)
             break;
 
         case 2:
-            $date_debut = $date['value_selected']['debut'];
-            $date_fin = $date['value_selected']['fin'];
+            $date_debut = $date['dates']['debut'];
+            $date_fin = $date['dates']['fin'];
             $filtre_date_reprises = "AND payplan.date_achat BETWEEN '$date_debut' AND '$date_fin'";
             break;
     }
@@ -2295,8 +2295,8 @@ function get_payplan_v2_detail_garanties_collaborateur($id_collaborateur, $date)
             break;
 
         case 2:
-            $date_debut = $date['value_selected']['debut'];
-            $date_fin = $date['value_selected']['fin'];
+            $date_debut = $date['dates']['debut'];
+            $date_fin = $date['dates']['fin'];
             $filtre_date_garantie = "AND facturesventes.date_facture BETWEEN '$date_debut' AND '$date_fin'";
             break;
     }
@@ -2340,8 +2340,8 @@ function get_payplan_v2_detail_packfirst_collaborateur($id_collaborateur, $date)
             break;
 
         case 2:
-            $date_debut = $date['value_selected']['debut'];
-            $date_fin = $date['value_selected']['fin'];
+            $date_debut = $date['dates']['debut'];
+            $date_fin = $date['dates']['fin'];
             $filtre_date_garantie = "AND facturesventes.date_facture BETWEEN '$date_debut' AND '$date_fin'";
             break;
     }
