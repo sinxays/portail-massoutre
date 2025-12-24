@@ -148,7 +148,7 @@ $shop_exterieurs_table_header_row = array("Immatriculation", "Modele", "MVA", "K
 
 $traqueurs_table_header_row = array("Immatriculation", "S/N", "Imei", "Sim", "Type", "MVA", "Installation", "MAJ site", "Montage", "Nom", "Position", "OBD", "Nom", "Soudure");
 
-$liste_traqueurs_table_header_row = array("S/N", "Imei", "Actif", "Monté");
+$liste_traqueurs_table_header_row = array("S/N", "Imei", "Actif", "Monté", "Exporté");
 
 $imprimantes_table_header_row = array(
     "N° Série",
@@ -183,4 +183,16 @@ $liste_telephonique_header_agence_row = array(
     "Service",
     "Numero Service",
     "Numero court service"
+);
+
+
+$payplan_v2_table_header_row = array(
+    "Vendeur",
+    "BDC",
+    "Factures",
+    "Nb reprises",
+    "Financement",
+    "Asssurances",
+    "Montant total financé",
+    "mise à la route",
 );

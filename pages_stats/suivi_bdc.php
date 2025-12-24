@@ -28,7 +28,7 @@
         <div class="header__container">
             <img src="../assets/img/perfil.jpg" alt="" class="header__img">
 
-            <a href="#" class="header__logo">  </a>
+            <a href="#" class="header__logo"> </a>
 
             <div class="header__toggle">
                 <i class='bx bx-menu' id="header-toggle"></i>
@@ -122,8 +122,6 @@
 
             <button disabled type="button" class="btn btn-success" style="text-align: center;margin-left: 10px;"
                 id="btn_alimenter_suivi_ventes_bdc"><span>Recup BDC & Factures</span> </button>
-
-
         </div>
 
 

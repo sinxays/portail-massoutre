@@ -3,15 +3,26 @@
 include "../../../include.php";
 
 // var_dump($_POST);
+// die();
 
-if (isset($_POST["input_immat"])) {
-    $immat_to_search = $_POST["input_immat"];
-    $filtre['filtre']["immatriculation"] = $immat_to_search;
-    $table_traqueurs = create_table_montage_traqueurs($traqueurs_table_header_row, $filtre);
-} else if (isset($_POST["input_mva"])) {
-    $mva_to_search = $_POST["input_mva"];
-    $filtre['filtre']["mva"] = $mva_to_search;
-    $table_traqueurs = create_table_montage_traqueurs($traqueurs_table_header_row, $filtre);
+if (isset($_POST) && !empty($_POST)) {
+
+    $value = $_POST['value'];
+
+    switch ($_POST['type_filtre']) {
+        case 'immatriculation':
+            $filtre['filtre']["immatriculation"] = $value;
+            $table_traqueurs = create_table_montage_traqueurs($traqueurs_table_header_row, $filtre);
+            break;
+        case 'mva':
+            $filtre['filtre']["mva"] = $value;
+            $table_traqueurs = create_table_montage_traqueurs($traqueurs_table_header_row, $filtre);
+            break;
+        case 'sn':
+            $filtre['filtre']["sn"] = $value;
+            $table_traqueurs = create_table_montage_traqueurs($traqueurs_table_header_row, $filtre);
+            break;
+    }
 } else {
     //par défaut
     $table_traqueurs = create_table_montage_traqueurs($traqueurs_table_header_row);
@@ -19,3 +30,4 @@ if (isset($_POST["input_immat"])) {
 
 
 echo $table_traqueurs;
+

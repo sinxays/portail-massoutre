@@ -71,12 +71,13 @@ function alimenter_suivi_ventes_bdc_via_portail($date)
                 'nom_vendeur' => $vendeur_id,
                 'dateBC' => $bdc['date_dernier_bdc'],
                 'destination_sortie' => $destination_sortie,
-                'uuid' => $uuid_bdc
+                'uuid' => $uuid_bdc,
+                'is_invoiced' => 0
             ];
 
 
-            $sql = "INSERT INTO suivi_ventes_bdc (numero_bdc,nom_acheteur,prix_vente_ht,prix_vente_ttc,vendeur_id,date_bdc,destination_vente,uuid) 
-            VALUES (:num_bdc, :nom_acheteur,:prixTotalHT, :prixTTC,:nom_vendeur, :dateBC,:destination_sortie, :uuid)";
+            $sql = "INSERT INTO suivi_ventes_bdc (numero_bdc,nom_acheteur,prix_vente_ht,prix_vente_ttc,vendeur_id,date_bdc,destination_vente,uuid,is_invoiced) 
+            VALUES (:num_bdc, :nom_acheteur,:prixTotalHT, :prixTTC,:nom_vendeur, :dateBC,:destination_sortie, :uuid, :is_invoiced)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($data_bdc);
             $id_bdc_last_inserted = $pdo->lastInsertId();

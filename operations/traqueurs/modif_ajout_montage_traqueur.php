@@ -78,6 +78,14 @@
             <i class='bx bx-left-arrow-circle bx-md'></i><span>Retour</span>
         </div>
 
+        <?php
+        if (isset($details_traqueur['ID_montage']) && !is_null($details_traqueur['ID_montage'])) {
+            echo "<div class='div_demontage_modif' id='div_bouton_demontage_modif_traqueur'>";
+            echo "<button type='button' class='btn btn-danger' id='btn_modif_demontage_traqueur'>Démonter</button>";
+            echo "</div>";
+        }
+        ?>
+
         <div class="container_form_modif_lecture_shop_ext">
             <form id="form_ajout_montage_traqueur">
 
@@ -222,11 +230,11 @@
             <!-- Si c'est un nouveau montage ou une modification d'un montage existant on affiche le bouton de modif ou de création-->
             <?php
             if (isset($details_traqueur['ID_montage']) && !is_null($details_traqueur['ID_montage'])) {
-                echo "<div class='div_validation_modif' id='div_bouton_update_modif_traqueur'>";
+                echo "<div class='div_validation_modif'>";
                 echo "<button type='button' class='btn btn-success' id='btn_modif_montage_traqueur'>Enregistrer</button>";
                 echo "</div>";
             } else {
-                echo "<div class='div_validation_modif' id='div_bouton_creer_montage_traqueur'>";
+                echo "<div class='div_validation_modif'>";
                 echo "<button type='button' class='btn btn-success' id='btn_create_montage_traqueur'>Créer Montage</button>";
                 echo "</div>";
 

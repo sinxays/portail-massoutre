@@ -83,12 +83,27 @@
                         </div>
                     </div>
 
-                    <a href=/payplan/payplan.php class="nav__link">
+                    <div class="nav__dropdown">
+                        <a href="#" class="nav__link" id="bouton_payplan">
+                        <i class='bx bx-money-withdraw'></i>
+                            <span class="nav__name">Payplan</span>
+                            <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
+                        </a>
+                        <div class="nav__dropdown-collapse">
+                            <div class="nav__dropdown-content">
+                                <a href="/payplan/payplan.php"
+                                    class="nav__dropdown-item">Payplan</a>
+                                <a href="/payplan/grille_de_gestion.php" class="nav__dropdown-item">Grille de gestion</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <a href=/payplan/payplan.php class="nav__link">
                         <i class='bx bx-money-withdraw'></i>
                         <span class="nav__name">Payplan</span>
-                    </a>
+                    </a> -->
 
-                    <div class="nav__dropdown">
+                    <!-- <div class="nav__dropdown">
                         <a href="#" class="nav__link" id="bouton_planning">
                             <i class='bx bxs-car'></i>
                             <span class="nav__name">Lease & GO</span>
@@ -100,7 +115,7 @@
                                 <a href="#" class="nav__dropdown-item">Marges par VH</a>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 

@@ -31,24 +31,4 @@ switch ($key) {
 }
 
 
-// if (isset($_POST["input_imei"])) {
-//     $imei = $_POST["input_imei"];
-//     $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, $imei, '');
-// } else if (isset($_POST["input_sim"])) {
-//     $sim = $_POST["input_sim"];
-//     $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, '', '', $sim);
-// } else if (isset($_POST["input_sn"])) {
-//     $sn = $_POST["input_sn"];
-//     $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, '', $sn, '');
-// } else if (isset($_POST["select_actif_traqueur"])) {
-//     $actif = $_POST["select_actif_traqueur"];
-//     $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row, '', $sn, '');
-// } else {
-//     //par défaut on prend les non archivés donc 0 à la fin 
-//     $table_traqueurs = create_table_liste_traqueurs($liste_traqueurs_table_header_row);
-// }
-
-
-
-
 echo $table_traqueurs;

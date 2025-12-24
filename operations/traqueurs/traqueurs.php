@@ -67,6 +67,10 @@
                         <label for="mva_input">MVA</label>
                         <input type="text" class="form-control" id="mva_input" placeholder="MVA">
                     </div>
+                    <div id="div_shop_ext_1_2">
+                        <label for="serialnumber_input">S/N</label>
+                        <input type="text" class="form-control" id="serialnumber_input" placeholder="S/N">
+                    </div>
                 </div>
                 <div id="div_shop_ext_2">
                     <div id="div_shop_ext_2_1">

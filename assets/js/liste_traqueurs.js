@@ -97,6 +97,7 @@ $(document).ready(function () {
 
     $("#select_actif_traqueur").change(function (e) {
         let select_actif_traqueur = $(this).val();
+        $("#table_liste_traqueurs").html('');
         loader.show();
         console.log(select_actif_traqueur);
 
@@ -145,6 +146,41 @@ $(document).ready(function () {
             error: function () {
                 $("#alert_shop_ext_modif_fail").show(300);
             }
+        });
+    });
+
+
+    //export maj site traqueurs
+    $('#btn_export_maj_site').click(function () {
+        $.ajax({
+            url: '/operations/traqueurs/req/export_maj_site.php',
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob',
+            },
+            success: function (data, status, xhr) {
+                const contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                let filename = 'export_maj_site.xlsx'; // Valeur par défaut
+
+                if (contentDisposition) {
+                    const matches = contentDisposition.match(/filename="([^"]+)"/);
+                    if (matches && matches[1]) {
+                        filename = matches[1];
+                    }
+                }
+
+                const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+            error: function (xhr, status, error) {
+                alert('Erreur lors de l\'exportation : ' + error);
+            },
         });
     });
 

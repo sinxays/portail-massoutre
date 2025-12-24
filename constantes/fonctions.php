@@ -2206,17 +2206,17 @@ function get_payplan_v2_detail_bdc_factures_collaborateur($id_collaborateur, $da
     //si on selectionne le total de tous les collaborateurs
     else {
 
-        $request = $pdo->query("SELECT cp.ID,cp.nom,cp.prenom,COUNT(vendeur_id) as nb_bdc FROM suivi_ventes_bdc 
+        $request = $pdo->query("SELECT cp.ID as id_collaborateur_payplan,cp.nom,cp.prenom,COUNT(vendeur_id) as nb_bdc FROM suivi_ventes_bdc 
         LEFT JOIN collaborateurs_payplan as cp ON cp.ID = suivi_ventes_bdc.vendeur_id 
         WHERE vendeur_id is not null $filtre_final_bdc 
-        GROUP BY vendeur_id;");
+        GROUP BY vendeur_id");
 
         $result_nb_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
 
-        $request = $pdo->query("SELECT cp.ID,cp.nom,cp.prenom,COUNT(id_vendeur) as nb_factures FROM suivi_ventes_factures
+        $request = $pdo->query("SELECT cp.ID as id_collaborateur_payplan,cp.nom,cp.prenom,COUNT(id_vendeur) as nb_factures FROM suivi_ventes_factures
         LEFT JOIN collaborateurs_payplan as cp ON cp.ID = suivi_ventes_factures.id_vendeur
         WHERE id_vendeur is not null $filtre_final_factures
-        GROUP BY id_vendeur;");
+        GROUP BY id_vendeur");
         $result_nb_factures = $request->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -2264,7 +2264,7 @@ function get_payplan_v2_detail_reprises_collaborateur($id_collaborateur, $date)
     }
     //si on selectionne le total de tous les collaborateurs
     else {
-        $request = $pdo->query("SELECT cp.ID,cp.nom,cp.prenom,COUNT(payplan.ID) as nb_reprises FROM payplan 
+        $request = $pdo->query("SELECT cp.ID as id_collaborateur_payplan,cp.nom,cp.prenom,COUNT(payplan.ID) as nb_reprises FROM payplan 
         LEFT JOIN collaborateurs_payplan as cp ON cp.ID = payplan.acheteur_collaborateur_id 
         WHERE acheteur_collaborateur_id is not null $filtre_final_reprises 
         GROUP BY acheteur_collaborateur_id;");
@@ -2306,20 +2306,64 @@ function get_payplan_v2_detail_garanties_collaborateur($id_collaborateur, $date)
     $pdo = Connection::getPDO();
     #si on a choisit un collaborateur particulier
     if ($id_collaborateur !== 0) {
-        $request = $pdo->query("SELECT SUM(prix_ht_garantie) as cumul_prix_ht_garantie, FROM facturesventes 
-        WHERE acheteur_collaborateur_id = $id_collaborateur $filtre_final_garantie");
+        $request = $pdo->query("SELECT id_collaborateur_payplan as ID,COUNT(ID) as nb_garanties , SUM(prix_ht_garantie) as cumul_prix_ht_garantie FROM facturesventes 
+        WHERE id_collaborateur_payplan = $id_collaborateur AND garantie = 1 $filtre_final_garantie");
         $result_garanties = $request->fetch(PDO::FETCH_ASSOC);
     }
     //si on selectionne le total de tous les collaborateurs
     else {
-        $request = $pdo->query("SELECT cp.ID,cp.nom,cp.prenom,COUNT(payplan.ID) as nb_reprises FROM payplan 
-        LEFT JOIN collaborateurs_payplan as cp ON cp.ID = payplan.acheteur_collaborateur_id 
-        WHERE acheteur_collaborateur_id is not null $filtre_final_garantie 
-        GROUP BY acheteur_collaborateur_id;");
-
+        $request = $pdo->query("SELECT id_collaborateur_payplan ,COUNT(facturesventes.ID) as nb_garanties, SUM(facturesventes.prix_ht_garantie) as cumul_prix_ht_garantie FROM facturesventes 
+        LEFT JOIN collaborateurs_payplan as cp ON cp.ID = facturesventes.id_collaborateur_payplan 
+        WHERE id_collaborateur_payplan  is not null AND garantie = 1 $filtre_final_garantie 
+        GROUP BY id_collaborateur_payplan");
         $result_garanties = $request->fetchAll(PDO::FETCH_ASSOC);
     }
     return $result_garanties;
+}
+
+function get_payplan_v2_detail_packfirst_collaborateur($id_collaborateur, $date)
+{
+    $date_mois_en_cours = date("Y-m-01");
+    $filtre_date_initial_garanties = "AND facturesventes.date_facture >= '$date_mois_en_cours' ";
+
+    switch ($date['value_selected']) {
+        #mois en cours
+        case 0:
+            $filtre_date_garantie = "AND facturesventes.date_facture >= '$date_mois_en_cours'";
+            break;
+        #mois precédent
+        case 1:
+            $previous_month = get_previous_month_and_his_last_day();
+            $first = $previous_month['first'];
+            $last = $previous_month['last'];
+            $filtre_date_garantie = "AND facturesventes.date_facture BETWEEN '$first' AND '$last'";
+            break;
+
+        case 2:
+            $date_debut = $date['value_selected']['debut'];
+            $date_fin = $date['value_selected']['fin'];
+            $filtre_date_garantie = "AND facturesventes.date_facture BETWEEN '$date_debut' AND '$date_fin'";
+            break;
+    }
+
+    $filtre_final_garantie = (isset($filtre_date_garantie) && $filtre_date_garantie !== '') ? $filtre_date_garantie : $filtre_date_initial_garanties;
+
+    $pdo = Connection::getPDO();
+    #si on a choisit un collaborateur particulier
+    if ($id_collaborateur !== 0) {
+        $request = $pdo->query("SELECT id_collaborateur_payplan,COUNT(ID) as nb_pack_first FROM facturesventes 
+        WHERE id_collaborateur_payplan = $id_collaborateur AND pack_first = 1 $filtre_final_garantie");
+        $result_pack_first = $request->fetch(PDO::FETCH_ASSOC);
+    }
+    //si on selectionne le total de tous les collaborateurs
+    else {
+        $request = $pdo->query("SELECT cp.ID as id_collaborateur_payplan ,COUNT(facturesventes.ID) as nb_pack_first FROM facturesventes 
+        LEFT JOIN collaborateurs_payplan as cp ON cp.ID = facturesventes.id_collaborateur_payplan 
+        WHERE facturesventes.id_collaborateur_payplan  is not null AND pack_first = 1 $filtre_final_garantie 
+        GROUP BY facturesventes.id_collaborateur_payplan");
+        $result_pack_first = $request->fetchAll(PDO::FETCH_ASSOC);
+    }
+    return $result_pack_first;
 }
 
 

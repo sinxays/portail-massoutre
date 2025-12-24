@@ -490,6 +490,30 @@ function create_table_payplan_detail_reprise_collaborateur($header, $array_detai
     return $table_collaborateur_payplan_detail;
 }
 
+function create_table_payplan_grille_de_gestion($header, $array_detail_payplan_v2)
+{
+    $table_collaborateur_payplan_detail = "";
+
+    $table_collaborateur_payplan_detail .= create_header_row($header);
+
+    //contenu
+    foreach ($array_detail_payplan_v2 as $detail_payplan_v2) {
+        $table_collaborateur_payplan_detail .= "<tr>";
+        $table_collaborateur_payplan_detail .= "<td class='td_nom_complet_grille_gestion'>" . $detail_payplan_v2['prenom'] . " " . $detail_payplan_v2['nom'] . "  </td>";
+        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan_v2['nb_bdc'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan_v2['nb_factures'] . " </td>";
+
+        $table_collaborateur_payplan_detail .= "<td> " . $detail_payplan_v2['nb_reprises'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td> 0 </td>";
+        $table_collaborateur_payplan_detail .= "<td> " . $detail_payplan_v2['nb_garanties'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td> " . $detail_payplan_v2['cumul_prix_ht_garanties'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td> " . $detail_payplan_v2['nb_pack_first'] . " </td>";
+
+        $table_collaborateur_payplan_detail .= "</tr>";
+    }
+    //fin contenu
+    return $table_collaborateur_payplan_detail;
+}
 function create_table_payplan_detail_achat_collaborateur($header, $array_detail_payplan)
 {
     $table_collaborateur_payplan_detail = "";
@@ -1146,7 +1170,7 @@ function create_table_montage_traqueurs($header, $filtre = '')
         $table_traqueurs .= "<td class='td_n'> " . $traqueur['type'] . " </td>";
         $table_traqueurs .= "<td class='td_n'> " . $traqueur['mva'] . " </td>";
         $table_traqueurs .= "<td class='td_n'> " . $traqueur['date_installation'] . " </td>";
-        $table_traqueurs .= "<td class='td_n'> " . $traqueur['date_maj_site'] . " </td>";
+        $table_traqueurs .= "<td class='td_n'> " . $traqueur['date_export_maj_site'] . " </td>";
         $table_traqueurs .= "<td class='td_n' style='width:150px;'> " . $traqueur['montage'] . " </td>";
         $table_traqueurs .= "<td class='td_n'> " . $traqueur['montage_nom'] . " </td>";
         $table_traqueurs .= "<td class='td_n' style='width:350px;'> " . $traqueur['montage_position'] . " </td>";
@@ -1197,20 +1221,51 @@ function create_table_liste_traqueurs($header, $filtre = '')
         $table_traqueurs .= "<td class='td_n' style='width:250px;'> " . $traqueur['imei'] . " </td>";
         // $table_traqueurs .= "<td class='td_n' style='width:250px;'> " . $traqueur['sim'] . " </td>";
 
-        if ($traqueur['actif'] == 1) {
-            $table_traqueurs .= "<td class='td_n'>  Actif  </td>";
-            $table_traqueurs .= "<td class='td_n'> OUI </td>";
-        } else {
-            $table_traqueurs .= "<td class='td_n'>  Inactif  </td>";
-            $table_traqueurs .= "<td class='td_n'> NON </td>";
-        }
-        $table_traqueurs .= "<td class='td_n' style='width:50px'>";
-        $table_traqueurs .= "<a href='modif_ajout_montage_traqueur.php?id=" . $traqueur['ID'] . "' >
-        <button type='button' class='btn btn-success btn-sm'> Montage </button>
-        </a>";
-        // $table_traqueurs .= "<a title='lecture en détail' href='lecture_shop_exterieur.php?id=" . $shop_ext['ID'] . "'><box-icon name='file-find'></box-icon></a>";
+        switch ($traqueur['actif']) {
+            case 1:
+                $table_traqueurs .= "<td class='td_vert'>  Actif  </td>";
+                break;
 
-        $table_traqueurs .= "</td>";
+            default:
+                $table_traqueurs .= "<td class='td_rouge'>  Inactif  </td>";
+                break;
+        }
+
+        $traqueur_monte = check_traqueur_if_monte($traqueur['ID']);
+
+        switch ($traqueur_monte) {
+            case true:
+                $table_traqueurs .= "<td class='td_vert'> OUI </td>";
+                break;
+
+            default:
+                $table_traqueurs .= "<td class='td_rouge'> NON </td>";
+                break;
+        }
+
+        switch ($traqueur['export']) {
+            case 1:
+                $table_traqueurs .= "<td class='td_vert'>  OUI  </td>";
+                break;
+
+            default:
+                $table_traqueurs .= "<td class='td_rouge'>  NON  </td>";
+                break;
+        }
+
+        if ($traqueur_monte) {
+            $table_traqueurs .= "<td class='td_n' style='width:50px'>";
+            $table_traqueurs .= "<a href='modif_ajout_montage_traqueur.php?id=" . $traqueur['ID'] . "' > <button type='button' class='btn btn-warning btn-sm' style='color:red;font-weight:bold'> Modifier </button> </a>";
+            // $table_traqueurs .= "<a title='lecture en détail' href='lecture_shop_exterieur.php?id=" . $shop_ext['ID'] . "'><box-icon name='file-find'></box-icon></a>";
+            $table_traqueurs .= "</td>";
+        } else {
+            $table_traqueurs .= "<td class='td_n' style='width:50px'>";
+            $table_traqueurs .= "<a href='modif_ajout_montage_traqueur.php?id=" . $traqueur['ID'] . "' > <button type='button' class='btn btn-success btn-sm' style='font-weight:bold'> Montage </button> </a>";
+            // $table_traqueurs .= "<a title='lecture en détail' href='lecture_shop_exterieur.php?id=" . $shop_ext['ID'] . "'><box-icon name='file-find'></box-icon></a>";
+            $table_traqueurs .= "</td>";
+        }
+
+
 
         $table_traqueurs .= "</tr>";
     }

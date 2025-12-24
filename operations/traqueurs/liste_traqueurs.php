@@ -63,6 +63,25 @@
             <i class='bx bx-left-arrow-circle bx-md'></i><span>Retour</span>
         </div>
 
+        <div id="div_upload_traqueurs">
+            <div style="width: 550px;">
+                <form action="upload_csv_traqueurs.php" method="post" enctype="multipart/form-data" id="csvForm">
+                    <span>Importer un CSV traqueurs (séparateur ";")</span>
+                    <!-- Icône avec Tooltip -->
+                    <div class="icon-help">
+                        ❓
+                        <!-- Vous pouvez remplacer ce caractère par une icône d'une bibliothèque comme Font Awesome -->
+                        <div class="tooltip">Colonnes : <br /> 1 : S/N <br /> 2 : IMEI <br /> 3 : SIM </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="file" class="form-control" aria-label="Upload" name="csv_file" id="csv_file"
+                            accept=".csv" required>
+                        <button class="btn btn-primary" type="submit" disabled="disabled" id="btn_submit_csv"
+                            name="import_csv">Importer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
 
         <div class="my_form_shop_ext">
@@ -79,16 +98,22 @@
                         <label for="imei_input">IMEI</label>
                         <input type="text" class="form-control" id="imei_input" placeholder="imei" name="imei">
                     </div>
-                    <!-- <div id="div_shop_ext_1_2">
-                        <label for="sim_input">SIM</label>
-                        <input type="text" class="form-control" id="sim_input" placeholder="sim" name="sim">
-                    </div> -->
+                    <div id="div_shop_ext_1_2" hidden>
+                        <label for="immatriculation_input">Immatriculation(non actif)</label>
+                        <input type="text" class="form-control" id="immatriculation_input" placeholder="XXXXXX"
+                            name="immatriculation">
+                    </div>
+                    <div id="div_shop_ext_1_2" hidden>
+                        <label for="mva_input">MVA(non actif)</label>
+                        <input type="text" class="form-control" id="mva_input" placeholder="mva" name="va">
+                    </div>
 
                     <div id="div_shop_ext_1_2">
                         <label for="select_actif_traqueur">Actif</label>
                         <select class="form-select" id="select_actif_traqueur" name="select_actif_traqueur">
-                            <option value='0'> Non </option>
-                            <option value='1'> Oui </option>
+                            <option value="100" selected> Tous </option>
+                            <option value="0"> Non </option>
+                            <option value="1"> Oui </option>
                         </select>
                     </div>
 
@@ -96,11 +121,7 @@
                 </div>
 
 
-
-
-
                 <div id="div_shop_ext_2">
-
                     <div class="div_barre_filtre_element">
                         <button type="button" class="btn btn-primary" id="btn_ajout_montage_traqueur"
                             data-bs-toggle="modal" data-bs-target="#modal_ajout_montage_traqueur"
@@ -108,17 +129,10 @@
                             Créer montage manuel </button>
                     </div>
 
-
-
-                    <form action="upload_csv_traqueurs.php" method="post" enctype="multipart/form-data" id="csvForm">
-                        <span>Importer un CSV traqueurs (séparateur ";")</span>
-                        <div class="input-group">
-                            <input type="file" class="form-control" aria-label="Upload" name="csv_file" id="csv_file"
-                                accept=".csv" required>
-                            <button class="btn btn-primary" type="submit" disabled="disabled" id="btn_submit_csv"
-                                name="import_csv">Importer</button>
-                        </div>
-                    </form>
+                    <div class="div_barre_filtre_element">
+                        <button type="button" class="btn btn-danger" id="btn_export_maj_site">
+                            Export pour MAJ SITE </button>
+                    </div>
                 </div>
             </div>
 

@@ -26,8 +26,9 @@ if (isset($_POST)) {
                 // Nettoyage des données CSV
                 $serial_number = isset($data[0]) ? trim($data[0]) : '';
                 $imei = isset($data[1]) ? trim($data[1]) : '';
+                $sim = isset($data[2]) ? trim($data[2]) : '';
 
-                insert_traqueur($serial_number, $imei);
+                insert_traqueur($serial_number, $imei,$sim);
             }
             // Fermer le fichier après traitement
             fclose($handle);

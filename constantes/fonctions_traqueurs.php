@@ -43,12 +43,10 @@ function ajouter_montage_traqueur($datas)
         'position' => $datas['position'],
         'obd' => $datas['obd'],
         'obd_nom_monteur' => $datas['nom_monteur_obd'],
-        'soudure' => $datas['soudure'],
-        'actif' => 1
-
+        'soudure' => $datas['soudure']
     ];
-    $sql = "INSERT INTO geoloc_montage (id_traqueur,id_vehicule,date_installation,date_maj_site,montage,montage_nom,montage_position,obd,obd_nom,soudure,actif) 
-    VALUES (:id_traqueur, :id_vehicule, :date_installation,:date_maj_site,:lieu_montage,:nom_monteur,:position,:obd,:obd_nom_monteur,:soudure,:actif)";
+    $sql = "INSERT INTO geoloc_montage (id_traqueur,id_vehicule,date_installation,date_maj_site,montage,montage_nom,montage_position,obd,obd_nom,soudure) 
+    VALUES (:id_traqueur, :id_vehicule, :date_installation,:date_maj_site,:lieu_montage,:nom_monteur,:position,:obd,:obd_nom_monteur,:soudure)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data_montage);
 
@@ -62,11 +60,13 @@ function get_liste_traqueurs($filtre = '')
     if (isset($filtre) && !empty($filtre)) {
         // Extraire la clé du tableau 'filtre'
         $cle = key($filtre['filtre']); // Retourne le type de filtre 
-        $value = $filtre['filtre'][$cle]; // retourne la valeur du filtre 
+        $value = $filtre['filtre'][$cle]; // retourne la valeur du filtre
 
         switch ($cle) {
             case 'actif':
-                $where = "WHERE actif = $value";
+                if ($value !== '100') {
+                    $where = "WHERE actif = $value";
+                }
                 break;
             case 'serial_number':
                 $where = "WHERE serial_number LIKE '%$value%'";
@@ -81,8 +81,6 @@ function get_liste_traqueurs($filtre = '')
                 break;
         }
     }
-
-
 
     $pdo = Connection::getPDO();
 
@@ -109,23 +107,25 @@ function get_details_traqueur($id)
     return $traqueur;
 }
 
-function insert_traqueur($serial_number, $imei)
-{ // Préparer la requête d'insertion SQL
-
+function insert_traqueur($serial_number, $imei, $sim)
+{
     $pdo = Connection::getPDO();
 
+    //on check d'abord si il existe déja dans la base
+    $check_traqueur = check_if_exist_traqueur_by_sn($serial_number);
 
-    //on ajoute d'abord dans la table traqueur
-    $datas_traqueur = [
-        'serial_number' => $serial_number,
-        'imei' => $imei,
-        'actif' => 0
-    ];
-
-
-    $sql = "INSERT INTO geoloc_traqueurs (serial_number,imei,actif) VALUES (:serial_number, :imei,:actif)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($datas_traqueur);
+    if (!$check_traqueur) {
+        //on ajoute d'abord dans la table traqueur
+        $datas_traqueur = [
+            'serial_number' => $serial_number,
+            'imei' => $imei,
+            'sim' => $sim,
+            'actif' => 0
+        ];
+        $sql = "INSERT INTO geoloc_traqueurs (serial_number,imei,sim,actif) VALUES (:serial_number, :imei,:sim,:actif)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($datas_traqueur);
+    }
 
 }
 
@@ -158,11 +158,10 @@ function update_create_montage_traqueur($data, $type)
                 'position_montage' => $data['position_montage'],
                 'obd' => $data['obd'],
                 'nom_obd' => $data['nom_obd'],
-                'soudure' => $data['soudure'],
-                'actif' => 1
+                'soudure' => $data['soudure']
             ];
-            $sql = "INSERT INTO geoloc_montage(id_traqueur,id_vehicule,date_installation,date_maj_site,montage,montage_nom,montage_position,obd,obd_nom,soudure,actif) 
-            VALUES (:traqueur_id, :vehicule_id,:date_installation,:date_maj_site,:lieu_montage,:nom_monteur,:position_montage,:obd,:nom_obd,:soudure,:actif)";
+            $sql = "INSERT INTO geoloc_montage(id_traqueur,id_vehicule,date_installation,date_maj_site,montage,montage_nom,montage_position,obd,obd_nom,soudure) 
+            VALUES (:traqueur_id, :vehicule_id,:date_installation,:date_maj_site,:lieu_montage,:nom_monteur,:position_montage,:obd,:nom_obd,:soudure)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($datas_to_insert);
 
@@ -189,6 +188,20 @@ function update_create_montage_traqueur($data, $type)
 
 }
 
+function get_liste_traqueurs_to_export_maj_site()
+{
+    $pdo = Connection::getPDO();
+
+    $request = $pdo->query("SELECT gt.ID,gt.serial_number,gt.imei,gt.sim,gv.immatriculation,gv.type,gv.mva,gm.date_installation
+    FROM geoloc_traqueurs AS gt
+    LEFT JOIN geoloc_montage AS gm ON gt.ID = gm.id_traqueur
+    LEFT JOIN geoloc_vehicules AS gv ON gv.ID = gm.id_vehicule
+    WHERE gt.actif = 1 AND gt.export = 0 ");
+    $traqueurs = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    return $traqueurs;
+}
+
 function get_liste_montage_traqueurs($filtre = '')
 {
     $where = '';
@@ -200,10 +213,14 @@ function get_liste_montage_traqueurs($filtre = '')
 
         switch ($cle) {
             case 'immatriculation':
-                $where = "WHERE actif = $value";
+                $where = "WHERE gv.immatriculation LIKE '%$value%'";
                 break;
             case 'mva':
-                $where = "WHERE serial_number LIKE '%$value%'";
+                $where = "WHERE gv.mva LIKE '%$value%'";
+                break;
+
+            case 'sn':
+                $where = "WHERE gt.serial_number LIKE '%$value%'";
                 break;
 
             // par défaut prendre tout les actifs/inactifs
@@ -224,4 +241,45 @@ function get_liste_montage_traqueurs($filtre = '')
 
     return $result_liste;
 
+}
+
+function check_if_exist_traqueur_by_sn($sn)
+{
+    $pdo = Connection::getPDO();
+
+    $request = $pdo->query("SELECT * FROM geoloc_traqueurs WHERE serial_number = '$sn'");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+
+    if ($result) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function check_traqueur_if_monte($id_traqueur)
+{
+    $pdo = Connection::getPDO();
+
+    $request = $pdo->query("SELECT gt.actif FROM geoloc_montage as gm
+    LEFT JOIN geoloc_traqueurs AS gt ON gt.ID = gm.id_traqueur
+    WHERE gt.ID = $id_traqueur");
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+
+    if ($result) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function set_export_traqueur($traqueur_id)
+{
+
+    $pdo = Connection::getPDO();
+
+    // update export à 1
+    $sql = "UPDATE geoloc_traqueurs SET export = 1,date_export_maj_site = NOW()  WHERE ID = " . $traqueur_id;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
 }

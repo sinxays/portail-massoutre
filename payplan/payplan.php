@@ -198,10 +198,17 @@
 
         </br>
 
+        <div class="elements_in_row">
+            <div id="btn_exporter">
+                <!-- <a href="req/export.php"><i class='bx bxs-file-export bx-md'></i><span id='label_export'>Exporter</span></a> -->
+                <i class='bx bxs-file-export bx-md'></i><span id='label_export'>Exporter</span>
+            </div>
 
-        <div id="btn_exporter">
-            <!-- <a href="req/export.php"><i class='bx bxs-file-export bx-md'></i><span id='label_export'>Exporter</span></a> -->
-            <i class='bx bxs-file-export bx-md'></i><span id='label_export'>Exporter</span>
+            <button type="button" class="btn btn-danger" style="text-align: center;margin-left: 50px;"
+                id="btn_details_par_vendeur"><a href="payplan_v2.php"
+                    style="color:white"><span>Grille de Gestion</span></a>
+            </button>
+
         </div>
 
         <div class="div_tableau_payplan">
