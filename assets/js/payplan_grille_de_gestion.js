@@ -11,12 +11,8 @@ $(document).ready(function () {
         data: { collaborateur: 0, date: date_select },
         success: function (data) {
             $("#table_payplan_grille_de_gestion").html(data);
-            // $("#table_stats_suivi_bdc_all").html(parsed['tableau_suivi_bdc_all']);
-            // $("#table_stats_suivi_bdc_particuliers").html(data);
-
         }
     });
-
 
     /***** Filtre DATE ******/
     $("#select_date_grille_de_gestion").change(function (e) {
@@ -54,10 +50,6 @@ $(document).ready(function () {
                 }
             });
         }
-
-
-
-
     });
 
 
@@ -84,8 +76,6 @@ $(document).ready(function () {
         }
     });
 
-
-
     $("#btn_valider_date_perso").click(function (e) {
         date_type_selected = $("#select_date_grille_de_gestion").val();
         date_debut = $("#date_debut").val();
@@ -109,7 +99,6 @@ $(document).ready(function () {
 
         console.log(value_dates_perso);
 
-
         $.ajax({
             url: "/payplan/req/req_tableau_payplan_grille_de_gestion.php",
             type: "POST",
@@ -119,9 +108,6 @@ $(document).ready(function () {
                 fadeIn_grille_de_gestion(200);
             }
         });
-
-
-
     });
 
     function fadeOut_grille_de_gestion(ms) {

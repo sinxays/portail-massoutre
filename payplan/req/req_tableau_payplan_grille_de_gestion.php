@@ -11,6 +11,8 @@ if (isset($_POST['collaborateur']) && $_POST['collaborateur'] !== '') {
 
         $date = $_POST['date'];
 
+
+        // j'affiche dans le tableau uniquement les collaborateurs actif et avec au moins un BDC
         $payplan_v2_bdc_factures = get_payplan_v2_detail_bdc_factures_collaborateur($id_collaborateur, $date);
         $payplan_v2_reprises = get_payplan_v2_detail_reprises_collaborateur($id_collaborateur, $date);
         $payplan_v2_garanties = get_payplan_v2_detail_garanties_collaborateur($id_collaborateur, $date);

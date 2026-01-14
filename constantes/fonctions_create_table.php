@@ -500,14 +500,13 @@ function create_table_payplan_grille_de_gestion($header, $array_detail_payplan_v
     foreach ($array_detail_payplan_v2 as $detail_payplan_v2) {
         $table_collaborateur_payplan_detail .= "<tr>";
         $table_collaborateur_payplan_detail .= "<td class='td_nom_complet_grille_gestion'>" . $detail_payplan_v2['prenom'] . " " . $detail_payplan_v2['nom'] . "  </td>";
-        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan_v2['nb_bdc'] . " </td>";
-        $table_collaborateur_payplan_detail .= "<td>" . $detail_payplan_v2['nb_factures'] . " </td>";
-
-        $table_collaborateur_payplan_detail .= "<td> " . $detail_payplan_v2['nb_reprises'] . " </td>";
-        $table_collaborateur_payplan_detail .= "<td> 0 </td>";
-        $table_collaborateur_payplan_detail .= "<td> " . $detail_payplan_v2['nb_garanties'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='bdc'>" . $detail_payplan_v2['nb_bdc'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='factures'>" . $detail_payplan_v2['nb_factures'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='reprises'>" . $detail_payplan_v2['nb_reprises'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . "> 0 </td>";
+        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='garanties'> " . $detail_payplan_v2['nb_garanties'] . " </td>";
         $table_collaborateur_payplan_detail .= "<td> " . $detail_payplan_v2['cumul_prix_ht_garanties'] . " </td>";
-        $table_collaborateur_payplan_detail .= "<td> " . $detail_payplan_v2['nb_pack_first'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='packfirst' > " . $detail_payplan_v2['nb_pack_first'] . " </td>";
 
         $table_collaborateur_payplan_detail .= "</tr>";
     }
