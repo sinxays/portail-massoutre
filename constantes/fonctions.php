@@ -2604,13 +2604,6 @@ function get_grille_de_gestion_packfirst_detail_collaborateur($id_collaborateur,
 
     $pdo = Connection::getPDO();
 
-    echo "SELECT fv.num_facture,fv.date_facture,fv.destination,svv.immatriculation
-    FROM facturesventes as fv 
-    LEFT JOIN collaborateurs_payplan as cp ON cp.ID = fv.id_collaborateur_payplan
-    LEFT JOIN suivi_ventes_factures as svf ON svf.numero_facture = fv.num_facture
-    LEFT JOIN suivi_ventes_vehicules as svv ON svv.ID = svf.id_vehicule 
-    WHERE fv.id_collaborateur_payplan = $id_collaborateur AND fv.pack_first = 1 $filtre_final_date_pack_first $filtre_final_destination_ventes_pack_first";
-
     $request = $pdo->query("SELECT fv.num_facture,fv.date_facture,fv.destination,svv.immatriculation
     FROM facturesventes as fv 
     LEFT JOIN collaborateurs_payplan as cp ON cp.ID = fv.id_collaborateur_payplan
