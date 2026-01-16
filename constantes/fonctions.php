@@ -2289,13 +2289,15 @@ function get_grille_de_gestion_bdc_and_factures_detail_collaborateur($id_collabo
     $pdo = Connection::getPDO();
     #si on a choisit un collaborateur particulier
 
-    $request = $pdo->query("SELECT bdc.numero_bdc,bdc.prix_vente_ht,bdc.prix_vente_ttc,bdc.date_bdc,bdc.destination_vente,bdc.is_invoiced 
-    FROM suivi_ventes_bdc as bdc 
+    $request = $pdo->query("SELECT bdc.numero_bdc,bdc.prix_vente_ht,bdc.prix_vente_ttc,bdc.date_bdc,bdc.destination_vente,bdc.is_invoiced,svv.immatriculation,bdc.nom_acheteur
+    FROM suivi_ventes_bdc as bdc
+    LEFT JOIN suivi_ventes_vehicules as svv ON svv.bdc_id = bdc.ID 
     WHERE bdc.vendeur_id = $id_collaborateur $filtre_final_bdc $filtre_bdc_destination");
     $result_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
 
-    $request = $pdo->query("SELECT fact.numero_facture,fact.date_facture,fact.prix_vente_total_ht,fact.prix_vente_vehicule_HT,fact.marge_ht,fact.marge_ttc,fact.nom_acheteur,fact.id_destination_vente 
-    FROM suivi_ventes_factures as fact 
+    $request = $pdo->query("SELECT fact.numero_facture,fact.date_facture,fact.prix_vente_total_ht,fact.prix_vente_vehicule_HT,fact.marge_ht,fact.marge_ttc,fact.nom_acheteur,fact.id_destination_vente,svv.immatriculation 
+    FROM suivi_ventes_factures as fact
+    LEFT JOIN suivi_ventes_vehicules as svv ON svv.facture_id = fact.ID 
     WHERE fact.id_vendeur = $id_collaborateur $filtre_final_date_factures $filtre_factures_destination");
     $result_factures = $request->fetchAll(PDO::FETCH_ASSOC);
 
@@ -2602,9 +2604,11 @@ function get_grille_de_gestion_packfirst_detail_collaborateur($id_collaborateur,
 
     $pdo = Connection::getPDO();
 
-    $request = $pdo->query("SELECT fv.num_facture,fv.date_facture,fv.destination 
+    $request = $pdo->query("SELECT fv.num_facture,fv.date_facture,fv.destination,svv.immatriculation
     FROM facturesventes as fv 
-    LEFT JOIN collaborateurs_payplan as cp ON cp.ID = fv.id_collaborateur_payplan 
+    LEFT JOIN collaborateurs_payplan as cp ON cp.ID = fv.id_collaborateur_payplan
+    LEFT JOIN suivi_ventes_factures as svf ON svf.numero_facture = fv.num_facture
+    LEFT JOIN suivi_ventes_vehicules as svv ON svv.ID = svf.id_vehicule 
     WHERE fv.id_collaborateur_payplan  = $id_collaborateur AND fv.pack_first = 1 $filtre_final_date_pack_first $filtre_final_destination_ventes_pack_first");
     $result_pack_first = $request->fetchAll(PDO::FETCH_ASSOC);
 

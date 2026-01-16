@@ -530,6 +530,8 @@ function create_table_grille_de_gestion_detail_collaborateur($type, $data)
                 $table .= "<td>" . $bdc['prix_vente_ht'] . " </td>";
                 $table .= "<td>" . $bdc['prix_vente_ttc'] . " </td>";
                 $table .= "<td>" . $bdc['date_bdc'] . " </td>";
+                $table .= "<td>" . $bdc['immatriculation'] . " </td>";
+                $table .= "<td>" . $bdc['nom_acheteur'] . " </td>";
                 $table .= "</tr>";
             }
             break;
@@ -548,6 +550,7 @@ function create_table_grille_de_gestion_detail_collaborateur($type, $data)
                 $table .= "<td>" . $facture['marge_ht'] . " </td>";
                 $table .= "<td>" . $facture['marge_ttc'] . " </td>";
                 $table .= "<td>" . $facture['nom_acheteur'] . " </td>";
+                $table .= "<td>" . $facture['immatriculation'] . " </td>";
                 $table .= "</tr>";
             }
             break;
@@ -593,6 +596,7 @@ function create_table_grille_de_gestion_detail_collaborateur($type, $data)
                 $table .= "<td>" . $facture['num_facture'] . " </td>";
                 $table .= "<td>" . $facture['date_facture'] . " </td>";
                 $table .= "<td>" . $facture['destination'] . " </td>";
+                $table .= "<td>" . $facture['immatriculation'] . " </td>";
                 $table .= "</tr>";
             }
             break;

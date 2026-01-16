@@ -208,6 +208,8 @@ function get_header_from_type_grille_de_gestion_detail_collaborateur($type)
                 "Prix vente HT",
                 "Prix vente TTC",
                 "Date BDC",
+                "Immatriculation",
+                "Acheteur",
             );
             break;
 
@@ -220,6 +222,7 @@ function get_header_from_type_grille_de_gestion_detail_collaborateur($type)
                 "Marge HT",
                 "Marge TTC",
                 "Nom Acheteur",
+                "Immatriculation",
             );
             break;
 
@@ -248,6 +251,7 @@ function get_header_from_type_grille_de_gestion_detail_collaborateur($type)
                 "Numero facture",
                 "Date facture",
                 "Destination",
+                "Immatriculation",
 
             );
             break;
