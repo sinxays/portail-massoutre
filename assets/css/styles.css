@@ -1885,3 +1885,9 @@ img {
     width: 300px;
     background-color: #efdede;
 }
+
+.td-clickable-grille_gestion:hover {
+    cursor: pointer;
+    color: #007BFF;
+    font-weight: bold;
+}

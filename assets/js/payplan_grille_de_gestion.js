@@ -2,21 +2,78 @@ $(document).ready(function () {
 
     $('#loader').show();
 
+
+    $("#select_destination_vente_grille_de_gestion").val("0");
+    destination_vente = $("#select_destination_vente_grille_de_gestion").val();
+
     let date_select = {};
     date_select['value_selected'] = '0';
 
     $.ajax({
         url: "/payplan/req/req_tableau_payplan_grille_de_gestion.php",
         type: "POST",
-        data: { collaborateur: 0, date: date_select },
+        data: { collaborateur: 0, date: date_select, destination_vente: destination_vente },
         success: function (data) {
             $("#table_payplan_grille_de_gestion").html(data);
+        }
+    });
+
+    /***** Filtre DESTINATION VENTE ******/
+    $("#select_destination_vente_grille_de_gestion").change(function (e) {
+        fadeOut_grille_de_gestion(200);
+
+        destination_vente = parseInt($(this).val());
+        collaborateur_selected = parseInt($("#select_collaborateur_grille_de_gestion").val());
+
+        let date_select = {};
+        date_select['value_selected'] = parseInt($('#select_date_grille_de_gestion').val());
+
+        console.log(date_select);
+        console.log(destination_vente);
+
+        /*si dates personnalisées*/
+        if (date_select['value_selected'] == 2) {
+            $("#date_personnalisees_div").fadeIn(200);
+
+            date_debut = $("#date_debut").val();
+            date_fin = $("#date_fin").val();
+
+            let value_dates_perso = {
+                value_selected: date_select['value_selected'],
+                dates: {
+                    debut: date_debut,
+                    fin: date_fin
+                }
+            };
+
+            $.ajax({
+                url: "/payplan/req/req_tableau_payplan_grille_de_gestion.php",
+                type: "POST",
+                data: { collaborateur: collaborateur_selected, date: value_dates_perso, destination_vente: destination_vente },
+                success: function (data) {
+                    $("#table_payplan_grille_de_gestion").html(data);
+                    fadeIn_grille_de_gestion(200);
+                }
+            });
+        }
+        else {
+            $.ajax({
+                url: "/payplan/req/req_tableau_payplan_grille_de_gestion.php",
+                type: "POST",
+                data: { collaborateur: collaborateur_selected, date: date_select, destination_vente: destination_vente },
+                success: function (data) {
+                    $("#table_payplan_grille_de_gestion").html(data);
+                    fadeIn_grille_de_gestion(200);
+                }
+            });
         }
     });
 
     /***** Filtre DATE ******/
     $("#select_date_grille_de_gestion").change(function (e) {
         fadeOut_grille_de_gestion(200);
+
+        destination_vente = parseInt($('#select_destination_vente_grille_de_gestion').val());
 
         $("#date_debut").val("");
         $("#date_fin").val("");
@@ -27,6 +84,7 @@ $(document).ready(function () {
         collaborateur_selected = parseInt($("#select_collaborateur_grille_de_gestion").val());
         console.log(date_select);
         console.log(collaborateur_selected);
+        console.log(destination_vente);
 
         $("#date_personnalisees_div").fadeOut(200);
         $("#date_suivi_bdc_debut").val("");
@@ -43,7 +101,7 @@ $(document).ready(function () {
             $.ajax({
                 url: "/payplan/req/req_tableau_payplan_grille_de_gestion.php",
                 type: "POST",
-                data: { collaborateur: collaborateur_selected, date: date_select },
+                data: { collaborateur: collaborateur_selected, date: date_select, destination_vente: destination_vente },
                 success: function (data) {
                     $("#table_payplan_grille_de_gestion").html(data);
                     fadeIn_grille_de_gestion(200);
@@ -80,13 +138,16 @@ $(document).ready(function () {
         date_type_selected = $("#select_date_grille_de_gestion").val();
         date_debut = $("#date_debut").val();
         date_fin = $("#date_fin").val();
-        collaborateur_selected = $("#select_collaborateur_grille_de_gestion").val();
+        collaborateur_selected = parseInt($("#select_collaborateur_grille_de_gestion").val());
+        destination_vente = parseInt($('#select_destination_vente_grille_de_gestion').val());
+
 
         fadeOut_grille_de_gestion(300);
 
         console.log(date_debut);
         console.log(date_fin);
         console.log(collaborateur_selected);
+        console.log(destination_vente);
 
 
         let value_dates_perso = {
@@ -102,7 +163,7 @@ $(document).ready(function () {
         $.ajax({
             url: "/payplan/req/req_tableau_payplan_grille_de_gestion.php",
             type: "POST",
-            data: { collaborateur: collaborateur_selected, date: value_dates_perso },
+            data: { collaborateur: collaborateur_selected, date: value_dates_perso, destination_vente: destination_vente },
             success: function (data) {
                 $("#table_payplan_grille_de_gestion").html(data);
                 fadeIn_grille_de_gestion(200);
@@ -128,5 +189,71 @@ $(document).ready(function () {
         $('#loader').hide();
     });
 
+
+    // OUVERTURE DETAIL COLLABORATEUR
+    $(document).on('click', 'td[data-id][data-type]', function () {
+
+        let id = $(this).data('id');
+        let type = $(this).data('type');
+
+        filtre_date = parseInt($("#select_date_grille_de_gestion").val());
+        destination_vente = parseInt($("#select_destination_vente_grille_de_gestion").val());
+
+        console.log(destination_vente);
+
+
+        let form = $('<form>', {
+            action: '/payplan/grille_de_gestion_collaborateur_detail.php',
+            method: 'POST',
+            target: '_blank'
+        });
+
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'id_collaborateur',
+            value: id
+        }));
+
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'type',
+            value: type
+        }));
+
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'filtre_date',
+            value: filtre_date
+        }));
+
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'destination_vente',
+            value: destination_vente
+        }));
+
+        if(filtre_date == 2){
+
+            date_debut = $("#date_debut").val();
+            date_fin = $("#date_fin").val();
+
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'date_debut',
+                value: date_debut
+            }));
+
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'date_fin',
+                value: date_fin
+            }));
+
+        }
+
+        $('body').append(form);
+        form.submit();
+        form.remove();
+    });
 
 });

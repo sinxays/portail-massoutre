@@ -490,7 +490,7 @@ function create_table_payplan_detail_reprise_collaborateur($header, $array_detai
     return $table_collaborateur_payplan_detail;
 }
 
-function create_table_payplan_grille_de_gestion($header, $array_detail_payplan_v2)
+function create_table_grille_de_gestion($header, $array_detail_payplan_v2)
 {
     $table_collaborateur_payplan_detail = "";
 
@@ -500,18 +500,112 @@ function create_table_payplan_grille_de_gestion($header, $array_detail_payplan_v
     foreach ($array_detail_payplan_v2 as $detail_payplan_v2) {
         $table_collaborateur_payplan_detail .= "<tr>";
         $table_collaborateur_payplan_detail .= "<td class='td_nom_complet_grille_gestion'>" . $detail_payplan_v2['prenom'] . " " . $detail_payplan_v2['nom'] . "  </td>";
-        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='bdc'>" . $detail_payplan_v2['nb_bdc'] . " </td>";
-        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='factures'>" . $detail_payplan_v2['nb_factures'] . " </td>";
-        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='reprises'>" . $detail_payplan_v2['nb_reprises'] . " </td>";
-        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . "> 0 </td>";
-        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='garanties'> " . $detail_payplan_v2['nb_garanties'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td class='td-clickable-grille_gestion' data-id=" . $detail_payplan_v2['ID'] . " data-type='bdc'>" . $detail_payplan_v2['nb_bdc'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td class='td-clickable-grille_gestion' data-id=" . $detail_payplan_v2['ID'] . " data-type='factures'>" . $detail_payplan_v2['nb_factures'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td class='td-clickable-grille_gestion' data-id=" . $detail_payplan_v2['ID'] . " data-type='reprises'>" . $detail_payplan_v2['nb_reprises'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td class='td-clickable-grille_gestion' data-id=" . $detail_payplan_v2['ID'] . "> 0 </td>";
+        $table_collaborateur_payplan_detail .= "<td class='td-clickable-grille_gestion' data-id=" . $detail_payplan_v2['ID'] . " data-type='garanties'> " . $detail_payplan_v2['nb_garanties'] . " </td>";
         $table_collaborateur_payplan_detail .= "<td> " . $detail_payplan_v2['cumul_prix_ht_garanties'] . " </td>";
-        $table_collaborateur_payplan_detail .= "<td data-id=" . $detail_payplan_v2['ID'] . " data-type='packfirst' > " . $detail_payplan_v2['nb_pack_first'] . " </td>";
+        $table_collaborateur_payplan_detail .= "<td class='td-clickable-grille_gestion' data-id=" . $detail_payplan_v2['ID'] . " data-type='packfirst' > " . $detail_payplan_v2['nb_pack_first'] . " </td>";
 
         $table_collaborateur_payplan_detail .= "</tr>";
     }
     //fin contenu
     return $table_collaborateur_payplan_detail;
+}
+
+function create_table_grille_de_gestion_detail_collaborateur($type, $data)
+{
+    $table = "";
+
+    switch ($type) {
+        case 'bdc':
+            $header = get_header_from_type_grille_de_gestion_detail_collaborateur($type);
+            $table .= create_header_row($header);
+
+            //contenu
+            foreach ($data as $bdc) {
+                $table .= "<tr>";
+                $table .= "<td>" . $bdc['numero_bdc'] . " </td>";
+                $table .= "<td>" . $bdc['prix_vente_ht'] . " </td>";
+                $table .= "<td>" . $bdc['prix_vente_ttc'] . " </td>";
+                $table .= "<td>" . $bdc['date_bdc'] . " </td>";
+                $table .= "</tr>";
+            }
+            break;
+
+        case 'factures':
+            $header = get_header_from_type_grille_de_gestion_detail_collaborateur($type);
+            $table .= create_header_row($header);
+
+            //contenu
+            foreach ($data as $facture) {
+                $table .= "<tr>";
+                $table .= "<td>" . $facture['numero_facture'] . " </td>";
+                $table .= "<td>" . $facture['date_facture'] . " </td>";
+                $table .= "<td>" . $facture['prix_vente_total_ht'] . " </td>";
+                $table .= "<td>" . $facture['prix_vente_vehicule_HT'] . " </td>";
+                $table .= "<td>" . $facture['marge_ht'] . " </td>";
+                $table .= "<td>" . $facture['marge_ttc'] . " </td>";
+                $table .= "<td>" . $facture['nom_acheteur'] . " </td>";
+                $table .= "</tr>";
+            }
+            break;
+
+        case 'reprises':
+            $header = get_header_from_type_grille_de_gestion_detail_collaborateur($type);
+            $table .= create_header_row($header);
+
+            //contenu
+            foreach ($data as $facture) {
+                $table .= "<tr>";
+                $table .= "<td>" . $facture['immatriculation'] . " </td>";
+                $table .= "<td>" . $facture['type_vehicule'] . " </td>";
+                $table .= "<td>" . $facture['modele'] . " </td>";
+                $table .= "<td>" . $facture['finition'] . " </td>";
+                $table .= "<td>" . $facture['parc_achat'] . " </td>";
+                $table .= "<td>" . $facture['libelle'] . " </td>";
+                $table .= "</tr>";
+            }
+            break;
+
+        case 'garanties':
+            $header = get_header_from_type_grille_de_gestion_detail_collaborateur($type);
+            $table .= create_header_row($header);
+
+            //contenu
+            foreach ($data as $facture) {
+                $table .= "<tr>";
+                $table .= "<td>" . $facture['num_facture'] . " </td>";
+                $table .= "<td>" . $facture['date_facture'] . " </td>";
+                $table .= "<td>" . $facture['prix_ht_garantie'] . " </td>";
+                $table .= "</tr>";
+            }
+            break;
+
+        case 'packfirst':
+            $header = get_header_from_type_grille_de_gestion_detail_collaborateur($type);
+            $table .= create_header_row($header);
+
+            //contenu
+            foreach ($data as $facture) {
+                $table .= "<tr>";
+                $table .= "<td>" . $facture['num_facture'] . " </td>";
+                $table .= "<td>" . $facture['date_facture'] . " </td>";
+                $table .= "<td>" . $facture['destination'] . " </td>";
+                $table .= "</tr>";
+            }
+            break;
+
+
+
+
+        default:
+            # code...
+            break;
+    }
+    //fin contenu
+    return $table;
 }
 function create_table_payplan_detail_achat_collaborateur($header, $array_detail_payplan)
 {
@@ -1277,3 +1371,4 @@ function create_table_liste_traqueurs($header, $filtre = '')
     return $table_traqueurs;
 
 }
+

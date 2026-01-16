@@ -47,33 +47,60 @@
 
 
 
-
+    <!--============================== ON RECUP LES DONNEES EN POST ET ON CREE LES TABLEAUX ==============================-->
     <?php
 
-    // $id_collaborateur = $_POST['id_collaborateur'];
-    // $collaborateur = get_nom_complet_collaborateur_by_id($id_collaborateur);
-    $collaborateur = "Sinxay Souvannavong";
-
-    // $date = $_POST['date'];
-    $date = "2025-12-01 au 2025-12-25";
+    $id_collaborateur = $_POST['id_collaborateur'];
+    $collaborateur = get_nom_complet_collaborateur_by_id($id_collaborateur);
 
 
+    $id_destination_vente = intval($_POST['destination_vente']);
+    $libelle_destination_vente = get_libelle_destination_vente_from_id($id_destination_vente);
+
+    if ($id_destination_vente == 0) {
+        $libelle_destination_vente = "VENTES MARCHANDS & VENTES PARTICULIERS";
+    }
+
+    $type = $_POST['type'];
+
+    $filtre_date = intval($_POST['filtre_date']);
+
+    switch ($filtre_date) {
+        case 0:
+            $date = "du mois en cours";
+            $date_array['value_selected'] = 0;
+            break;
+        case 1:
+            $date = "du mois précédent";
+            $date_array['value_selected'] = 1;
+            break;
+        case 2:
+            $date_debut = format_date_US_TO_FR($_POST['date_debut']);
+            $date_fin = format_date_US_TO_FR($_POST['date_fin']);
+            $date = "du $date_debut au $date_fin";
+
+            $date_array['value_selected'] = 2;
+            $date_array['dates']['debut'] = $date_debut;
+            $date_array['dates']['fin'] = $date_fin;
+
+            break;
+    }
+
+
+
+    // $payplan_v2_garanties = get_grille_de_gestion_garanties($id_collaborateur, $date_array, $id_destination_vente);
+    // $payplan_v2_packfirst = get_grille_de_gestion_packfirst($id_collaborateur, $date_array, $id_destination_vente);
+    
     ?>
-
-
-
 
 
     <!--============================== CONTENTS ==============================-->
     <main>
 
-        <H2> GRILLE DE GESTION <br> <?php echo $collaborateur ?> <br> du <?php echo $date ?></H2>
+        <H2> GRILLE DE GESTION <br> <?php echo $collaborateur ?> <br> <?php echo $date ?> <br>
+            <?php echo $libelle_destination_vente ?></H2>
 
         </br>
-
-        <div id="div_retour_detail_collaborateur">
-            <i class='bx bx-left-arrow-circle bx-md'></i><span>Retour</span>
-        </div>
 
         <div class="elements_in_row">
             <div id="btn_exporter">
@@ -82,15 +109,58 @@
             </div>
 
         </div>
-
-
-
         </br>
+        <div class="elements_row">
+            <div class="lds-ellipsis" id="loader">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
 
 
-        <span id="titre_table"></span>
+        <span style="color: red;">
+            <h2>
+                <?php echo "$type" ?>
+            </h2>
+        </span>
 
-        <table class="my_tab_payplan" id="table_payplan_detail_collaborateur"> </table>
+
+        <!--  TABLEAU  -->
+        <table class="my_tab_payplan">
+            <?php
+
+            switch ($type) {
+                case 'bdc':
+                    $detail_bdc_factures = get_grille_de_gestion_bdc_and_factures_detail_collaborateur($id_collaborateur, $date_array, $id_destination_vente);
+                    $table = create_table_grille_de_gestion_detail_collaborateur($type, $detail_bdc_factures[0]);
+                    break;
+                case 'factures':
+                    $detail_bdc_factures = get_grille_de_gestion_bdc_and_factures_detail_collaborateur($id_collaborateur, $date_array, $id_destination_vente);
+                    $table = create_table_grille_de_gestion_detail_collaborateur($type, $detail_bdc_factures[1]);
+                    break;
+                case 'reprises':
+                    $detail_reprises = get_grille_de_gestion_reprises_detail_collaborateur($id_collaborateur, $date_array);
+                    $table = create_table_grille_de_gestion_detail_collaborateur($type, $detail_reprises);
+                    break;
+                case 'garanties':
+                    $detail_garanties = get_grille_de_gestion_garanties_detail_collaborateurs($id_collaborateur, $date_array, $id_destination_vente);
+                    $table = create_table_grille_de_gestion_detail_collaborateur($type, $detail_garanties);
+                    break;
+                case 'packfirst':
+                    $detail_pack_first = get_grille_de_gestion_packfirst_detail_collaborateur($id_collaborateur, $date_array, $id_destination_vente);
+                    $table = create_table_grille_de_gestion_detail_collaborateur($type, $detail_pack_first);
+                    break;
+            }
+
+            echo $table;
+
+
+            ?>
+        </table>
+
+
 
 
         <?php
@@ -100,7 +170,7 @@
             $id_collaborateur_detail = $_GET['id_collaborateur_payplan'];
             echo "<span id='span_id_collaborateur' style='visibility:hidden;'>$id_collaborateur_detail</span>";
         }
-        
+
         ?>
 
     </main>
@@ -111,7 +181,7 @@
 
     <script src="/assets/js/jquery-3.6.0.min.js"></script>
     <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/payplan_detail_collaborateur.js"></script>
+    <script src="/assets/js/grille_de_gestion_detail_collaborateur.js"></script>
 </body>
 
 </html>

@@ -84,6 +84,24 @@
 
             </div>
 
+            <div class="my_div_form" id="destination_vente_filtre">
+                <label for="select_destination_vente_grille_de_gestion">Destination vente</label>
+                <?php
+
+                // $all_collaborateurs_cvo = get_all_collaborateurs_cvo_for_select();
+                $destination_vente_liste = get_destination_vente_for_select();
+                // var_dump($all_collaborateurs_cvo);
+                // die();
+                
+                echo "<select class='form-select' style='width : 200px;' id='select_destination_vente_grille_de_gestion' data-id='destination_vente_id'>";
+                echo "<option value=0> Tout </option>";
+                foreach ($destination_vente_liste as $destination_vente) {
+                    echo "<option value=" . $destination_vente['ID'] . ">" . $destination_vente['libelle'] . "</option>";
+                }
+                echo "</select>";
+                ?>
+            </div>
+
 
             <div class="my_div_form" id="collaborateur_div">
                 <label for="select_date_payplan_v2">Date</label>

@@ -196,3 +196,68 @@ $payplan_v2_table_header_row = array(
     "Montant total financé",
     "mise à la route",
 );
+
+
+
+function get_header_from_type_grille_de_gestion_detail_collaborateur($type)
+{
+    switch ($type) {
+        case 'bdc':
+            $header = array(
+                "Numero BDC",
+                "Prix vente HT",
+                "Prix vente TTC",
+                "Date BDC",
+            );
+            break;
+
+        case 'factures':
+            $header = array(
+                "Numero facture",
+                "Date facture",
+                "Prix vente total HT",
+                "prix vente VH HT",
+                "Marge HT",
+                "Marge TTC",
+                "Nom Acheteur",
+            );
+            break;
+
+        case 'reprises':
+            $header = array(
+                "Immatriculation",
+                "Type vehicule",
+                "Modèle",
+                "Finition",
+                "Parc Achat",
+                "Type d'achat",
+            );
+            break;
+
+        case 'garanties':
+            $header = array(
+                "Numero facture",
+                "Date facture",
+                "Prix HT",
+
+            );
+            break;
+
+        case 'packfirst':
+            $header = array(
+                "Numero facture",
+                "Date facture",
+                "Destination",
+
+            );
+            break;
+
+
+
+        default:
+            # code...
+            break;
+    }
+
+    return $header;
+}

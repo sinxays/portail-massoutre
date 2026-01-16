@@ -6,17 +6,17 @@ $filtre = array();
 
 if (isset($_POST['collaborateur']) && $_POST['collaborateur'] !== '') {
     $id_collaborateur = intval($_POST['collaborateur']);
+    $destination_vente = intval($_POST['destination_vente']);
 
     if (isset($_POST['date'])) {
 
         $date = $_POST['date'];
 
-
         // j'affiche dans le tableau uniquement les collaborateurs actif et avec au moins un BDC
-        $payplan_v2_bdc_factures = get_payplan_v2_detail_bdc_factures_collaborateur($id_collaborateur, $date);
-        $payplan_v2_reprises = get_payplan_v2_detail_reprises_collaborateur($id_collaborateur, $date);
-        $payplan_v2_garanties = get_payplan_v2_detail_garanties_collaborateur($id_collaborateur, $date);
-        $payplan_v2_packfirst = get_payplan_v2_detail_packfirst_collaborateur($id_collaborateur, $date);
+        $payplan_v2_bdc_factures = get_grille_de_gestion_bdc_and_factures($id_collaborateur, $date, $destination_vente);
+        $payplan_v2_reprises = get_grille_de_gestion_reprises($id_collaborateur, $date);
+        $payplan_v2_garanties = get_grille_de_gestion_garanties($id_collaborateur, $date, $destination_vente);
+        $payplan_v2_packfirst = get_grille_de_gestion_packfirst($id_collaborateur, $date, $destination_vente);
 
 
 
@@ -85,7 +85,7 @@ if (isset($_POST['collaborateur']) && $_POST['collaborateur'] !== '') {
         // var_dump($result_final);
 
 
-        $table = create_table_payplan_grille_de_gestion($payplan_v2_table_header_row, $result_final);
+        $table = create_table_grille_de_gestion($payplan_v2_table_header_row, $result_final);
 
     }
 }

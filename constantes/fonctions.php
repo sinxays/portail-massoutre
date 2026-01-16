@@ -2136,6 +2136,15 @@ function get_destination_for_select()
     return $result;
 }
 
+function get_destination_vente_for_select()
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT ID,libelle FROM destination_vente");
+    $result = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
+
+
 function get_type_achat_for_select()
 {
     $pdo = Connection::getPDO_2();
@@ -2144,10 +2153,18 @@ function get_type_achat_for_select()
     return $result;
 }
 
-function get_libelle_destinations_from_id($destination_id)
+function get_libelle_destination_from_id($destination_id)
 {
     $pdo = Connection::getPDO_2();
     $request = $pdo->query("SELECT libelle FROM destinations WHERE id = $destination_id");
+    $result = $request->fetch(PDO::FETCH_COLUMN);
+    return $result;
+}
+
+function get_libelle_destination_vente_from_id($destination_id)
+{
+    $pdo = Connection::getPDO();
+    $request = $pdo->query("SELECT libelle FROM destination_vente WHERE id = $destination_id");
     $result = $request->fetch(PDO::FETCH_COLUMN);
     return $result;
 }
@@ -2160,11 +2177,15 @@ function get_libelle_type_achat_from_id($type_achat_id)
     return $result;
 }
 
-function get_payplan_v2_detail_bdc_factures_collaborateur($id_collaborateur, $date)
+function get_grille_de_gestion_bdc_and_factures($id_collaborateur, $date, $destination_vente)
 {
+
     $date_mois_en_cours = date("Y-m-01");
     $filtre_date_initial_bdc = "AND suivi_ventes_bdc.date_bdc >= '$date_mois_en_cours' ";
     $filtre_date_initial_factures = "AND suivi_ventes_factures.date_facture >= '$date_mois_en_cours'";
+
+    $filtre_bdc_destination = $destination_vente !== 0 ? "AND suivi_ventes_bdc.destination_vente = $destination_vente" : "AND suivi_ventes_bdc.destination_vente is not null ";
+    $filtre_factures_destination = $destination_vente !== 0 ? "AND suivi_ventes_factures.id_destination_vente = $destination_vente" : "AND suivi_ventes_factures.id_destination_vente IS NOT NULL";
 
     switch ($date['value_selected']) {
         #mois en cours
@@ -2190,7 +2211,7 @@ function get_payplan_v2_detail_bdc_factures_collaborateur($id_collaborateur, $da
     }
 
     $filtre_final_bdc = (isset($filtre_date_bdc) && $filtre_date_bdc !== '') ? $filtre_date_bdc : $filtre_date_initial_bdc;
-    $filtre_final_factures = (isset($filtre_date_factures) && $filtre_date_factures !== '') ? $filtre_date_factures : $filtre_date_initial_factures;
+    $filtre_final_date_factures = (isset($filtre_date_factures) && $filtre_date_factures !== '') ? $filtre_date_factures : $filtre_date_initial_factures;
 
     $pdo = Connection::getPDO();
     #si on a choisit un collaborateur particulier
@@ -2200,7 +2221,7 @@ function get_payplan_v2_detail_bdc_factures_collaborateur($id_collaborateur, $da
         $result_nb_bdc = $request->fetch(PDO::FETCH_ASSOC);
 
         $request = $pdo->query("SELECT COUNT(ID) FROM suivi_ventes_factures 
-        WHERE id_vendeur = $id_collaborateur $filtre_final_factures");
+        WHERE id_vendeur = $id_collaborateur $filtre_final_date_factures");
         $result_nb_factures = $request->fetch(PDO::FETCH_ASSOC);
     }
     //si on selectionne le total de tous les collaborateurs
@@ -2208,14 +2229,14 @@ function get_payplan_v2_detail_bdc_factures_collaborateur($id_collaborateur, $da
 
         $request = $pdo->query("SELECT cp.ID as id_collaborateur_payplan,cp.nom,cp.prenom,COUNT(vendeur_id) as nb_bdc FROM suivi_ventes_bdc 
         LEFT JOIN collaborateurs_payplan as cp ON cp.ID = suivi_ventes_bdc.vendeur_id 
-        WHERE vendeur_id is not null $filtre_final_bdc 
-        GROUP BY vendeur_id");
+        WHERE vendeur_id is not null $filtre_final_bdc $filtre_bdc_destination
+        GROUP BY vendeur_id ORDER BY nb_bdc DESC");
 
         $result_nb_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
 
         $request = $pdo->query("SELECT cp.ID as id_collaborateur_payplan,cp.nom,cp.prenom,COUNT(id_vendeur) as nb_factures FROM suivi_ventes_factures
         LEFT JOIN collaborateurs_payplan as cp ON cp.ID = suivi_ventes_factures.id_vendeur
-        WHERE id_vendeur is not null $filtre_final_factures
+        WHERE id_vendeur is not null $filtre_final_date_factures $filtre_factures_destination
         GROUP BY id_vendeur");
         $result_nb_factures = $request->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -2224,11 +2245,68 @@ function get_payplan_v2_detail_bdc_factures_collaborateur($id_collaborateur, $da
     $result_final[0] = $result_nb_bdc;
     $result_final[1] = $result_nb_factures;
 
+    // var_dump($result_final);
+
+    return $result_final;
+}
+
+function get_grille_de_gestion_bdc_and_factures_detail_collaborateur($id_collaborateur, $date, $destination_vente)
+{
+
+    $date_mois_en_cours = date("Y-m-01");
+    $filtre_date_initial_bdc = "AND bdc.date_bdc >= '$date_mois_en_cours' ";
+    $filtre_date_initial_factures = "AND fact.date_facture >= '$date_mois_en_cours'";
+
+    $filtre_bdc_destination = $destination_vente !== 0 ? "AND bdc.destination_vente = $destination_vente" : "AND bdc.destination_vente is not null ";
+    $filtre_factures_destination = $destination_vente !== 0 ? "AND fact.id_destination_vente = $destination_vente" : "AND fact.id_destination_vente IS NOT NULL";
+
+    switch ($date['value_selected']) {
+        #mois en cours
+        case 0:
+            $filtre_date_bdc = "AND bdc.date_bdc >= '$date_mois_en_cours'";
+            $filtre_date_factures = "AND fact.date_facture >= '$date_mois_en_cours'";
+            break;
+        #mois precédent
+        case 1:
+            $previous_month = get_previous_month_and_his_last_day();
+            $first = $previous_month['first'];
+            $last = $previous_month['last'];
+            $filtre_date_bdc = "AND bdc.date_bdc BETWEEN '$first' AND '$last'";
+            $filtre_date_factures = "AND fact.date_facture BETWEEN '$first' AND '$last'";
+            break;
+
+        case 2:
+            $date_debut = $date['dates']['debut'];
+            $date_fin = $date['dates']['fin'];
+            $filtre_date_bdc = "AND bdc.date_bdc BETWEEN '$date_debut' AND '$date_fin'";
+            $filtre_date_factures = "AND fact.date_facture BETWEEN '$date_debut' AND '$date_fin'";
+            break;
+    }
+
+    $filtre_final_bdc = (isset($filtre_date_bdc) && $filtre_date_bdc !== '') ? $filtre_date_bdc : $filtre_date_initial_bdc;
+    $filtre_final_date_factures = (isset($filtre_date_factures) && $filtre_date_factures !== '') ? $filtre_date_factures : $filtre_date_initial_factures;
+
+    $pdo = Connection::getPDO();
+    #si on a choisit un collaborateur particulier
+
+    $request = $pdo->query("SELECT bdc.numero_bdc,bdc.prix_vente_ht,bdc.prix_vente_ttc,bdc.date_bdc,bdc.destination_vente,bdc.is_invoiced 
+    FROM suivi_ventes_bdc as bdc 
+    WHERE bdc.vendeur_id = $id_collaborateur $filtre_final_bdc $filtre_bdc_destination");
+    $result_bdc = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    $request = $pdo->query("SELECT fact.numero_facture,fact.date_facture,fact.prix_vente_total_ht,fact.prix_vente_vehicule_HT,fact.marge_ht,fact.marge_ttc,fact.nom_acheteur,fact.id_destination_vente 
+    FROM suivi_ventes_factures as fact 
+    WHERE fact.id_vendeur = $id_collaborateur $filtre_final_date_factures $filtre_factures_destination");
+    $result_factures = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    $result_final[0] = $result_bdc;
+    $result_final[1] = $result_factures;
+
     return $result_final;
 }
 
 
-function get_payplan_v2_detail_reprises_collaborateur($id_collaborateur, $date)
+function get_grille_de_gestion_reprises($id_collaborateur, $date)
 {
     $date_mois_en_cours = date("Y-m-01");
     $filtre_date_initial_reprises = "AND payplan.date_achat >= '$date_mois_en_cours' ";
@@ -2253,20 +2331,20 @@ function get_payplan_v2_detail_reprises_collaborateur($id_collaborateur, $date)
             break;
     }
 
-    $filtre_final_reprises = (isset($filtre_date_reprises) && $filtre_date_reprises !== '') ? $filtre_date_reprises : $filtre_date_initial_reprises;
+    $filtre_final_date_reprises = (isset($filtre_date_reprises) && $filtre_date_reprises !== '') ? $filtre_date_reprises : $filtre_date_initial_reprises;
 
     $pdo = Connection::getPDO();
     #si on a choisit un collaborateur particulier
     if ($id_collaborateur !== 0) {
         $request = $pdo->query("SELECT COUNT(ID) as nb_reprises FROM payplan 
-        WHERE acheteur_collaborateur_id = $id_collaborateur $filtre_final_reprises");
+        WHERE acheteur_collaborateur_id = $id_collaborateur $filtre_final_date_reprises");
         $result_nb_reprises = $request->fetch(PDO::FETCH_ASSOC);
     }
     //si on selectionne le total de tous les collaborateurs
     else {
         $request = $pdo->query("SELECT cp.ID as id_collaborateur_payplan,cp.nom,cp.prenom,COUNT(payplan.ID) as nb_reprises FROM payplan 
         LEFT JOIN collaborateurs_payplan as cp ON cp.ID = payplan.acheteur_collaborateur_id 
-        WHERE acheteur_collaborateur_id is not null $filtre_final_reprises 
+        WHERE acheteur_collaborateur_id is not null $filtre_final_date_reprises 
         GROUP BY acheteur_collaborateur_id;");
 
         $result_nb_reprises = $request->fetchAll(PDO::FETCH_ASSOC);
@@ -2275,11 +2353,63 @@ function get_payplan_v2_detail_reprises_collaborateur($id_collaborateur, $date)
     return $result_nb_reprises;
 }
 
+function get_grille_de_gestion_reprises_detail_collaborateur($id_collaborateur, $date)
+{
+    $date_mois_en_cours = date("Y-m-01");
+    $filtre_date_initial_reprises = "AND payplan.date_achat >= '$date_mois_en_cours' ";
 
-function get_payplan_v2_detail_garanties_collaborateur($id_collaborateur, $date)
+    switch ($date['value_selected']) {
+        #mois en cours
+        case 0:
+            $filtre_date_reprises = "AND payplan.date_achat >= '$date_mois_en_cours'";
+            break;
+        #mois precédent
+        case 1:
+            $previous_month = get_previous_month_and_his_last_day();
+            $first = $previous_month['first'];
+            $last = $previous_month['last'];
+            $filtre_date_reprises = "AND payplan.date_achat BETWEEN '$first' AND '$last'";
+            break;
+
+        case 2:
+            $date_debut = $date['dates']['debut'];
+            $date_fin = $date['dates']['fin'];
+            $filtre_date_reprises = "AND payplan.date_achat BETWEEN '$date_debut' AND '$date_fin'";
+            break;
+    }
+
+    $filtre_final_date_reprises = (isset($filtre_date_reprises) && $filtre_date_reprises !== '') ? $filtre_date_reprises : $filtre_date_initial_reprises;
+
+    $pdo = Connection::getPDO();
+
+    $request = $pdo->query("SELECT payplan.date_achat,vp.immatriculation,vp.type_vehicule,vp.modele,vp.finition,payplan.parc_achat,type_achat.libelle FROM payplan 
+    LEFT JOIN collaborateurs_payplan as cp ON cp.ID = payplan.acheteur_collaborateur_id
+    LEFT JOIN vehicules_payplan as vp ON vp.ID = payplan.vehicule_id
+    LEFT JOIN type_achat ON type_achat.ID = payplan.type_achat
+    WHERE payplan.acheteur_collaborateur_id = $id_collaborateur $filtre_final_date_reprises ");
+    $result_reprises = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    return $result_reprises;
+}
+
+
+function get_grille_de_gestion_garanties($id_collaborateur, $date, $destination_vente)
 {
     $date_mois_en_cours = date("Y-m-01");
     $filtre_date_initial_garanties = "AND facturesventes.date_facture >= '$date_mois_en_cours' ";
+
+    switch ($destination_vente) {
+        case 0:
+            $filtre_final_destination_ventes_garanties = "AND facturesventes.destination is not null ";
+            break;
+        case 1:
+            $filtre_final_destination_ventes_garanties = "AND facturesventes.destination = 'VENTE PARTICULIER' ";
+            break;
+        case 2:
+            $filtre_final_destination_ventes_garanties = "AND facturesventes.destination = 'VENTE MARCHAND' ";
+            break;
+
+    }
 
     switch ($date['value_selected']) {
         #mois en cours
@@ -2301,30 +2431,94 @@ function get_payplan_v2_detail_garanties_collaborateur($id_collaborateur, $date)
             break;
     }
 
-    $filtre_final_garantie = (isset($filtre_date_garantie) && $filtre_date_garantie !== '') ? $filtre_date_garantie : $filtre_date_initial_garanties;
+    $filtre_final_date_garantie = (isset($filtre_date_garantie) && $filtre_date_garantie !== '') ? $filtre_date_garantie : $filtre_date_initial_garanties;
 
     $pdo = Connection::getPDO();
     #si on a choisit un collaborateur particulier
     if ($id_collaborateur !== 0) {
         $request = $pdo->query("SELECT id_collaborateur_payplan as ID,COUNT(ID) as nb_garanties , SUM(prix_ht_garantie) as cumul_prix_ht_garantie FROM facturesventes 
-        WHERE id_collaborateur_payplan = $id_collaborateur AND garantie = 1 $filtre_final_garantie");
+        WHERE id_collaborateur_payplan = $id_collaborateur AND garantie = 1 $filtre_final_date_garantie $filtre_final_destination_ventes_garanties");
         $result_garanties = $request->fetch(PDO::FETCH_ASSOC);
     }
     //si on selectionne le total de tous les collaborateurs
     else {
         $request = $pdo->query("SELECT id_collaborateur_payplan ,COUNT(facturesventes.ID) as nb_garanties, SUM(facturesventes.prix_ht_garantie) as cumul_prix_ht_garantie FROM facturesventes 
         LEFT JOIN collaborateurs_payplan as cp ON cp.ID = facturesventes.id_collaborateur_payplan 
-        WHERE id_collaborateur_payplan  is not null AND garantie = 1 $filtre_final_garantie 
+        WHERE id_collaborateur_payplan  is not null AND garantie = 1 $filtre_final_date_garantie $filtre_final_destination_ventes_garanties
         GROUP BY id_collaborateur_payplan");
         $result_garanties = $request->fetchAll(PDO::FETCH_ASSOC);
     }
     return $result_garanties;
 }
 
-function get_payplan_v2_detail_packfirst_collaborateur($id_collaborateur, $date)
+function get_grille_de_gestion_garanties_detail_collaborateurs($id_collaborateur, $date, $destination_vente)
+{
+    $date_mois_en_cours = date("Y-m-01");
+    $filtre_date_initial_garanties = "AND fv.date_facture >= '$date_mois_en_cours' ";
+
+    switch ($destination_vente) {
+        case 0:
+            $filtre_final_destination_ventes_garanties = "AND fv.destination is not null";
+            break;
+        case 1:
+            $filtre_final_destination_ventes_garanties = "AND fv.destination = 'VENTE PARTICULIER' ";
+            break;
+        case 2:
+            $filtre_final_destination_ventes_garanties = "AND fv.destination = 'VENTE MARCHAND' ";
+            break;
+
+    }
+
+    switch ($date['value_selected']) {
+        #mois en cours
+        case 0:
+            $filtre_date_garantie = "AND fv.date_facture >= '$date_mois_en_cours'";
+            break;
+        #mois precédent
+        case 1:
+            $previous_month = get_previous_month_and_his_last_day();
+            $first = $previous_month['first'];
+            $last = $previous_month['last'];
+            $filtre_date_garantie = "AND fv.date_facture BETWEEN '$first' AND '$last'";
+            break;
+
+        case 2:
+            $date_debut = $date['dates']['debut'];
+            $date_fin = $date['dates']['fin'];
+            $filtre_date_garantie = "AND fv.date_facture BETWEEN '$date_debut' AND '$date_fin'";
+            break;
+    }
+
+    $filtre_final_date_garantie = (isset($filtre_date_garantie) && $filtre_date_garantie !== '') ? $filtre_date_garantie : $filtre_date_initial_garanties;
+
+    $pdo = Connection::getPDO();
+
+    $request = $pdo->query("SELECT fv.num_facture,fv.date_facture,fv.prix_ht_garantie 
+    FROM facturesventes as fv 
+    LEFT JOIN collaborateurs_payplan as cp ON cp.ID = fv.id_collaborateur_payplan 
+    WHERE fv.id_collaborateur_payplan  = $id_collaborateur AND fv.garantie = 1 $filtre_final_date_garantie $filtre_final_destination_ventes_garanties");
+    $result_garanties = $request->fetchAll(PDO::FETCH_ASSOC);
+
+    return $result_garanties;
+}
+
+function get_grille_de_gestion_packfirst($id_collaborateur, $date, $destination_vente)
 {
     $date_mois_en_cours = date("Y-m-01");
     $filtre_date_initial_garanties = "AND facturesventes.date_facture >= '$date_mois_en_cours' ";
+
+    switch ($destination_vente) {
+        case 0:
+            $filtre_final_destination_ventes_pack_first = "AND facturesventes.destination is not null ";
+            break;
+        case 1:
+            $filtre_final_destination_ventes_pack_first = "AND facturesventes.destination = 'VENTE PARTICULIER' ";
+            break;
+        case 2:
+            $filtre_final_destination_ventes_pack_first = "AND facturesventes.destination = 'VENTE MARCHAND' ";
+            break;
+
+    }
 
     switch ($date['value_selected']) {
         #mois en cours
@@ -2346,23 +2540,74 @@ function get_payplan_v2_detail_packfirst_collaborateur($id_collaborateur, $date)
             break;
     }
 
-    $filtre_final_garantie = (isset($filtre_date_garantie) && $filtre_date_garantie !== '') ? $filtre_date_garantie : $filtre_date_initial_garanties;
+    $filtre_final_date_garantie = (isset($filtre_date_garantie) && $filtre_date_garantie !== '') ? $filtre_date_garantie : $filtre_date_initial_garanties;
 
     $pdo = Connection::getPDO();
     #si on a choisit un collaborateur particulier
     if ($id_collaborateur !== 0) {
         $request = $pdo->query("SELECT id_collaborateur_payplan,COUNT(ID) as nb_pack_first FROM facturesventes 
-        WHERE id_collaborateur_payplan = $id_collaborateur AND pack_first = 1 $filtre_final_garantie");
+        WHERE id_collaborateur_payplan = $id_collaborateur AND pack_first = 1 $filtre_final_date_garantie $filtre_final_destination_ventes_pack_first");
         $result_pack_first = $request->fetch(PDO::FETCH_ASSOC);
     }
     //si on selectionne le total de tous les collaborateurs
     else {
         $request = $pdo->query("SELECT cp.ID as id_collaborateur_payplan ,COUNT(facturesventes.ID) as nb_pack_first FROM facturesventes 
         LEFT JOIN collaborateurs_payplan as cp ON cp.ID = facturesventes.id_collaborateur_payplan 
-        WHERE facturesventes.id_collaborateur_payplan  is not null AND pack_first = 1 $filtre_final_garantie 
+        WHERE facturesventes.id_collaborateur_payplan  is not null AND pack_first = 1 $filtre_final_date_garantie $filtre_final_destination_ventes_pack_first
         GROUP BY facturesventes.id_collaborateur_payplan");
         $result_pack_first = $request->fetchAll(PDO::FETCH_ASSOC);
     }
+    return $result_pack_first;
+}
+
+function get_grille_de_gestion_packfirst_detail_collaborateur($id_collaborateur, $date, $destination_vente)
+{
+    $date_mois_en_cours = date("Y-m-01");
+    $filtre_date_initial_pack_first = "AND fv.date_facture >= '$date_mois_en_cours' ";
+
+    switch ($destination_vente) {
+        case 0:
+            $filtre_final_destination_ventes_pack_first = "AND fv.destination is not null ";
+            break;
+        case 1:
+            $filtre_final_destination_ventes_pack_first = "AND fv.destination = 'VENTE PARTICULIER' ";
+            break;
+        case 2:
+            $filtre_final_destination_ventes_pack_first = "AND fv.destination = 'VENTE MARCHAND' ";
+            break;
+
+    }
+
+    switch ($date['value_selected']) {
+        #mois en cours
+        case 0:
+            $filtre_date_pack_first = "AND fv.date_facture >= '$date_mois_en_cours'";
+            break;
+        #mois precédent
+        case 1:
+            $previous_month = get_previous_month_and_his_last_day();
+            $first = $previous_month['first'];
+            $last = $previous_month['last'];
+            $filtre_date_pack_first = "AND fv.date_facture BETWEEN '$first' AND '$last'";
+            break;
+
+        case 2:
+            $date_debut = $date['dates']['debut'];
+            $date_fin = $date['dates']['fin'];
+            $filtre_date_pack_first = "AND fv.date_facture BETWEEN '$date_debut' AND '$date_fin'";
+            break;
+    }
+
+    $filtre_final_date_pack_first = (isset($filtre_date_pack_first) && $filtre_date_pack_first !== '') ? $filtre_date_pack_first : $filtre_date_initial_pack_first;
+
+    $pdo = Connection::getPDO();
+
+    $request = $pdo->query("SELECT fv.num_facture,fv.date_facture,fv.destination 
+    FROM facturesventes as fv 
+    LEFT JOIN collaborateurs_payplan as cp ON cp.ID = fv.id_collaborateur_payplan 
+    WHERE fv.id_collaborateur_payplan  = $id_collaborateur AND fv.pack_first = 1 $filtre_final_date_pack_first $filtre_final_destination_ventes_pack_first");
+    $result_pack_first = $request->fetchAll(PDO::FETCH_ASSOC);
+
     return $result_pack_first;
 }
 
@@ -4009,7 +4254,8 @@ function get_dates_personnalisees_N1($dates_personnalisees)
 }
 
 
-function update_id_collaborateur_in_facturesventes(){
+function update_id_collaborateur_in_facturesventes()
+{
     $pdo_portail = Connection::getPDO();
 
     //on commence par récupérer tous les vendeurs avec le champ vendeur 
@@ -4040,4 +4286,3 @@ function update_id_collaborateur_in_facturesventes(){
     }
 
 }
-         
