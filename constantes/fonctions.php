@@ -1277,7 +1277,7 @@ function get_commission_by_immat($immatriculation)
     LEFT JOIN factureventes ON (vehicules.id = factureventes.vehicule_id  AND factureventes.deleted = 0)
     LEFT JOIN utilisateurs ON factureventes.vendeur_id = utilisateurs.id
     
-    WHERE vehicules.immatriculation = '$immatriculation'");
+    WHERE vehicules.immatriculation = '$immatriculation' and vehicules.deleted = 0");
 
     $commission = $request->fetch(PDO::FETCH_ASSOC);
 
