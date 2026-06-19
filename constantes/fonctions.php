@@ -3086,19 +3086,22 @@ function update_repreneur_by_immat($vh_immat)
 
     $datas_commission = get_repreneur_by_immat($vh_immat);
     $id = get_id_payplan_by_immat($vh_immat);
-    $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas_commission['Options']);
 
-    $data = [
-        'id' => $id,
-        'repreneur_final_collaborateur_id' => $repreneur_final_id_collaborateur,
-    ];
+    if (isset($datas_commission['Options']) && $datas_commission['Options'] !== '') {
+        $repreneur_final_id_collaborateur = get_id_collaborateur_payplan_by_identification($datas_commission['Options']);
 
-    $sql = "UPDATE payplan SET 
-        repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id
-        WHERE ID = :id";
+        $data = [
+            'id' => $id,
+            'repreneur_final_collaborateur_id' => $repreneur_final_id_collaborateur,
+        ];
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($data);
+        $sql = "UPDATE payplan SET 
+            repreneur_final_collaborateur_id = :repreneur_final_collaborateur_id
+            WHERE ID = :id";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($data);
+    }
 }
 
 function get_id_vh_payplan_by_immat($immat)
