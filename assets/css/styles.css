@@ -1670,6 +1670,10 @@ img {
     width: 200px;
     height: 50px;
 }
+#btn_sortir_alerte_suivi_lag{
+    width: 200px;
+    height: 50px;
+}
 
 #div_retour_detail_collaborateur:hover {
     display: flex;
@@ -1677,6 +1681,15 @@ img {
     align-items: center;
     width: fit-content;
     color: #31a6ff;
+    cursor: pointer;
+}
+
+#div_retour_detail_collaborateur {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: fit-content;
+    color: #121618;
     cursor: pointer;
 }
 
@@ -1890,4 +1903,10 @@ img {
     cursor: pointer;
     color: #007BFF;
     font-weight: bold;
+}
+
+.modal-header{
+    background: #007bff;
+    border-color: #007bff;
+    color: #fff;
 }

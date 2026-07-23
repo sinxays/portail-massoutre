@@ -146,6 +146,8 @@ $table_payplan_reprise_achat_header_row = array("Collaborateur", "Repreneur fina
 
 $shop_exterieurs_table_header_row = array("Immatriculation", "Modele", "MVA", "KM", "Garantie", "Numéro contrat", "Compteur Immo", "Date déclaration", "Type Panne", "Detail Panne", "Localisation", "Date + Derniere action", "Remarque", "Payé?", "Montant(€)", "Date demande récup", "Date récup + code agence", "  ");
 
+$suivi_lag_table_header_row = array("Immatriculation", "Marque", "Modele", "Km Echoes", "Type alerte", "Libelle code", "Date (entretien)", "Date(km)", "Client", "Dernier Commentaire", "  ");
+
 $traqueurs_table_header_row = array("Immatriculation", "S/N", "Imei", "Sim", "Type", "MVA", "Installation", "MAJ site", "Montage", "Nom", "Position", "OBD", "Nom", "Soudure");
 
 $liste_traqueurs_table_header_row = array("S/N", "Imei", "Actif", "Monté", "Exporté");

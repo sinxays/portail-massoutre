@@ -79,6 +79,7 @@
                                 <a href="/operations/shop_exterieurs/shop_exterieurs.php"
                                     class="nav__dropdown-item">Shop exterieurs</a>
                                 <a href="/operations/traqueurs/traqueurs.php" class="nav__dropdown-item">Traqueurs</a>
+                                <a href="/operations/suivi_lag/suivi_lag.php" class="nav__dropdown-item">Alertes LAG</a>
                             </div>
                         </div>
                     </div>

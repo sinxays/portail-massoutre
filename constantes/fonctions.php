@@ -366,13 +366,14 @@ function import_csv_stats_journaliere($csv_file, $date)
 function format_date_FR_TO_US($date_FR)
 {
     $date_tmp = explode("/", $date_FR);
+
     if (strlen($date_tmp[1]) < 2) {
         $date_tmp[1] = '0' . $date_tmp[1];
     }
     if (strlen($date_tmp[0]) < 2) {
         $date_tmp[0] = '0' . $date_tmp[0];
     }
-    $date_final = $date_tmp[2] . '/' . $date_tmp[1] . '/' . $date_tmp[0];
+    $date_final = $date_tmp[2] . '-' . $date_tmp[1] . '-' . $date_tmp[0];
 
     return $date_final;
 }
@@ -1687,10 +1688,15 @@ function get_vh_non_vendu_from_payplan($filtre = '')
 
 function test2()
 {
-
-    $pdo = Connection::getPDO();
-    $request = $pdo->query("SELECT * FROM payplan_achat WHERE immatriculation = 'FL597XB'");
+    $pdo = Connection::getPDO_2();
+    //on va chercher dans le portail les details modele et marque
+    $request = $pdo->query("SELECT m.libelle as marque , mc.libelle as modele FROM vehicules as v
+                            LEFT JOIN marques as m ON m.id = v.marque_id
+                            LEFT JOIN modelescommerciaux as mc ON  mc.id =  v.modelecommercial_id
+                            WHERE v.immatriculation = 'EH722VS'");
     $result = $request->fetch(PDO::FETCH_ASSOC);
+
+    var_dump($result);
 }
 
 

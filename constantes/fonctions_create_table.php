@@ -783,6 +783,21 @@ function create_header_row_shop_ext($header)
     $return .= "</tr>";
     return $return;
 }
+function create_header_row_suivi_lag($header)
+{
+    $return = "";
+    $return .= "<tr class='tr_header_shop_ext'>";
+    $return .= "<td colspan='4' id='td_info_vehicule'>Infos véhicule</td>";
+    $return .= "<td colspan='4' id='td_info_panne'>Infos alertes</td>";
+    $return .= "<td colspan='1' id='td_info_action'>client</td>";
+    $return .= "</tr>";
+    $return .= "<tr class='tr_sticky'>";
+    foreach ($header as $title_header) {
+        $return .= "<th class='th3'> $title_header </th>";
+    }
+    $return .= "</tr>";
+    return $return;
+}
 
 
 function create_header_row_traqueurs($header)
@@ -1235,6 +1250,62 @@ function create_table_shop_exterieurs($header, $categorie = '', $immatriculation
     // var_dump($table_shop_exterieurs);
 
     return $table_shop_exterieurs;
+}
+
+
+function create_table_suivi_lag($header, $type_entretien = '', $immatriculation = '', $client = '', $deleted = '')
+{
+    //données
+    // $liste_shop_exterieurs = get_liste_shop_exterieurs($categorie, $immatriculation, $mva, $type);
+    $liste_suivi_lag = get_liste_suivi_lag($immatriculation, $type_entretien, $client, $deleted);
+
+    $table_suivi_lag = "";
+
+    $table_suivi_lag .= "<table class='my_tab_perso'>";
+    //header
+    $table_suivi_lag .= create_header_row_suivi_lag($header);
+    //fin header
+
+    //contenu
+    foreach ($liste_suivi_lag as $suivi_lag) {
+
+        //remplissage tableau
+        $table_suivi_lag .= "<tr>";
+        $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['immatriculation'] . " </td>";
+        $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['marque'] . " </td>";
+        $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['modele'] . " </td>";
+        $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['km_echoes'] . " </td>";
+
+        $table_suivi_lag .= "<td class='td_n'>" . $suivi_lag['type'] . "</td>";
+        $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['libelle'] . " </td>";
+        $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['date_to_entretien'] . " </td>";
+        $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['km_to_entretien'] . " </td>";
+        $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['client'] . " </td>";
+
+        if (isset($suivi_lag['last_action']) && $suivi_lag['last_action'] !== '') {
+            $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['last_action']['date_action'] . " - " . $suivi_lag['last_action']['type_action'] . " - " . $suivi_lag['last_action']['commentaire'] . " </td>";
+
+        } else {
+            $table_suivi_lag .= "<td class='td_n'> </td>";
+        }
+
+        $table_suivi_lag .= "<td class='td_n' style='width:50px'>";
+        $table_suivi_lag .= "<a href='modif_suivi_lag.php?id=" . $suivi_lag['alerte_id'] . "' style='margin-right:10px' title='Modifier'>
+        <box-icon name='edit'></box-icon>
+        </a>";
+        // $table_suivi_lag .= "<a title='lecture en détail' href='lecture_shop_exterieur.php?id=" . $suivi_lag['ID'] . "'><box-icon name='file-find'></box-icon></a>";
+
+        $table_suivi_lag .= "</td>";
+
+        $table_suivi_lag .= "</tr>";
+    }
+    //fin contenu
+    $table_suivi_lag .= "</table> ";
+
+
+    // var_dump($table_suivi_lag);
+
+    return $table_suivi_lag;
 }
 
 

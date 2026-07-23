@@ -56,6 +56,7 @@
         include "right_menubar.php";
         include "include.php";
 
+        use app\Connection;
 
         ini_set('max_execution_time', 0);
 
@@ -72,11 +73,21 @@
         
 
         // update_payplan_by_immat("FM173XN");
-
+        
         // $date = date('2025-12-23');
         // update_factures_canceled($date);
         
-         
+        $pdo = Connection::getPDO();
+        $pdo_intranet = Connection::getPDO_2();
+
+
+        $test = "07/12/2019";
+
+        $test2 = format_date_FR_TO_US($test);
+
+        var_dump($test2);
+
+
 
 
 

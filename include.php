@@ -1,12 +1,24 @@
 <?php
 
-include "constantes/connectionDB_pdo.php";
-include "constantes/fonctions.php";
-include "constantes/fonctions_suivi_ventes.php";
-include "constantes/fonctions_shop_exterieurs.php";
-include "constantes/fonctions_traqueurs.php";
-include "constantes/fonctions_create_table.php";
-include "constantes/bibliotheque_array.php";
-include "constantes/constantes_payplan.php";
-include "constantes/constantes_globales.php";
+require_once __DIR__ . "/constantes/constantes_globales.php";
+
+require_once __DIR__ . "/constantes/connectionDB_pdo.php";
+
+require_once __DIR__ . "/constantes/fonctions.php";
+
+require_once __DIR__ . "/constantes/fonctions_suivi_ventes.php";
+
+require_once __DIR__ . "/constantes/fonctions_shop_exterieurs.php";
+
+require_once __DIR__ . "/constantes/fonctions_traqueurs.php";
+
+require_once __DIR__ . "/constantes/fonctions_suivi_lag.php";
+
+require_once __DIR__ . "/constantes/fonctions_create_table.php";
+
+require_once __DIR__ . "/constantes/bibliotheque_array.php";
+
+require_once __DIR__ . "/constantes/constantes_payplan.php";
+
+require_once __DIR__ . '/vendor/autoload.php';
 
