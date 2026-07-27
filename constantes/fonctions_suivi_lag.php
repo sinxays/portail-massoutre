@@ -30,7 +30,7 @@ function get_liste_suivi_lag($immatriculation = '', $type_entretien = '', $clien
         FROM suivi_lag_vehicules as vh 
         LEFT JOIN suivi_lag_vehicules_alertes as vh_alerte ON vh.ID = vh_alerte.id_vehicule
         LEFT JOIN suivi_lag_code_alertes as code ON code.ID = vh_alerte.id_code_alerte
-        WHERE $where AND code.type IS NOT NULL ");
+        WHERE $where AND code.actif = 1 ");
     $result_liste = $request->fetchAll(PDO::FETCH_ASSOC);
 
     // var_dump($request->queryString);
@@ -220,7 +220,6 @@ function import_fichier_excel_to_suivi_lag($type_fichier, $fichier_excel)
                         $array_code_alert_no_exist[] = $type_alerte_code . " - " . $immatriculation;
                     }
 
-
                 } else {
                     $array_vh_no_exist[] = $immatriculation;
                 }
@@ -372,7 +371,7 @@ function get_suivi_lag_type_alertes()
 
     $pdo = Connection::getPDO();
 
-    $request = $pdo->query("SELECT * FROM suivi_lag_code_alertes");
+    $request = $pdo->query("SELECT * FROM suivi_lag_code_alertes WHERE actif = 1");
 
     $result = $request->fetchAll(PDO::FETCH_ASSOC);
 
