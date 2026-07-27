@@ -49,14 +49,15 @@ $(document).ready(function () {
     $("#client_input").keyup(function (e) {
         let input_client = $(this).val();
         let input_archive = $("#select_archive").val();
+        let selected_id_code_alerte = $("#select_id_code_alerte").val();
         $("#immatriculation_input").val('');
-        $("#select_id_code_alerte").val(0);
+        // $("#select_id_code_alerte").val(0);
         loader.show();
 
         $.ajax({
             url: "/operations/suivi_lag/req/req_tableau_suivi_lag.php",
             type: "POST",
-            data: { input_client: input_client, archive: input_archive },
+            data: { input_client: input_client, id_code_alerte: selected_id_code_alerte, archive: input_archive },
             success: function (data) {
                 $("#table_shop_exterieur").html(data);
                 loader.hide();
@@ -67,16 +68,17 @@ $(document).ready(function () {
     $("#select_id_code_alerte").change(function (e) {
         let selected_id_code_alerte = $(this).val();
         let input_archive = $("#select_archive").val();
+        let input_client = $("#client_input").val();
 
         $("#immatriculation_input").val('');
-        $("#client_input").val('');
+        // $("#client_input").val('');
 
         loader.show();
 
         $.ajax({
             url: "/operations/suivi_lag/req/req_tableau_suivi_lag.php",
             type: "POST",
-            data: { id_code_alerte: selected_id_code_alerte, archive: input_archive },
+            data: { id_code_alerte: selected_id_code_alerte, input_client: input_client, archive: input_archive },
             success: function (data) {
                 $("#table_shop_exterieur").html(data);
                 loader.hide();

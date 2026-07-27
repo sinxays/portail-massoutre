@@ -10,12 +10,22 @@ function get_liste_suivi_lag($immatriculation = '', $type_entretien = '', $clien
 {
 
     $where = "vh_alerte.deleted = $deleted";
+
     if ($type_entretien && $type_entretien !== 0) {
-        $where = "code.ID = $type_entretien AND vh_alerte.deleted = $deleted";
+        if (isset($client) && $client !== '') {
+            $where = "code.ID = $type_entretien AND vh_alerte.deleted = $deleted AND vh.client LIKE '%$client%'";
+        } else {
+            $where = "code.ID = $type_entretien AND vh_alerte.deleted = $deleted";
+
+        }
     } else if ($immatriculation && $immatriculation !== '') {
         $where = "vh.immatriculation LIKE '%$immatriculation%' AND vh_alerte.deleted = $deleted";
     } else if ($client && $client !== '') {
-        $where = "vh.client LIKE '%$client%' AND vh_alerte.deleted = $deleted";
+        if (isset($type_entretien) && $type_entretien !== 0) {
+            $where = "vh.client LIKE '%$client%' AND vh_alerte.deleted = $deleted AND code.ID = $type_entretien";
+        } else {
+            $where = "vh.client LIKE '%$client%' AND vh_alerte.deleted = $deleted";
+        }
     }
     //archivé ou non
     else if ($deleted && $deleted !== '') {
@@ -23,6 +33,14 @@ function get_liste_suivi_lag($immatriculation = '', $type_entretien = '', $clien
     }
 
     $pdo = Connection::getPDO();
+
+    echo "SELECT vh.immatriculation,vh.marque,vh.modele,vh.km_echoes,vh.client,vh.ID as vh_id,
+    code.type,code.libelle,
+    vh_alerte.date_to_entretien,vh_alerte.km_to_entretien,vh_alerte.ID as alerte_id
+        FROM suivi_lag_vehicules as vh 
+        LEFT JOIN suivi_lag_vehicules_alertes as vh_alerte ON vh.ID = vh_alerte.id_vehicule
+        LEFT JOIN suivi_lag_code_alertes as code ON code.ID = vh_alerte.id_code_alerte
+        WHERE $where AND code.actif = 1";
 
     $request = $pdo->query("SELECT vh.immatriculation,vh.marque,vh.modele,vh.km_echoes,vh.client,vh.ID as vh_id,
     code.type,code.libelle,

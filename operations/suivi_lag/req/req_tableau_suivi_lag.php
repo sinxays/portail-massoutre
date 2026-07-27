@@ -13,7 +13,8 @@ if (isset($_POST["archive"])) {
 //si on cherche un client
 if (isset($_POST["input_client"])) {
     $client = $_POST["input_client"];
-    $table_suivi_lag = create_table_suivi_lag($suivi_lag_table_header_row, '', '', $client, $deleted);
+    $id_code_alerte = intval($_POST["id_code_alerte"]);
+    $table_suivi_lag = create_table_suivi_lag($suivi_lag_table_header_row, $id_code_alerte, '', $client, $deleted);
 }
 // si on cherche une immatriculation
 else if (isset($_POST["input_immat"])) {
@@ -23,8 +24,9 @@ else if (isset($_POST["input_immat"])) {
 
 //si on choisit un code alerte spécifique 
 else if (isset($_POST["id_code_alerte"])) {
-    $id_code_alerte = $_POST["id_code_alerte"];
-    $table_suivi_lag = create_table_suivi_lag($suivi_lag_table_header_row, $id_code_alerte, '', '', $deleted);
+    $id_code_alerte = intval($_POST["id_code_alerte"]);
+    $client = $_POST["input_client"];
+    $table_suivi_lag = create_table_suivi_lag($suivi_lag_table_header_row, $id_code_alerte, '', $client, $deleted);
 }
 // si on veut afficher les deleted ou non
 else if (isset($_POST["deleted"])) {
