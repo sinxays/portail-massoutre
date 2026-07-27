@@ -34,13 +34,13 @@ function get_liste_suivi_lag($immatriculation = '', $type_entretien = '', $clien
 
     $pdo = Connection::getPDO();
 
-    echo "SELECT vh.immatriculation,vh.marque,vh.modele,vh.km_echoes,vh.client,vh.ID as vh_id,
-    code.type,code.libelle,
-    vh_alerte.date_to_entretien,vh_alerte.km_to_entretien,vh_alerte.ID as alerte_id
-        FROM suivi_lag_vehicules as vh 
-        LEFT JOIN suivi_lag_vehicules_alertes as vh_alerte ON vh.ID = vh_alerte.id_vehicule
-        LEFT JOIN suivi_lag_code_alertes as code ON code.ID = vh_alerte.id_code_alerte
-        WHERE $where AND code.actif = 1";
+    // echo "SELECT vh.immatriculation,vh.marque,vh.modele,vh.km_echoes,vh.client,vh.ID as vh_id,
+    // code.type,code.libelle,
+    // vh_alerte.date_to_entretien,vh_alerte.km_to_entretien,vh_alerte.ID as alerte_id
+    //     FROM suivi_lag_vehicules as vh 
+    //     LEFT JOIN suivi_lag_vehicules_alertes as vh_alerte ON vh.ID = vh_alerte.id_vehicule
+    //     LEFT JOIN suivi_lag_code_alertes as code ON code.ID = vh_alerte.id_code_alerte
+    //     WHERE $where AND code.actif = 1";
 
     $request = $pdo->query("SELECT vh.immatriculation,vh.marque,vh.modele,vh.km_echoes,vh.client,vh.ID as vh_id,
     code.type,code.libelle,
