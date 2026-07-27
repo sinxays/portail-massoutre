@@ -1,23 +1,48 @@
 $(document).ready(function () {
 
-
     let loader = $('#loader');
     loader.show();
 
-    $.ajax({
-        url: "/operations/suivi_lag/req/req_tableau_suivi_lag.php",
-        type: "POST",
-        data: {},
-        success: function (data) {
-            $("#table_shop_exterieur").html(data);
-            loader.hide();
-        }
-    });
+    const sauvegarde = sessionStorage.getItem("filtresVehicules");
+
+    if (sauvegarde) {
+        const filtres = JSON.parse(sauvegarde);
+
+        $("#immatriculation_input").val(filtres.filtre_immat_save);
+        $("#client_input").val(filtres.filtre_client_save);
+        $("#select_id_code_alerte").val(filtres.filtre_id_type_alerte_save);
+        console.log(sauvegarde);
+
+        $.ajax({
+            url: "/operations/suivi_lag/req/req_tableau_suivi_lag.php",
+            type: "POST",
+            data: { input_immat: filtres.filtre_immat_save, input_client: filtres.filtre_client_save, id_code_alerte: filtres.filtre_id_type_alerte_save },
+            success: function (data) {
+                $("#table_shop_exterieur").html(data);
+                loader.hide();
+            }
+        });
+    }
+
+    else {
+
+        $.ajax({
+            url: "/operations/suivi_lag/req/req_tableau_suivi_lag.php",
+            type: "POST",
+            data: {},
+            success: function (data) {
+                $("#table_shop_exterieur").html(data);
+                loader.hide();
+            }
+        });
+    }
+
+
 
 
     $("#div_retour_detail_collaborateur").click(function (e) {
-        history.back();
-        // window.location.href = "/operations/suivi_lag/suivi_lag.php";
+        // history.back();
+        window.location.href = "/operations/suivi_lag/suivi_lag.php";
     });
 
 
@@ -32,6 +57,11 @@ $(document).ready(function () {
         $("#client_input").val('');
         $("#select_id_code_alerte").val(0);
         loader.show();
+
+        const filtres = {
+            filtre_immat_save: $(this).val()
+        };
+        sessionStorage.setItem("filtresVehicules", JSON.stringify(filtres));
 
         $.ajax({
             url: "/operations/suivi_lag/req/req_tableau_suivi_lag.php",
@@ -54,6 +84,12 @@ $(document).ready(function () {
         // $("#select_id_code_alerte").val(0);
         loader.show();
 
+        const filtres = {
+            filtre_client_save: $(this).val(),
+            filtre_id_type_alerte_save: $("#select_id_code_alerte").val()
+        };
+        sessionStorage.setItem("filtresVehicules", JSON.stringify(filtres));
+
         $.ajax({
             url: "/operations/suivi_lag/req/req_tableau_suivi_lag.php",
             type: "POST",
@@ -74,6 +110,12 @@ $(document).ready(function () {
         // $("#client_input").val('');
 
         loader.show();
+
+        const filtres = {
+            filtre_id_type_alerte_save: $(this).val(),
+            filtre_client_save: $("#client_input").val(),
+        };
+        sessionStorage.setItem("filtresVehicules", JSON.stringify(filtres));
 
         $.ajax({
             url: "/operations/suivi_lag/req/req_tableau_suivi_lag.php",
@@ -145,6 +187,31 @@ $(document).ready(function () {
                 alert("Erreur lors du traitement du fichier");
             }
         });
+
+    });
+
+    // Import fichier excel
+    $("#refresh_filters").click(function (e) {
+        e.preventDefault();
+        $("#immatriculation_input").val('');
+        $("#client_input").val('');
+        $("#select_id_code_alerte").val('');
+
+        loader.show();
+
+        $.ajax({
+            url: "/operations/suivi_lag/req/req_tableau_suivi_lag.php",
+            type: "POST",
+            data: {},
+            success: function (data) {
+                $("#table_shop_exterieur").html(data);
+                loader.hide();
+            }
+        });
+
+       
+
+       
 
     });
 

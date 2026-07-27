@@ -1253,11 +1253,11 @@ function create_table_shop_exterieurs($header, $categorie = '', $immatriculation
 }
 
 
-function create_table_suivi_lag($header, $type_entretien = '', $immatriculation = '', $client = '', $deleted = '')
+function create_table_suivi_lag($header, $type_alerte = '', $immatriculation = '', $client = '', $deleted = '')
 {
     //données
     // $liste_shop_exterieurs = get_liste_shop_exterieurs($categorie, $immatriculation, $mva, $type);
-    $liste_suivi_lag = get_liste_suivi_lag($immatriculation, $type_entretien, $client, $deleted);
+    $liste_suivi_lag = get_liste_suivi_lag($immatriculation, $type_alerte, $client, $deleted);
 
     $table_suivi_lag = "";
 

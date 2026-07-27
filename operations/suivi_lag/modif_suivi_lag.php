@@ -32,25 +32,10 @@
 
 <body>
     <!--========== HEADER ==========-->
-    <header class="header">
-        <div class="header__container">
-            <img src="../../assets/img/perfil.jpg" alt="" class="header__img">
+    <?php include "../../header.php";
 
-            <a href="#" class="header__logo"> </a>
-
-            <div class="header__search">
-                <input type="search" placeholder="Search" class="header__input">
-                <i class='bx bx-search header__icon'></i>
-            </div>
-
-            <div class="header__toggle">
-                <i class='bx bx-menu' id="header-toggle"></i>
-            </div>
-        </div>
-    </header>
-
-    <!--========== NAV ==========-->
-    <?php include "../../right_menubar.php";
+    // NAV  
+    include "../../right_menubar.php";
     include "../../include.php"; ?>
 
 
@@ -69,8 +54,11 @@
         }
         ?>
 
-        <H2> MODIFIER ALERTE LAG </H2>
+         <!-- LOGO LAG -->
+        <img src="../../assets/img/LAG_logo.png" alt="" class="header__lag_img">
 
+        <br />
+        <br />
         <br />
 
         <div id="div_retour_detail_collaborateur">

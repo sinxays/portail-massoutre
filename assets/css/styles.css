@@ -122,7 +122,7 @@
     --text-color-light: #A5A1AA;
     --body-color: #F9F6FD;
     --container-color: #ffffff;
-    --header_color: #c73232;
+    --header_color: #1f2d3a;
     /*========== Font and typography ==========*/
     --body-font: 'Poppins', sans-serif;
     --normal-font-size: .938rem;
@@ -202,9 +202,10 @@ img {
 }
 
 .header__img {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
+    /* border-radius: 10%; */
+    width: 180px;
+    height: 60px;
+    order: 1;
 }
 
 .header__logo {
@@ -428,11 +429,6 @@ img {
         display: block;
     }
 
-    .header__img {
-        width: 40px;
-        height: 40px;
-        order: 1;
-    }
 
     .nav {
         left: 0;
@@ -862,6 +858,18 @@ img {
     #div_shop_ext_1_4 {
         margin-right: 20px;
         width: 150px;
+    }
+
+    #div_shop_ext_1_5 {
+        margin-right: 20px;
+        width: 50px;
+        padding-left: 15px;
+        padding-top: 20px;
+    }
+
+    #div_shop_ext_1_5:hover {
+       color: #007BFF;
+       cursor: pointer;  
     }
 
     #div_shop_ext_2 {
@@ -1670,7 +1678,8 @@ img {
     width: 200px;
     height: 50px;
 }
-#btn_sortir_alerte_suivi_lag{
+
+#btn_sortir_alerte_suivi_lag {
     width: 200px;
     height: 50px;
 }
@@ -1905,7 +1914,7 @@ img {
     font-weight: bold;
 }
 
-.modal-header{
+.modal-header {
     background: #007bff;
     border-color: #007bff;
     color: #fff;

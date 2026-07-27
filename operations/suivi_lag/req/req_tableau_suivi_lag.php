@@ -11,7 +11,7 @@ if (isset($_POST["archive"])) {
 }
 
 //si on cherche un client
-if (isset($_POST["input_client"])) {
+if (isset($_POST["input_client"]) && $_POST['input_client'] !== '') {
     $client = $_POST["input_client"];
     $id_code_alerte = intval($_POST["id_code_alerte"]);
     $table_suivi_lag = create_table_suivi_lag($suivi_lag_table_header_row, $id_code_alerte, '', $client, $deleted);

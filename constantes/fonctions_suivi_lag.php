@@ -6,23 +6,23 @@ use app\Connection;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-function get_liste_suivi_lag($immatriculation = '', $type_entretien = '', $client = '', $deleted)
+function get_liste_suivi_lag($immatriculation = '', $type_alerte = '', $client = '', $deleted)
 {
 
     $where = "vh_alerte.deleted = $deleted";
 
-    if ($type_entretien && $type_entretien !== 0) {
+    if ($type_alerte && $type_alerte !== 0) {
         if (isset($client) && $client !== '') {
-            $where = "code.ID = $type_entretien AND vh_alerte.deleted = $deleted AND vh.client LIKE '%$client%'";
+            $where = "code.ID = $type_alerte AND vh_alerte.deleted = $deleted AND vh.client LIKE '%$client%'";
         } else {
-            $where = "code.ID = $type_entretien AND vh_alerte.deleted = $deleted";
+            $where = "code.ID = $type_alerte AND vh_alerte.deleted = $deleted";
 
         }
     } else if ($immatriculation && $immatriculation !== '') {
         $where = "vh.immatriculation LIKE '%$immatriculation%' AND vh_alerte.deleted = $deleted";
     } else if ($client && $client !== '') {
-        if (isset($type_entretien) && $type_entretien !== 0) {
-            $where = "vh.client LIKE '%$client%' AND vh_alerte.deleted = $deleted AND code.ID = $type_entretien";
+        if (isset($type_alerte) && $type_alerte !== 0) {
+            $where = "vh.client LIKE '%$client%' AND vh_alerte.deleted = $deleted AND code.ID = $type_alerte";
         } else {
             $where = "vh.client LIKE '%$client%' AND vh_alerte.deleted = $deleted";
         }
