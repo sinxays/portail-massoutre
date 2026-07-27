@@ -197,6 +197,8 @@ $(document).ready(function () {
         $("#client_input").val('');
         $("#select_id_code_alerte").val('');
 
+        sessionStorage.clear();
+
         loader.show();
 
         $.ajax({
