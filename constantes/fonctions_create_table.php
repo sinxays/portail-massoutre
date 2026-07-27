@@ -1283,7 +1283,7 @@ function create_table_suivi_lag($header, $type_alerte = '', $immatriculation = '
         $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['client'] . " </td>";
 
         if (isset($suivi_lag['last_action']) && $suivi_lag['last_action'] !== '') {
-            $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['last_action']['date_action'] . " - " . $suivi_lag['last_action']['type_action'] . " - " . $suivi_lag['last_action']['commentaire'] . " </td>";
+            $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['last_action']['date_action'] . " ( " . $suivi_lag['last_action']['type_action'] . " ) " . $suivi_lag['last_action']['commentaire'] . " </td>";
 
         } else {
             $table_suivi_lag .= "<td class='td_n'> </td>";
