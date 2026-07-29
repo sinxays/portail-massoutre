@@ -134,6 +134,7 @@
                                     <option value="base" selected>BASE VHS LLD</option>
                                     <option value="echoes">Echoes</option>
                                     <option value="hitech">Hitech</option>
+                                    <option value="hitech_bis">Hitech_bis</option>
                                 </select>
                             </div>
                             <input type="text" name="import_fichier" id="id_import_fichier" value="import_fichier"
