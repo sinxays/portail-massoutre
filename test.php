@@ -88,8 +88,20 @@
         var_dump($test2);
 
 
+        //on va chercher le véhicule lié si il existe
+        $request = $pdo->query("SELECT ID FROM suivi_lag_code_alertes
+                WHERE code_alerte = 9");
+        $id_code_alerte = $request->fetch(PDO::FETCH_COLUMN);
 
+        
 
+        //on va chercher le véhicule lié si il existe
+        $request = $pdo->query("SELECT vh_alerte.ID FROM suivi_lag_vehicules_alertes as vh_alerte
+                LEFT JOIN suivi_lag_vehicules as vh ON vh.ID = vh_alerte.id_vehicule
+                WHERE vh.immatriculation = 'GC443KA' and vh_alerte.id_code_alerte = $id_code_alerte");
+        $result = $request->fetch(PDO::FETCH_COLUMN);
+
+        var_dump($result);
 
 
 

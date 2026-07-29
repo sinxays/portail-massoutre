@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!--========== BOX ICONS ==========-->
+    <!-- Basic Icons -->
+    <link href="https://cdn.boxicons.com/3.0.8/fonts/basic/boxicons.min.css" rel="stylesheet">
+    <!-- Filled Icons -->
+    <link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet">
+    <!-- Brand Icons -->
+    <link href="https://cdn.boxicons.com/3.0.8/fonts/brands/boxicons-brands.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 
@@ -56,7 +62,6 @@
 
          <!-- LOGO LAG -->
         <img src="../../assets/img/LAG_logo.png" alt="" class="header__lag_img">
-
         <br />
         <br />
         <br />

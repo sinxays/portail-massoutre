@@ -4,7 +4,7 @@ include "../../../include.php";
 
 $type_fichier = $_POST['type_fichier'];
 
-echo $type_fichier;
+// echo $type_fichier;
 
 saut_de_ligne();
 

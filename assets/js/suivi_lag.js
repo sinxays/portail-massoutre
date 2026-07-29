@@ -169,7 +169,7 @@ $(document).ready(function () {
         // Ajout du select
         formData.append("type_fichier", $("#select_source_fichier").val());
 
-        console.log('toto')
+        console.lo
 
         $.ajax({
             url: "/operations/suivi_lag/req/req_import_fichier_suivi_lag.php",
@@ -183,8 +183,10 @@ $(document).ready(function () {
                 window.location.replace('/operations/suivi_lag/suivi_lag.php');
             },
 
-            error: function () {
-                alert("Erreur lors du traitement du fichier");
+            error: function (error_details) {
+                alert("Erreur lors du traitement du fichier ==> Veuillez importer un fichier XLSX");
+                loader.hide();
+
             }
         });
 
@@ -211,9 +213,9 @@ $(document).ready(function () {
             }
         });
 
-       
 
-       
+
+
 
     });
 

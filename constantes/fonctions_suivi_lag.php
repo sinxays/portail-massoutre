@@ -81,52 +81,85 @@ function import_fichier_excel_to_suivi_lag($type_fichier, $fichier_excel)
     $pdo_intranet = Connection::getPDO_2();
 
     $spreadsheet = IOFactory::load($fichier_excel);
+    $extension_fichier = IOFactory::identify($fichier_excel);
     $sheet = $spreadsheet->getActiveSheet();
     $lignes = $sheet->toArray();
     array_shift($lignes); // enlève les en-têtes
 
+    // si c'est un xlsx
+    if ($extension_fichier == 'Xlsx') {
 
-    switch ($type_fichier) {
-        case 'base':
-            foreach ($lignes as $ligne) {
-                $count_nb_vh++;
+        switch ($type_fichier) {
+            case 'base':
+                foreach ($lignes as $ligne) {
+                    $count_nb_vh++;
 
-                print_r($ligne);
-                saut_de_ligne();
+                    print_r($ligne);
+                    saut_de_ligne();
 
-                $immatriculation = $ligne[0];
-                $client = $ligne[1];
+                    $immatriculation = $ligne[0];
+                    $client = $ligne[1];
 
-                // on check deja si le vh n'existe pas déja
-                $request = $pdo->query("SELECT ID FROM suivi_lag_vehicules WHERE immatriculation = '$immatriculation'");
-                $result = $request->fetch(PDO::FETCH_COLUMN);
+                    // on check deja si le vh n'existe pas déja
+                    $request = $pdo->query("SELECT ID FROM suivi_lag_vehicules WHERE immatriculation = '$immatriculation'");
+                    $result = $request->fetch(PDO::FETCH_COLUMN);
 
-                if (!$result) {
+                    if (!$result) {
 
-                    //on va chercher dans le portail les details modele et marque
-                    $request = $pdo_intranet->query("SELECT m.libelle as marque , mc.libelle as modele from vehicules as v
+                        //on va chercher dans le portail les details modele et marque
+                        $request = $pdo_intranet->query("SELECT m.libelle as marque , mc.libelle as modele from vehicules as v
                             LEFT JOIN marques as m ON m.id = v.marque_id
                             LEFT JOIN modelescommerciaux as mc ON  mc.id =  v.modelecommercial_id
                             WHERE v.immatriculation = '$immatriculation'");
-                    $result = $request->fetch(PDO::FETCH_ASSOC);
+                        $result = $request->fetch(PDO::FETCH_ASSOC);
 
-                    $marque = $result['marque'];
-                    $modele = $result['modele'];
+                        $marque = $result['marque'];
+                        $modele = $result['modele'];
+
+                        try {
+                            $data_vh = [
+                                'immatriculation' => $immatriculation,
+                                'client' => $client,
+                                'marque' => $marque,
+                                'modele' => $modele,
+                                'deleted' => 0,
+                            ];
+                            $sql = "INSERT INTO suivi_lag_vehicules (immatriculation,client,marque,modele,deleted) 
+                        VALUES (:immatriculation, :client,:marque,:modele,:deleted)";
+                            $stmt = $pdo->prepare($sql);
+                            $stmt->execute($data_vh);
+                            $count_nb_vh_imported++;
+
+                        } catch (PDOException $e) {
+                            error_log($e->getMessage());
+                            // En développement
+                            die("Erreur SQL : " . $e->getMessage());
+                            // En production, plutôt :
+                            // die("Une erreur est survenue.");
+                        }
+
+                    }
+                }
+
+                break;
+
+
+            // pour mettre a jour le kilometrage des véhicules équipés   
+            case 'echoes':
+                foreach ($lignes as $ligne) {
+
+                    // print_r($ligne);
+                    $immatriculation = $ligne[2];
+                    $km_echoes = $ligne[6];
 
                     try {
                         $data_vh = [
                             'immatriculation' => $immatriculation,
-                            'client' => $client,
-                            'marque' => $marque,
-                            'modele' => $modele,
-                            'deleted' => 0,
+                            'km_echoes' => $km_echoes
                         ];
-                        $sql = "INSERT INTO suivi_lag_vehicules (immatriculation,client,marque,modele,deleted) 
-                        VALUES (:immatriculation, :client,:marque,:modele,:deleted)";
+                        $sql = "UPDATE suivi_lag_vehicules SET km_echoes = :km_echoes WHERE immatriculation = :immatriculation and deleted = 0";
                         $stmt = $pdo->prepare($sql);
                         $stmt->execute($data_vh);
-                        $count_nb_vh_imported++;
-
                     } catch (PDOException $e) {
                         error_log($e->getMessage());
                         // En développement
@@ -134,190 +167,169 @@ function import_fichier_excel_to_suivi_lag($type_fichier, $fichier_excel)
                         // En production, plutôt :
                         // die("Une erreur est survenue.");
                     }
-
-                }
-            }
-
-            break;
-
-
-        // pour mettre a jour le kilometrage des véhicules équipés   
-        case 'echoes':
-            foreach ($lignes as $ligne) {
-
-                // print_r($ligne);
-                $immatriculation = $ligne[2];
-                $km_echoes = $ligne[6];
-
-                try {
-                    $data_vh = [
-                        'immatriculation' => $immatriculation,
-                        'km_echoes' => $km_echoes
-                    ];
-                    $sql = "UPDATE suivi_lag_vehicules SET km_echoes = :km_echoes WHERE immatriculation = :immatriculation and deleted = 0";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute($data_vh);
-                } catch (PDOException $e) {
-                    error_log($e->getMessage());
-                    // En développement
-                    die("Erreur SQL : " . $e->getMessage());
-                    // En production, plutôt :
-                    // die("Une erreur est survenue.");
-                }
-            }
-
-            break;
-
-
-        //mettre a jour les alertes    
-        case 'hitech':
-
-            $i = 2;
-            $array_vh_no_exist = array();
-            $array_code_alert_no_exist = array();
-
-            foreach ($lignes as $ligne) {
-
-                $check = FALSE;
-
-                // print_r($ligne);
-                // saut_de_ligne();
-                $immatriculation = $ligne[0];
-                $type_alerte_code = (int) $ligne[3];
-                // $type_alerte_libelle = $ligne[4];
-                $km_alerte_entretien = $ligne[7];
-
-
-                // Récupération directe de la cellule date (colonne F)
-                $dateExcel = $sheet->getCell("F$i")->getValue();
-                if ($dateExcel !== null && is_numeric($dateExcel)) {
-                    $date_alerte_entretien_format_us = Date::excelToDateTimeObject($dateExcel)
-                        ->format('Y-m-d');
-                } else {
-                    $date_alerte_entretien_format_us = null;
                 }
 
-                $km_alerte_entretien !== null ? $km_alerte_entretien : null;
+                break;
 
-                //on va chercher le véhicule lié si il existe
-                $request = $pdo->query("SELECT ID FROM suivi_lag_vehicules WHERE immatriculation = '$immatriculation' and deleted = 0");
-                $result = $request->fetch(PDO::FETCH_COLUMN);
 
-                if ($result) {
-                    $id_vh = (int) $result;
+            //mettre a jour les alertes    
+            case 'hitech':
 
-                    // var_dump($id_vh);
+                $i = 2;
+                $array_vh_no_exist = array();
+                $array_code_alert_no_exist = array();
+
+                foreach ($lignes as $ligne) {
+
+                    $check = FALSE;
+
+                    // print_r($ligne);
                     // saut_de_ligne();
+                    $immatriculation = $ligne[0];
+                    $type_alerte_code = (int) $ligne[3];
+                    // $type_alerte_libelle = $ligne[4];
+                    $km_alerte_entretien = $ligne[7];
 
-                    //on va boucler sur les codes alertes jusqu'a trouver le correspondant
-                    $request = $pdo->query("SELECT * FROM suivi_lag_code_alertes");
-                    $liste_alertes = $request->fetchAll(PDO::FETCH_ASSOC);
 
-                    foreach ($liste_alertes as $type_alerte) {
-                        // si on trouve le code alerte correspondant
-                        if ($type_alerte_code == (int) $type_alerte['code_alerte']) {
-                            $check = TRUE;
-                            // on crée l'alerte lié au vh 
-                            $data = [
-                                'id_vehicule' => $id_vh,
-                                'id_code_alerte' => $type_alerte['ID'],
-                                'km_to_entretien' => $km_alerte_entretien,
-                                'date_to_entretien' => $date_alerte_entretien_format_us,
-                                'deleted' => 0,
-                            ];
-                            $sql = "INSERT INTO suivi_lag_vehicules_alertes (id_vehicule,id_code_alerte,km_to_entretien,date_to_entretien,deleted) 
-                                        VALUES (:id_vehicule, :id_code_alerte,:km_to_entretien, :date_to_entretien,:deleted)";
-                            $stmt = $pdo->prepare($sql);
-                            $stmt->execute($data);
-
-                        } else {
-
-                        }
-                    }
-                    if (!$check) {
-                        $array_code_alert_no_exist[] = $type_alerte_code . " - " . $immatriculation;
+                    // Récupération directe de la cellule date (colonne F)
+                    $dateExcel = $sheet->getCell("F$i")->getValue();
+                    if ($dateExcel !== null && is_numeric($dateExcel)) {
+                        $date_alerte_entretien_format_us = Date::excelToDateTimeObject($dateExcel)
+                            ->format('Y-m-d');
+                    } else {
+                        $date_alerte_entretien_format_us = null;
                     }
 
-                } else {
-                    $array_vh_no_exist[] = $immatriculation;
-                }
-
-                $i++;
-            }
-
-            var_dump($array_code_alert_no_exist);
-            saut_de_ligne();
-            saut_de_ligne();
-            var_dump($array_vh_no_exist);
-
-
-            break;
-
-
-        case 'hitech_bis':
-
-            $i = 2;
-            $array_vh_no_exist = array();
-            $array_code_alert_no_exist = array();
-
-            foreach ($lignes as $ligne) {
-
-                $check = FALSE;
-
-                // print_r($ligne);
-                // saut_de_ligne();
-                $immatriculation = $ligne[0];
-                $type_alerte_code = (int) $ligne[3];
-                // $type_alerte_libelle = $ligne[4];
-                $km_alerte_entretien = $ligne[7];
-
-
-                // Récupération directe de la cellule date (colonne F)
-                $dateExcel = $sheet->getCell("F$i")->getValue();
-                if ($dateExcel !== null && is_numeric($dateExcel)) {
-                    $date_alerte_entretien_format_us = Date::excelToDateTimeObject($dateExcel)
-                        ->format('Y-m-d');
-                } else {
-                    $date_alerte_entretien_format_us = null;
-                }
-
-                $km_alerte_entretien !== null ? $km_alerte_entretien : null;
+                    $km_alerte_entretien !== null ? $km_alerte_entretien : null;
 
                     //on va chercher le véhicule lié si il existe
-                $request = $pdo->query("SELECT ID FROM suivi_lag_code_alertes
-                WHERE code_alerte = $type_alerte_code");
-                $id_code_alerte = $request->fetch(PDO::FETCH_COLUMN);
+                    $request = $pdo->query("SELECT ID FROM suivi_lag_vehicules WHERE immatriculation = '$immatriculation' and deleted = 0");
+                    $result = $request->fetch(PDO::FETCH_COLUMN);
 
+                    if ($result) {
+                        $id_vh = (int) $result;
 
-                //on va chercher le véhicule lié si il existe
-                $request = $pdo->query("SELECT vh_alerte.ID FROM suivi_lag_vehicules_alertes as vh_alerte
-                LEFT JOIN suivi_lag_vehicules as vh ON vh.ID = vh_alerte.id_vehicule
-                WHERE vh.immatriculation = '$immatriculation' and vh_alerte.id_code_alerte = $id_code_alerte");
-                $result = $request->fetch(PDO::FETCH_COLUMN);
+                        // var_dump($id_vh);
+                        // saut_de_ligne();
 
-                if ($result) {
-                    $data = [
-                        'id' => $result,
-                        'date_to_entretien' => $date_alerte_entretien_format_us
-                    ];
-                    $sql = "UPDATE suivi_lag_vehicules_alertes 
-                    SET date_to_entretien=:date_to_entretien
-                    WHERE ID=:id";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute($data);
+                        //on va boucler sur les codes alertes jusqu'a trouver le correspondant
+                        $request = $pdo->query("SELECT * FROM suivi_lag_code_alertes");
+                        $liste_alertes = $request->fetchAll(PDO::FETCH_ASSOC);
 
+                        foreach ($liste_alertes as $type_alerte) {
+                            // si on trouve le code alerte correspondant
+                            if ($type_alerte_code == (int) $type_alerte['code_alerte']) {
+                                $check = TRUE;
+                                // on crée l'alerte lié au vh 
+                                $data = [
+                                    'id_vehicule' => $id_vh,
+                                    'id_code_alerte' => $type_alerte['ID'],
+                                    'km_to_entretien' => $km_alerte_entretien,
+                                    'date_to_entretien' => $date_alerte_entretien_format_us,
+                                    'deleted' => 0,
+                                ];
+                                $sql = "INSERT INTO suivi_lag_vehicules_alertes (id_vehicule,id_code_alerte,km_to_entretien,date_to_entretien,deleted) 
+                                        VALUES (:id_vehicule, :id_code_alerte,:km_to_entretien, :date_to_entretien,:deleted)";
+                                $stmt = $pdo->prepare($sql);
+                                $stmt->execute($data);
+
+                            } else {
+
+                            }
+                        }
+                        if (!$check) {
+                            $array_code_alert_no_exist[] = $type_alerte_code . " - " . $immatriculation;
+                        }
+
+                    } else {
+                        $array_vh_no_exist[] = $immatriculation;
+                    }
+
+                    $i++;
                 }
 
-                $i++;
-            }
-
-            var_dump($array_code_alert_no_exist);
-            saut_de_ligne();
-            saut_de_ligne();
-            var_dump($array_vh_no_exist);
+                var_dump($array_code_alert_no_exist);
+                saut_de_ligne();
+                saut_de_ligne();
+                var_dump($array_vh_no_exist);
 
 
-            break;
+                break;
+
+
+            // case 'hitech_bis':
+
+            //     $i = 2;
+            //     $array_vh_no_exist = array();
+            //     $array_code_alert_no_exist = array();
+
+            //     foreach ($lignes as $ligne) {
+
+            //         $check = FALSE;
+
+            //         // print_r($ligne);
+            //         // saut_de_ligne();
+            //         $immatriculation = $ligne[0];
+            //         $type_alerte_code = (int) $ligne[3];
+            //         // $type_alerte_libelle = $ligne[4];
+            //         $km_alerte_entretien = $ligne[7];
+
+
+            //         // Récupération directe de la cellule date (colonne F)
+            //         $dateExcel = $sheet->getCell("F$i")->getValue();
+            //         if ($dateExcel !== null && is_numeric($dateExcel)) {
+            //             $date_alerte_entretien_format_us = Date::excelToDateTimeObject($dateExcel)
+            //                 ->format('Y-m-d');
+            //         } else {
+            //             $date_alerte_entretien_format_us = null;
+            //         }
+
+            //         $km_alerte_entretien !== null ? $km_alerte_entretien : null;
+
+            //         //on va chercher le véhicule lié si il existe
+            //         $request = $pdo->query("SELECT ID FROM suivi_lag_code_alertes
+            //     WHERE code_alerte = $type_alerte_code");
+            //         $id_code_alerte = $request->fetch(PDO::FETCH_COLUMN);
+
+
+            //         //on va chercher le véhicule lié si il existe
+            //         $request = $pdo->query("SELECT vh_alerte.ID FROM suivi_lag_vehicules_alertes as vh_alerte
+            //     LEFT JOIN suivi_lag_vehicules as vh ON vh.ID = vh_alerte.id_vehicule
+            //     WHERE vh.immatriculation = '$immatriculation' and vh_alerte.id_code_alerte = $id_code_alerte");
+            //         $result = $request->fetch(PDO::FETCH_COLUMN);
+
+            //         if ($result) {
+            //             $data = [
+            //                 'id' => $result,
+            //                 'date_to_entretien' => $date_alerte_entretien_format_us
+            //             ];
+            //             $sql = "UPDATE suivi_lag_vehicules_alertes 
+            //         SET date_to_entretien=:date_to_entretien
+            //         WHERE ID=:id";
+            //             $stmt = $pdo->prepare($sql);
+            //             $stmt->execute($data);
+
+            //         }
+
+            //         $i++;
+            //     }
+
+            //     var_dump($array_code_alert_no_exist);
+            //     saut_de_ligne();
+            //     saut_de_ligne();
+            //     var_dump($array_vh_no_exist);
+
+
+            //     break;
+
+        }
+    }
+
+    //pas un fichier xlsx
+    else {
+
+        http_response_code(400);
+        exit;
 
     }
 
