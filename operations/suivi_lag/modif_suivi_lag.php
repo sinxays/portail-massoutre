@@ -315,13 +315,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="action_retour_client">Retour client ? </label>
+                                <label for="action_retour_client">Retour client ? (optionnel) </label>
                                 <input type="text" class="form-control" id="action_retour_client"
                                     name="action_retour_client">
                             </div>
 
                             <div class="form-group">
-                                <label for="action_a_effectuer">Action a effectuer ? </label>
+                                <label for="action_a_effectuer">Action a effectuer ? (optionnel)</label>
                                 <input type="text" class="form-control" id="action_a_effectuer_next"
                                     name="action_a_effectuer_next">
                             </div>
