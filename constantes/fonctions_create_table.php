@@ -793,7 +793,7 @@ function create_header_row_suivi_lag($header)
     $return .= "</tr>";
     $return .= "<tr class='tr_sticky'>";
     foreach ($header as $title_header) {
-        $return .= "<th class='th3'> $title_header </th>";
+        $return .= "<th class='th3_lag'> $title_header </th>";
     }
     $return .= "</tr>";
     return $return;
