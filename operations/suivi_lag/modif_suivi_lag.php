@@ -250,7 +250,7 @@
                         <label class="btn btn-outline-info" for="btnradio3">En attente facture</label>
 
                         <input type="radio" class="btn-check" id="btnradio4" name="statut_alerte" value="4" <?php echo $statut_id == 4 ? $radio_checked : '' ?>>
-                        <label class="btn btn-outline-danger" for="btnradio4">OK</label>
+                        <label class="btn btn-outline-success" for="btnradio4">OK</label>
 
                     </div>
                 </div>

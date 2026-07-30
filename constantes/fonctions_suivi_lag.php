@@ -44,7 +44,7 @@ function get_liste_suivi_lag($immatriculation = '', $type_alerte = '', $client =
 
     $request = $pdo->query("SELECT vh.immatriculation,vh.marque,vh.modele,vh.km_echoes,vh.client,vh.ID as vh_id,
     code.type,code.libelle,
-    vh_alerte.date_to_entretien,vh_alerte.km_to_entretien,vh_alerte.ID as alerte_id
+    vh_alerte.date_to_entretien,vh_alerte.km_to_entretien,vh_alerte.ID as alerte_id,vh_alerte.statut
         FROM suivi_lag_vehicules as vh 
         LEFT JOIN suivi_lag_vehicules_alertes as vh_alerte ON vh.ID = vh_alerte.id_vehicule
         LEFT JOIN suivi_lag_code_alertes as code ON code.ID = vh_alerte.id_code_alerte

@@ -198,6 +198,9 @@ $(document).ready(function () {
         $("#immatriculation_input").val('');
         $("#client_input").val('');
         $("#select_id_code_alerte").val('');
+        $("#table_shop_exterieur").fadeOut(200);
+
+
 
         sessionStorage.clear();
 
@@ -208,6 +211,7 @@ $(document).ready(function () {
             type: "POST",
             data: {},
             success: function (data) {
+                $("#table_shop_exterieur").fadeIn(1000);
                 $("#table_shop_exterieur").html(data);
                 loader.hide();
             }

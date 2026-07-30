@@ -1261,7 +1261,7 @@ function create_table_suivi_lag($header, $type_alerte = '', $immatriculation = '
 
     $table_suivi_lag = "";
 
-    $table_suivi_lag .= "<table class='my_tab_perso'>";
+    $table_suivi_lag .= "<table class='my_tab_perso_lag'>";
     //header
     $table_suivi_lag .= create_header_row_suivi_lag($header);
     //fin header
@@ -1269,8 +1269,8 @@ function create_table_suivi_lag($header, $type_alerte = '', $immatriculation = '
     //contenu
     foreach ($liste_suivi_lag as $suivi_lag) {
 
-        //remplissage tableau
-        $table_suivi_lag .= "<tr>";
+
+        $table_suivi_lag .= "<tr class='tr_status_lag_" . intval($suivi_lag['statut']) . "'>";
         $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['immatriculation'] . " </td>";
         $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['marque'] . " </td>";
         $table_suivi_lag .= "<td class='td_n'> " . $suivi_lag['modele'] . " </td>";

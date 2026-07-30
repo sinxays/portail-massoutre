@@ -579,12 +579,7 @@ img {
         background-color: #67b3ef;
         color: white;
     }
-    
-    .my_tab_perso .th3_lag {
-        text-align: left;
-        background-color: #404cbc;
-        color: white;
-    }
+
 
     .my_tab_perso .th5 {
         padding-top: 12px;
@@ -875,8 +870,8 @@ img {
     }
 
     #div_shop_ext_1_5:hover {
-       color: #007BFF;
-       cursor: pointer;  
+        color: #007BFF;
+        cursor: pointer;
     }
 
     #div_shop_ext_2 {
@@ -1925,4 +1920,50 @@ img {
     background: #007bff;
     border-color: #007bff;
     color: #fff;
+}
+
+
+/* TAB LAG */
+
+.my_tab_perso_lag {
+    font-family: Arial;
+    border-collapse: collapse;
+    margin: 0px 10px 0px 10px;
+    font-size: 70%;
+}
+
+.my_tab_perso_lag td,
+.my_tab_perso_lag th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.my_tab_perso_lag .th3_lag {
+    text-align: left;
+    background-color: #404cbc;
+    color: white;
+}
+
+.tr_status_lag_1 {
+    background-color: #ffc107;
+}
+
+.tr_status_lag_2 {
+    background-color: #212529;
+}
+
+.tr_status_lag_2>.td_n {
+    color: #ffffff;
+}
+
+.tr_status_lag_3 {
+    background-color: #0dcaf0;
+}
+
+.tr_status_lag_4 {
+    background-color: #198754;
+}
+
+.tr_status_lag_4>.td_n {
+    color: #ffffff;
 }
