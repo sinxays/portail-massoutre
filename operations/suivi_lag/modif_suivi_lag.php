@@ -79,7 +79,7 @@
 
 
 
-                        <div class="div_form_vh_label"><span>Vehicule</span></div>
+                        <div class="div_form_vh_label_lag"><span>Vehicule</span></div>
                         <div class="div_contenu_label">
                             <div class="div_form_vh_row">
                                 <div class="element_champ">
@@ -111,7 +111,7 @@
 
                     <div class="ajout_shop_categorie">
 
-                        <div class="div_form_vh_label"><span>Infos Alerte</span></div>
+                        <div class="div_form_vh_label_lag"><span>Infos Alerte</span></div>
                         <div class="div_contenu_label">
                             <div class="div_form_vh_column">
 
@@ -160,7 +160,7 @@
                     <div class="input-group" style="width: 750px;">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
-                                style="display:flex;justify-content:center;align-items:center;width: 200px ;height: 60px;background: #8a0710 ; color:white ; font-weight:bold">CLIENT</span>
+                                style="display:flex;justify-content:center;align-items:center;width: 200px ;height: 60px;background: #66dd96 ; color:white ; font-weight:bold">CLIENT</span>
                         </div>
                         <input type="text" class="form-control" id="client" name="client" style="width:100px;"
                             value="<?php echo $details_suivi_lag['infos']['client'] ?>" readonly>
@@ -179,7 +179,7 @@
 
                 <div class="container_form_modif_lecture_shop_ext_2">
                     <div class="ajout_shop_categorie_action">
-                        <div class="div_form_vh_label"><span>Actions</span></div>
+                        <div class="div_form_vh_label_lag"><span>Actions</span></div>
                         <div class="div_contenu_label_action">
                             <table class="my_tab_shop_ext_action">
                                 <thead>

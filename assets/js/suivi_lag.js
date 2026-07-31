@@ -198,6 +198,7 @@ $(document).ready(function () {
         $("#immatriculation_input").val('');
         $("#client_input").val('');
         $("#select_id_code_alerte").val('');
+        $("#select_archive").val('0');
         $("#table_shop_exterieur").fadeOut(200);
 
 

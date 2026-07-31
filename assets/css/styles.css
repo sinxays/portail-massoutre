@@ -1967,3 +1967,16 @@ img {
 .tr_status_lag_4>.td_n {
     color: #ffffff;
 }
+
+.div_form_vh_label_lag {
+
+    border: 2px solid #ffffff;
+    background-color: #404cbc;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    color: white;
+
+
+}
