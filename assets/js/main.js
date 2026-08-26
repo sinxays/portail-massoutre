@@ -1,11 +1,11 @@
 /*==================== SHOW NAVBAR ====================*/
-const showMenu = (headerToggle, navbarId) =>{
+const showMenu = (headerToggle, navbarId) => {
     const toggleBtn = document.getElementById(headerToggle),
-    nav = document.getElementById(navbarId)
-    
+        nav = document.getElementById(navbarId)
+
     // Validate that variables exist
-    if(headerToggle && navbarId){
-        toggleBtn.addEventListener('click', ()=>{
+    if (headerToggle && navbarId) {
+        toggleBtn.addEventListener('click', () => {
             // We add the show-menu class to the div tag with the nav__menu class
             nav.classList.toggle('show-menu')
             // change icon
@@ -13,15 +13,30 @@ const showMenu = (headerToggle, navbarId) =>{
         })
     }
 }
-showMenu('header-toggle','navbar')
+showMenu('header-toggle', 'navbar')
 
 /*==================== LINK ACTIVE ====================*/
 const linkColor = document.querySelectorAll('.nav__link')
 
-function colorLink(){
+function colorLink() {
     linkColor.forEach(l => l.classList.remove('active'))
     this.classList.add('active')
 }
 
 linkColor.forEach(l => l.addEventListener('click', colorLink))
 
+
+
+const errorMessage = document.getElementById('login_error');
+
+if (errorMessage) {
+    setTimeout(() => {
+        errorMessage.style.transition = 'opacity 0.5s ease';
+        errorMessage.style.opacity = '0';
+
+        setTimeout(() => {
+            errorMessage.remove();
+        }, 500);
+
+    }, 3000);
+}

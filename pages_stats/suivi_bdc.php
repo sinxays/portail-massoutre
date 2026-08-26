@@ -24,21 +24,10 @@
 
 <body>
     <!--========== HEADER ==========-->
-    <header class="header">
-        <div class="header__container">
-            <img src="../assets/img/perfil.jpg" alt="" class="header__img">
-
-            <a href="#" class="header__logo"> </a>
-
-            <div class="header__toggle">
-                <i class='bx bx-menu' id="header-toggle"></i>
-            </div>
-        </div>
-    </header>
-
-    <!--========== NAV ==========-->
-    <?php include "../right_menubar.php";
-    include "../include.php"; ?>
+    <?php
+    include "../include.php";
+    include "../header.php";
+    include "../right_menubar.php"; ?>
 
 
 

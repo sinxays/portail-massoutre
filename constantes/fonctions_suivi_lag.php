@@ -212,29 +212,38 @@ function import_fichier_excel_to_suivi_lag($type_fichier, $fichier_excel)
                         // var_dump($id_vh);
                         // saut_de_ligne();
 
-                        //on va boucler sur les codes alertes jusqu'a trouver le correspondant
-                        $request = $pdo->query("SELECT * FROM suivi_lag_code_alertes");
-                        $liste_alertes = $request->fetchAll(PDO::FETCH_ASSOC);
+                        // on check d'abord si l'alerte sur ce véhicule n'existe pas déja ?
+                        $request = $pdo->query("SELECT suivi_lag_vehicules_alertes.ID FROM suivi_lag_vehicules_alertes 
+                        LEFT JOIN suivi_lag_code_alertes AS code ON code.ID = suivi_lag_vehicules_alertes.id_code_alerte
+                        WHERE suivi_lag_vehicules_alertes.id_vehicule = $id_vh AND code.code_alerte = $type_alerte_code AND suivi_lag_vehicules_alertes.deleted <> 1");
+                        $check_alerte_already_ON = $request->fetch(PDO::FETCH_ASSOC);
 
-                        foreach ($liste_alertes as $type_alerte) {
-                            // si on trouve le code alerte correspondant
-                            if ($type_alerte_code == (int) $type_alerte['code_alerte']) {
-                                $check = TRUE;
-                                // on crée l'alerte lié au vh 
-                                $data = [
-                                    'id_vehicule' => $id_vh,
-                                    'id_code_alerte' => $type_alerte['ID'],
-                                    'km_to_entretien' => $km_alerte_entretien,
-                                    'date_to_entretien' => $date_alerte_entretien_format_us,
-                                    'deleted' => 0,
-                                ];
-                                $sql = "INSERT INTO suivi_lag_vehicules_alertes (id_vehicule,id_code_alerte,km_to_entretien,date_to_entretien,deleted) 
+                        if (!$check_alerte_already_ON) {
+
+                            //on va boucler sur les codes alertes jusqu'a trouver le correspondant
+                            $request = $pdo->query("SELECT * FROM suivi_lag_code_alertes");
+                            $liste_alertes = $request->fetchAll(PDO::FETCH_ASSOC);
+
+                            foreach ($liste_alertes as $type_alerte) {
+                                // si on trouve le code alerte correspondant
+                                if ($type_alerte_code == (int) $type_alerte['code_alerte']) {
+                                    $check = TRUE;
+                                    // on crée l'alerte lié au vh 
+                                    $data = [
+                                        'id_vehicule' => $id_vh,
+                                        'id_code_alerte' => $type_alerte['ID'],
+                                        'km_to_entretien' => $km_alerte_entretien,
+                                        'date_to_entretien' => $date_alerte_entretien_format_us,
+                                        'deleted' => 0,
+                                    ];
+                                    $sql = "INSERT INTO suivi_lag_vehicules_alertes (id_vehicule,id_code_alerte,km_to_entretien,date_to_entretien,deleted) 
                                         VALUES (:id_vehicule, :id_code_alerte,:km_to_entretien, :date_to_entretien,:deleted)";
-                                $stmt = $pdo->prepare($sql);
-                                $stmt->execute($data);
+                                    $stmt = $pdo->prepare($sql);
+                                    $stmt->execute($data);
 
-                            } else {
+                                } else {
 
+                                }
                             }
                         }
                         if (!$check) {

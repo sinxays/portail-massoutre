@@ -25,11 +25,13 @@
 
 <body>
     <!--========== HEADER ==========-->
-    <?php include "../../header.php";
+    <?php
+    include "../../include.php";
+    include "../../header.php";
 
     // NAV  
     include "../../right_menubar.php";
-    include "../../include.php"; ?>
+    ?>
 
 
 

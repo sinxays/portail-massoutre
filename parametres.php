@@ -15,43 +15,34 @@
 
 <body>
     <!--========== HEADER ==========-->
+
     <?php
+    session_start();
+
     include "include.php";
-
-    if (!isset($_SESSION['user_id'])) {
-        header('Location: login.php');
-        exit;
-    }
-
-
     include "header.php";
 
-    // NAV  
+    // NAV
     include "right_menubar.php";
-    // include "final_rightbar_menu.php";
+    ;
+    $check_role = requireRole([2, 3, 6]);
+
+    if ($check_role) {
+        echo "OK";
+    } else {
+        echo "PAS OK";
+    }
     ?>
+
+
 
 
 
     <!--========== CONTENTS ==========-->
     <main>
 
-        <div id="accueil_div">
 
-
-            <?php
-
-            echo "PAGE D'ACCUEIL";
-
-            echo "<br/>";
-
-            // echo password_hash("maintenance",PASSWORD_DEFAULT);
-
-
-            ?>
-
-        </div>
-        <!-- amener un date placeholder -->
+        parametres
 
     </main>
 

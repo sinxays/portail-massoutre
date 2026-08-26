@@ -7,6 +7,47 @@ function saut_de_ligne()
     echo "<br/><br/>";
 }
 
+function get_user($login, $password)
+{
+
+    $pdo = Connection::getPDO();
+    $request = $pdo->prepare("SELECT * FROM users 
+    LEFT JOIN roles ON roles.id = users.role_id
+    WHERE login = :login");
+
+    $request->execute([
+        'login' => $login
+    ]);
+
+    $result = $request->fetch(PDO::FETCH_ASSOC);
+
+    if ($result && password_verify($password, $result['password_hash'])) {
+        // Connexion réussie
+        return $result;
+    }
+
+    return false;
+}
+
+function requireRole($array_role_requis)
+{
+
+    if (!in_array($_SESSION['role_id'], $array_role_requis, true)) {
+        http_response_code(403);
+        exit('Accès interdit');
+    }
+}
+
+function hasRole($array_role_requis)
+{
+    if (in_array($_SESSION['role_id'], $array_role_requis)) {
+        return True;
+    } else {
+        return False;
+    }
+}
+
+
 function passage_a_la_ligne()
 {
     echo "<br/>";

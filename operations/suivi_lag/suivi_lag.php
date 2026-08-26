@@ -31,11 +31,19 @@
 
 <body>
     <!--========== HEADER ==========-->
-    <?php include "../../header.php";
+    <?php
+    include "../../include.php";
+
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../../login.php');
+        exit;
+    }
+
+    include "../../header.php";
 
     // NAV  
     include "../../right_menubar.php";
-    include "../../include.php"; ?>
+    ?>
 
 
 
@@ -92,10 +100,7 @@
                 </div>
 
             </div>
-
-
         </form>
-
 
         <br />
         <div class="elements_row">
