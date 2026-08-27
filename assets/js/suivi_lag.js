@@ -179,8 +179,8 @@ $(document).ready(function () {
             contentType: false, // obligatoire avec FormData
 
             success: function (data) {
-                alert('fichier importé avec succès')
-                window.location.replace('/operations/suivi_lag/suivi_lag.php');
+                // alert('fichier importé avec succès')
+                // window.location.replace('/operations/suivi_lag/suivi_lag.php');
             },
 
             error: function (error_details) {
