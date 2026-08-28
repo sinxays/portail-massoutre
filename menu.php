@@ -31,8 +31,7 @@ $menu_principal = [
     [
         'type_bouton_menu' => 'dropdown_bouton',
         'libelle_bouton' => '',
-        'icon' => '/assets/img/Avis_logo.png',
-        'icon_logo' => '/assets/img/Avis_logo.png',
+        'icon_logo' => '/assets/img/avis_logo.png',
         'roles' => [1],
         'items' => [
             [
@@ -46,7 +45,7 @@ $menu_principal = [
     [
         'type_bouton_menu' => 'dropdown_bouton',
         'libelle_bouton' => '',
-        'icon_logo' => '/assets/img/LGO_logo.png',
+        'icon_logo' => '/assets/img/lgo_logo.png',
         'roles' => [1, 5],
         'items' => [
             // [
@@ -69,7 +68,7 @@ $menu_principal = [
     [
         'type_bouton_menu' => 'dropdown_bouton',
         'libelle_bouton' => '',
-        'icon_logo' => '/assets/img/LAG_logo.png',
+        'icon_logo' => '/assets/img/lag_logo.png',
         'roles' => [1, 3],
         'items' => [
             [
