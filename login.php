@@ -57,7 +57,8 @@
     include "header.php";
 
     // NAV
-    include "right_menubar.php";
+    // include "right_menubar.php";
+    include "menu_final.php";
     ?>
 
 

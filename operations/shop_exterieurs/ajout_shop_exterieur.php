@@ -24,26 +24,21 @@
 
 <body>
     <!--========== HEADER ==========-->
-    <header class="header">
-        <div class="header__container">
-            <img src="../../assets/img/perfil.jpg" alt="" class="header__img">
+    <?php
 
-            <a href="#" class="header__logo"> </a>
+    include "../../include.php";
 
-            <div class="header__search">
-                <input type="search" placeholder="Search" class="header__input">
-                <i class='bx bx-search header__icon'></i>
-            </div>
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../../login.php');
+        exit;
+    }
 
-            <div class="header__toggle">
-                <i class='bx bx-menu' id="header-toggle"></i>
-            </div>
-        </div>
-    </header>
 
-    <!--========== NAV ==========-->
-    <?php include "../../right_menubar.php";
-    include "../../include.php"; ?>
+    include "../../header.php";
+    // NAV  
+    // include "../../right_menubar.php";
+    include "../../menu_final.php";
+    ?>
 
 
 

@@ -47,16 +47,21 @@ $menu_principal = [
         'type_bouton_menu' => 'dropdown_bouton',
         'libelle_bouton' => '',
         'icon_logo' => '/assets/img/LGO_logo.png',
-        'roles' => [1, 3],
+        'roles' => [1, 5],
         'items' => [
+            // [
+            //     'name' => 'Suivi BDC',
+            //     'url' => '/pages_stats/suivi_bdc.php'
+            // ],
+            // [
+            //     'name' => 'Suivi Factures',
+            //     'url' => '/pages_stats/suivi_factures.php'
+            // ]
             [
-                'name' => 'Suivi BDC',
-                'url' => '/pages_stats/suivi_bdc.php'
-            ],
-            [
-                'name' => 'Suivi Factures',
-                'url' => '/pages_stats/suivi_factures.php'
+                'name' => 'Payplan',
+                'url' => '/payplan/payplan.php'
             ]
+
         ]
     ],
 
@@ -65,7 +70,7 @@ $menu_principal = [
         'type_bouton_menu' => 'dropdown_bouton',
         'libelle_bouton' => '',
         'icon_logo' => '/assets/img/LAG_logo.png',
-        'roles' => [1, 2],
+        'roles' => [1, 3],
         'items' => [
             [
                 'name' => 'TDB (en cours)',
@@ -100,18 +105,18 @@ $menu_bottom = [
     [
         'type_bouton_menu' => 'simple_bouton',
         'libelle_bouton' => 'Paramètres',
-        'icon' => 'bx bx-home',
-        'roles' => [],
-        'class' => 'nav__name',
-        'url' => '/index.php'
+        'icon' => 'bx bxs-wrench',
+        'roles' => [1],
+        'class' => 'nav_param',
+        'url' => '/parametres.php'
     ],
 
     [
         'type_bouton_menu' => 'simple_bouton',
         'libelle_bouton' => 'Déconnexion',
         'icon' => 'bx bx-log-out',
-        'roles' => [1,2,3,4],
-        'class' => 'nav__name',
+        'roles' => [1,2,3,4,5],
+        'class' => 'nav__logout',
         'url' => '/logout.php'
     ],
 

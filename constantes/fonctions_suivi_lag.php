@@ -213,6 +213,7 @@ function import_fichier_excel_to_suivi_lag($type_fichier, $fichier_excel)
                         // saut_de_ligne();
 
                         // on check d'abord si l'alerte sur ce véhicule n'existe pas déja ?
+                        // en regardant si sur le véhicule il ya déja un code et que l'alerte n'est pas deleted
                         $request = $pdo->query("SELECT suivi_lag_vehicules_alertes.ID FROM suivi_lag_vehicules_alertes 
                         LEFT JOIN suivi_lag_code_alertes AS code ON code.ID = suivi_lag_vehicules_alertes.id_code_alerte
                         WHERE suivi_lag_vehicules_alertes.id_vehicule = $id_vh AND code.code_alerte = $type_alerte_code AND suivi_lag_vehicules_alertes.deleted <> 1");

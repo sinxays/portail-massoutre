@@ -27,8 +27,8 @@
     include "header.php";
 
     // NAV  
-    include "right_menubar.php";
-    // include "final_rightbar_menu.php";
+    // include "right_menubar.php";
+    include "menu_final.php";
     ?>
 
 
@@ -45,7 +45,7 @@
 
             echo "<br/>";
 
-            // echo password_hash("maintenance",PASSWORD_DEFAULT);
+            // echo password_hash("roseMorais",PASSWORD_DEFAULT);
 
 
             ?>
