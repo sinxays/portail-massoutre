@@ -269,10 +269,34 @@ img {
     /* For mozilla */
 }
 
-.img_nav{
+.img_nav {
     height: 21px;
 }
 
+.img_nav_long {
+    opacity: 0;
+    display: none;
+    height: 21px;
+}
+
+.img_nav_court {
+    display: block;
+    opacity: 1;
+    height: 21px;
+    width: 25px;
+}
+
+.nav:hover .img_nav_court {
+    opacity: 0;
+    display: none;
+    transition: .3s;
+}
+
+.nav:hover .img_nav_long {
+    opacity: 1;
+    display: block;
+    transition: .3s;
+}
 
 /* For Google Chrome and others */
 
@@ -436,8 +460,8 @@ img {
 
     .nav {
         left: 0;
-        padding: 1.2rem 1.5rem 0;
-        width: 68px;
+        padding: 1.2rem 1rem 0;
+        width: 58px;
         /* Reduced navbar */
     }
 
@@ -481,24 +505,27 @@ img {
     }
 
     /* Navbar expanded by defaut for modif */
-    /* .nav {
-      width: var(--nav-width);
+    /*.nav {
+        width: var(--nav-width);
     }
-      .nav .nav__logo-name {
-      opacity: 1;
+
+    .nav .nav__logo-name {
+        opacity: 1;
     }
-  
+
     .nav .nav__subtitle {
-      opacity: 1;
+        opacity: 1;
     }
-  
+
     .nav .nav__name {
-      opacity: 1;
+        opacity: 1;
     }
-  
+
     .nav .nav__dropdown-icon {
-      opacity: 1;
-    } */
+        opacity: 1;
+    }
+        */
+
     /***************************** Mon table perso *****************************/
     .my_tab_perso {
         font-family: Arial;
@@ -2134,9 +2161,8 @@ img {
     }
 }
 
-#logo_connected{
+#logo_connected {
     color: rgb(224, 224, 224);
     font-weight: bold;
     font-size: 14px;
 }
-

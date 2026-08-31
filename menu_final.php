@@ -55,6 +55,10 @@
                                     echo "<a href='#' class='nav__link'>";
                                     if (isset($section['icon_logo'])) {
                                         echo "<img class='img_nav' src='" . $section['icon_logo'] . "'/>";
+                                    } elseif (isset($section['logos'])) {
+                                        foreach ($section['logos'] as $item_logo) {
+                                            echo "<img class='" . $item_logo['class'] . "' src='" . $item_logo['src'] . "'/>";
+                                        }
                                     } else {
                                         echo "<i class='" . $section['icon'] . "'></i>";
                                     }
