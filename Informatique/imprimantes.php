@@ -19,19 +19,25 @@
 
 
 
-    <title>Portail Massoutre - Imprimantes</title>
+    <title>Portail Massoutre - Réseau</title>
 </head>
 
 <body>
     <!--========== HEADER ==========-->
     <?php
     include "../include.php";
+
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../login.php');
+        exit;
+    }
+
+
     include "../header.php";
 
-
-
-    include "../right_menubar.php";
+    include "../menu_final.php";
     ?>
+
 
 
 

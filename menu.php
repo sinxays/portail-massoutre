@@ -5,7 +5,7 @@ $menu_principal = [
         'type_bouton_menu' => 'simple_bouton',
         'libelle_bouton' => 'Accueil',
         'icon' => 'bx bx-home',
-        'roles' => [],
+        'roles' => [1,2,3,4,5],
         'class' => 'nav__name',
         'url' => '/index.php'
     ],

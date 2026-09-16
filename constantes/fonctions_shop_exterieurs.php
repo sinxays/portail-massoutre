@@ -220,6 +220,7 @@ function ajout_modif_action($data_new_action)
     //sinon c'est une nouvelle action
     else {
         $data = [
+            'user_id' => $_SESSION['user_id'],
             'date_action' => $data_new_action['date_action'],
             'action_effectuee' => $data_new_action['action_effectuee'],
             'remarque' => $data_new_action['remarque'],
@@ -228,8 +229,8 @@ function ajout_modif_action($data_new_action)
             'vehicule_id' => $data_new_action['vehicule_id']
         ];
 
-        $sql = "INSERT INTO shop_ext_action (action,date_action,remarque,is_factured,montant_facture,vehicule_id) 
-        VALUES (:action_effectuee, :date_action,:remarque, :is_action_factured,:montant_action, :vehicule_id)";
+        $sql = "INSERT INTO shop_ext_action (user_id,action,date_action,remarque,is_factured,montant_facture,vehicule_id) 
+        VALUES (:user_id, :action_effectuee, :date_action,:remarque, :is_action_factured,:montant_action, :vehicule_id)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
 

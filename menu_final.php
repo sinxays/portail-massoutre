@@ -43,7 +43,7 @@
 
                                 case 'simple_bouton':
                                     echo "<a href='" . $section['url'] . "' class='nav__link'>";
-                                    echo "<i class=" . $section['icon'] . " nav__icon'></i>";
+                                    echo "<i class='" . $section['icon'] . "'></i>";
                                     echo "<span class='nav__name'>" . $section['libelle_bouton'] . "</span>";
                                     echo "</a>";
                                     break;

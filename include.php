@@ -16,6 +16,8 @@ require_once __DIR__ . "/constantes/fonctions_suivi_lag.php";
 
 require_once __DIR__ . "/constantes/fonctions_create_table.php";
 
+require_once __DIR__ . "/constantes/fonctions_parametres.php";
+
 require_once __DIR__ . "/constantes/bibliotheque_array.php";
 
 require_once __DIR__ . "/constantes/constantes_payplan.php";

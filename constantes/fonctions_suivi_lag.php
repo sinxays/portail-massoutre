@@ -408,6 +408,7 @@ function ajout_modif_action_suivi_lag($data_new_action)
     //sinon c'est une nouvelle action
     else {
         $data = [
+            'user_id' => $_SESSION['user_id'],
             'date_action' => $data_new_action['date_action'],
             'action_type' => $data_new_action['action_type'],
             'action_effectuee' => $data_new_action['action_effectuee'],
@@ -416,8 +417,8 @@ function ajout_modif_action_suivi_lag($data_new_action)
             'alerte_id' => $data_new_action['alerte_id']
         ];
 
-        $sql = "INSERT INTO suivi_lag_actions (id_alerte,date_action,type_action,commentaire,action_retour_client,action_a_effectuer)
-        VALUES (:alerte_id, :date_action,:action_type, :action_effectuee,:action_retour_client, :action_a_effectuer_next)";
+        $sql = "INSERT INTO suivi_lag_actions (id_alerte,date_action,user_id,type_action,commentaire,action_retour_client,action_a_effectuer)
+        VALUES (:alerte_id, :date_action,:user_id, :action_type, :action_effectuee,:action_retour_client, :action_a_effectuer_next)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($data);
 
