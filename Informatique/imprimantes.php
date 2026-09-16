@@ -19,7 +19,7 @@
 
 
 
-    <title>Portail Massoutre - Réseau</title>
+    <title>Portail Massoutre - Imprimantes</title>
 </head>
 
 <body>
