@@ -97,7 +97,7 @@ function import_fichier_excel_to_suivi_lag($type_fichier, $fichier_excel)
                     print_r($ligne);
                     saut_de_ligne();
 
-                    $immatriculation = $ligne[0];
+                    $immatriculation = trim($ligne[0]);
                     $client = $ligne[1];
 
                     // on check deja si le vh n'existe pas déja

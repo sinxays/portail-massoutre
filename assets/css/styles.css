@@ -1113,7 +1113,7 @@ img {
 .container_form_ajout_shop_ext {
     padding: 40px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     /* border: 2px solid #fe8f8f; */
     height: 100%;
     width: 100%;
@@ -1209,6 +1209,14 @@ img {
     background-color: rgb(234, 234, 234);
     margin-bottom: 20px;
     margin-right: 50px;
+}
+
+.contenu_after_label_ajout_shop_ext{
+    height: 400px;
+}
+
+.div_validation_ajout{
+    text-align: center;
 }
 
 .box_traqueurs_modif {

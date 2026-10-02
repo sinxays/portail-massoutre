@@ -57,7 +57,7 @@ function get_detail_shop_ext($id)
 {
     $pdo = Connection::getPDO();
 
-    $request = $pdo->query("SELECT vh.ID,vh.immatriculation,vh.modele,vh.num_contrat,vh.mva,vh.kilometrage,vh.garantie,vh.date_demande_recup,vh.date_recup,vh.agence_recup,vh.categorie_id,
+    $request = $pdo->query("SELECT vh.ID,vh.immatriculation,vh.modele,vh.num_contrat,vh.mva,vh.kilometrage,vh.garantie,vh.date_demande_recup,vh.date_recup,vh.agence_recup,vh.categorie_id,vh.type_vh,
     type_panne.type_panne_libelle,type_panne.ID as type_panne_id,
     panne.localisation,panne.date_declaration,panne.detail_panne,
     cat.libelle
@@ -106,10 +106,11 @@ function ajouter_shop_exterieur($array_shop_ext)
         'garantie' => $array_shop_ext['garantie'],
         'num_contrat' => $array_shop_ext['num_contrat'],
         'archive' => 0,
+        'type_vh' => $array_shop_ext['type_vh'],
         'date_creation' => date('Y-m-d H:i')
     ];
-    $sql = "INSERT INTO shop_ext_vehicules (immatriculation,modele,mva,kilometrage,garantie,num_contrat,archive,date_creation) 
-    VALUES (:immatriculation, :modele,:mva, :km,:garantie, :num_contrat,:archive,:date_creation)";
+    $sql = "INSERT INTO shop_ext_vehicules (immatriculation,modele,mva,kilometrage,garantie,num_contrat,archive,type_vh,date_creation) 
+    VALUES (:immatriculation, :modele,:mva, :km,:garantie, :num_contrat,:archive,:type_vh,:date_creation)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data_vh);
     $lastID = $pdo->lastInsertId();
@@ -280,6 +281,7 @@ function update_shop_ext($data_shop_ext)
         'km' => $data_shop_ext['km'],
         'garantie' => $data_shop_ext['garantie'],
         'num_contrat' => $data_shop_ext['num_contrat'],
+        'type_vh'=> $data_shop_ext['type_vh'],
         'date_demande_recup' => $date_demande_recup,
         'date_recup' => $date_recup,
         'agence_recup' => $data_shop_ext['agence_recup'],
@@ -294,6 +296,7 @@ function update_shop_ext($data_shop_ext)
     kilometrage=:km,
     garantie=:garantie,
     num_contrat=:num_contrat,
+    type_vh=:type_vh,
     date_demande_recup=:date_demande_recup,
     date_recup=:date_recup,
     agence_recup=:agence_recup,

@@ -138,6 +138,17 @@
                                         value="<?php echo $details_shop_ext['shop']['num_contrat'] ?>">
                                 </div>
                             </div>
+                            <div class="div_form_vh_row">
+                                <label for="select_type_vh" style="padding-top: 5px;">Type véhicule:</label>
+                                <select class="form-select" style="width : 200px;" id="select_type_vh" name="type_vh">
+                                    <?php
+                                    $typeVh = $details_shop_ext['shop']['type_vh'];
+                                    echo '<option value=""' . ($typeVh == NULL ? ' selected' : '') . '></option>';
+                                    echo '<option value="1"' . ($typeVh == 1 ? ' selected' : '') . '>Intérieur</option>';
+                                    echo '<option value="2"' . ($typeVh == 2 ? ' selected' : '') . '>Extérieur</option>';
+                                    ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
 

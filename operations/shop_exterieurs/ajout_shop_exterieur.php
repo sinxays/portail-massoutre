@@ -63,101 +63,118 @@
                 <div class="ajout_shop_categorie">
 
                     <div class="div_form_vh_label"><span>Vehicule</span></div>
-                    <div class="div_form_vh_row">
-                        <div class="form-group">
-                            <label for="input_immat">Immatriculation</label>
-                            <input type="text" class="form-control" id="input_immat" placeholder="Immatriculation"
-                                name="immatriculation" style="width: 200px;">
+                    <div class="contenu_after_label_ajout_shop_ext">
+                        <div class="div_form_vh_row">
+                            <div class="form-group">
+                                <label for="input_immat">Immatriculation</label>
+                                <input type="text" class="form-control" id="input_immat" placeholder="Immatriculation"
+                                    name="immatriculation" style="width: 200px;">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="input_mva">MVA</label>
+                                <input type="text" class="form-control" id="input_mva" placeholder="MVA" name="mva"
+                                    style="width: 150px;">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="input_km">Km</label>
+                                <input type="text" class="form-control" id="input_km" placeholder="Kilométrage"
+                                    name="km" style="width: 150px;">
+                            </div>
+                        </div>
+                        <div class="div_form_vh_row">
+                            <div class="form-group">
+                                <label for="input_modele">Modèle</label>
+                                <input type="text" class="form-control" id="input_modele" placeholder="Modèle"
+                                    name="modele" style="width: 370px;">
+                            </div>
+
                         </div>
 
-                        <div class="form-group">
-                            <label for="input_mva">MVA</label>
-                            <input type="text" class="form-control" id="input_mva" placeholder="MVA" name="mva"
-                                style="width: 150px;">
+                        <div class="div_form_vh_row">
+
+                            <div class="radio-group">
+                                <span>Garantie : </span>
+                                <label>
+                                    <input type="radio" name="garantie" value="1"> Oui
+                                </label>
+                                <label>
+                                    <input type="radio" name="garantie" value="0"> Non
+                                </label>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="input_km">Km</label>
-                            <input type="text" class="form-control" id="input_km" placeholder="Kilométrage" name="km"
-                                style="width: 150px;">
+
+                        <div class="div_form_vh_row">
+                            <input type="text" class="form-control" id="input_contrat" placeholder="Numéro de contrat"
+                                name="num_contrat" style="width: 200px;">
                         </div>
-                    </div>
-                    <div class="div_form_vh_row">
-                        <div class="form-group">
-                            <label for="input_modele">Modèle</label>
-                            <input type="text" class="form-control" id="input_modele" placeholder="Modèle" name="modele"
-                                style="width: 370px;">
+                        <div class="div_form_vh_column">
+                            <label for="select_type_vh">Type véhicule:</label>
+                            <select class="form-select" style="width : 200px;" id="select_type_vh" name="type_vh">
+
+                                <?php
+                                echo "<option value='1'> Intérieur </option>";
+                                echo "<option value='2'> Extérieur </option>";
+                                ?>
+                            </select>
                         </div>
-
-                    </div>
-
-                    <div class="div_form_vh_row">
-
-                        <div class="radio-group">
-                            <span>Garantie : </span>
-                            <label>
-                                <input type="radio" name="garantie" value="1"> Oui
-                            </label>
-                            <label>
-                                <input type="radio" name="garantie" value="0"> Non
-                            </label>
-                        </div>
-                    </div>
-
-
-                    <div class="div_form_vh_row">
-                        <input type="text" class="form-control" id="input_contrat" placeholder="Numéro de contrat"
-                            name="num_contrat" style="width: 200px;">
                     </div>
                 </div>
 
                 <div class="ajout_shop_categorie">
 
                     <div class="div_form_vh_label"><span>Panne</span></div>
+                    <div class="contenu_after_label_ajout_shop_ext">
 
-                    <div class="div_form_vh_column">
-                        <div class="form-group">
-                            <label for="dateInput">Date Déclaration:</label>
-                            <input type="date" class="form-control" id="dateInput" name="date_declaration"
-                                style="width: 200px;">
-                        </div>
+                        <div class="div_form_vh_column">
+                            <div class="form-group">
+                                <label for="dateInput">Date Déclaration:</label>
+                                <input type="date" class="form-control" id="dateInput" name="date_declaration"
+                                    style="width: 200px;">
+                            </div>
 
-                        <label for="select_type_panne">Type panne:</label>
-                        <select class="form-select" style="width : 200px;" id="select_type_panne" name="type_panne">
+                            <label for="select_type_panne">Type panne:</label>
+                            <select class="form-select" style="width : 200px;" id="select_type_panne" name="type_panne">
 
-                            <?php
-                            $list_type_panne_libelle = get_list_type_panne_libelle();
-                            foreach ($list_type_panne_libelle as $type_panne) {
-                                $libelle_id = $type_panne['ID'];
-                                $libelle = $type_panne['type_panne_libelle'];
-                                echo "<option value='$libelle_id'> $libelle </option>";
-                            }
-                            ?>
-                        </select>
+                                <?php
+                                $list_type_panne_libelle = get_list_type_panne_libelle();
+                                foreach ($list_type_panne_libelle as $type_panne) {
+                                    $libelle_id = $type_panne['ID'];
+                                    $libelle = $type_panne['type_panne_libelle'];
+                                    echo "<option value='$libelle_id'> $libelle </option>";
+                                }
+                                ?>
+                            </select>
 
-                        <div class="form-floating">
-                            <textarea class="form-control" placeholder="Detail(s) de la panne"
-                                id="textarea_detail_panne" name="detail_panne" style="min-height: 100px;"></textarea>
-                            <label for="textarea_detail_panne">Detail(s) de la panne</label>
-                        </div>
-                        <div class="form-group">
-                            <label for="input_localisation">Localisation</label>
-                            <input type="text" class="form-control" id="input_localisation" placeholder="Localisation"
-                                name="localisation" style="width: 350px;">
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="Detail(s) de la panne"
+                                    id="textarea_detail_panne" name="detail_panne"
+                                    style="min-height: 100px;"></textarea>
+                                <label for="textarea_detail_panne">Detail(s) de la panne</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="input_localisation">Localisation</label>
+                                <input type="text" class="form-control" id="input_localisation"
+                                    placeholder="Localisation" name="localisation" style="width: 350px;">
+                            </div>
                         </div>
                     </div>
 
                 </div>
-                <div class="div_validation_ajout">
-                    <button type="button" class="btn btn-success" id="btn_ajout_shop_ext">Ajouter</button>
-                    <div class="lds-ellipsis" id="loader" style="display:none;">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                </div>
 
+
+            </div>
+
+            <div class="div_validation_ajout">
+                <button type="button" class="btn btn-success" id="btn_ajout_shop_ext">Ajouter</button>
+                <div class="lds-ellipsis" id="loader" style="display:none;">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
             </div>
 
 
