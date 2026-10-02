@@ -79,28 +79,36 @@
                 $error = "Le rôle sélectionné n'existe pas.";
             } else {
                 // ------------------------------------------------ // VÉRIFICATION LOGIN DÉJÀ UTILISÉ // ------------------------------------------------ 
-                $check_login = $pdo->prepare(" SELECT id FROM users WHERE login = :login AND id != :id ");
-                $check_login->execute(['login' => $login, 'id' => $user_id]);
+                $check_login = $pdo->prepare(" SELECT id FROM users WHERE login = :login");
+                $check_login->execute(['login' => $login]);
                 if ($check_login->fetch()) {
                     $error = "Ce login est déjà utilisé par un autre utilisateur.";
                 } else {
-                    // ------------------------------------------------ // MODIFICATION // ------------------------------------------------ 
+                    // ------------------------------------------------ // CREATION // ------------------------------------------------ 
                     if ($password !== '') {
                         // Nouveau mot de passe fourni 
                         $password_hash = password_hash($password, PASSWORD_DEFAULT);
-                        $update = $pdo->prepare(" UPDATE users SET nom = :nom, prenom = :prenom, email = :email, login = :login, password_hash = :password_hash, role_id = :role_id, actif = :actif WHERE id = :id ");
-                        $update = $pdo->prepare(" INSERT INTO users (nom, prenom,email,login,password_hash,role_id,actif) VALUES (:nom,:prenom,:email,:login,:password_hash,:role_id)   SET nom = :nom, prenom = :prenom, email = :, login = :login, password_hash = :, role_id = :role_id, actif = :actif WHERE id = :id ");
-                        $update->execute(['nom' => $nom, 'prenom' => $prenom, 'email' => $email, 'login' => $login, 'password_hash' => $password_hash, 'role_id' => $role_id, 'actif' => $actif, 'id' => $user_id]);
-                    } else {
-                        // Pas de nouveau mot de passe : // on conserve l'ancien 
-                        $update = $pdo->prepare(" UPDATE users SET nom = :nom, prenom = :prenom, email = :email, login = :login, role_id = :role_id, actif = :actif WHERE id = :id ");
-                        $update->execute(['nom' => $nom, 'prenom' => $prenom, 'email' => $email, 'login' => $login, 'role_id' => $role_id, 'actif' => $actif, 'id' => $user_id]);
+                        $datas = [
+                            'nom' => $nom,
+                            'prenom' => $prenom,
+                            'email' => $email,
+                            'login' => $login,
+                            'password_hash' => $password_hash,
+                            'role_id' => $role_id,
+                            'actif' => $actif
+                        ];
+                        $sql = "INSERT INTO users (nom,prenom,email,login,password_hash,role_id,actif) 
+                         VALUES (:nom, :prenom,:email,:login,:password_hash, :role_id,:actif)";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute($datas);
+                        $lastID = $pdo->lastInsertId();
+
                     }
                     // ------------------------------------------------ // SUCCÈS // ------------------------------------------------ 
-                    $success = "L'utilisateur a été modifié avec succès.";
+                    $success = "L'utilisateur a été crée avec succès.";
                     // On recharge les données affichées 
                     $request = $pdo->prepare(" SELECT id, nom, prenom, email, login, password_hash, role_id, actif FROM users WHERE id = :id ");
-                    $request->execute(['id' => $user_id]);
+                    $request->execute(['id' => $lastID]);
                     $user = $request->fetch(PDO::FETCH_ASSOC);
                 }
             }
@@ -182,10 +190,9 @@
                                 </div>
                                 <!-- =============================== --> <!-- PASSWORD -->
                                 <!-- =============================== -->
-                                <div class="col-md-12"> <label for="password" class="form-label"> Nouveau mot de passe
+                                <div class="col-md-12"> <label for="password" class="form-label"> Mot de passe
                                     </label> <input type="password" class="form-control" id="password" name="password"
                                         autocomplete="new-password">
-                                    <div class="form-text"> Laissez vide pour conserver le mot de passe actuel. </div>
                                 </div>
                                 <!-- =============================== --> <!-- RÔLE -->
                                 <!-- =============================== -->
