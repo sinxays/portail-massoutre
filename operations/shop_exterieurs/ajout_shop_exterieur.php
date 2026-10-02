@@ -167,6 +167,17 @@
 
             </div>
 
+
+            <div class="div_form_vh_row" style="justify-content: center;margin-bottom: 20px;">
+                <div class="form-group" style="text-align: center;">
+                    <label for="input_gestionnaire">Dossier géré par</label>
+                    <input type="text" class="form-control" id="input_gestionnaire"  name="gestionnaire_shop_ext"
+                        style="width: 370px;">
+                </div>
+
+            </div>
+
+
             <div class="div_validation_ajout">
                 <button type="button" class="btn btn-success" id="btn_ajout_shop_ext">Ajouter</button>
                 <div class="lds-ellipsis" id="loader" style="display:none;">

@@ -1212,6 +1212,7 @@ img {
 }
 
 .contenu_after_label_ajout_shop_ext{
+    /* height: 400px; */
     height: 400px;
 }
 
@@ -1303,7 +1304,6 @@ img {
     flex-direction: column;
     gap: 10px;
     /* border: 2px solid #fe8f8f; */
-    height: 100%;
 }
 
 .div_form_vh_label {

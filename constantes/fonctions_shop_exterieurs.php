@@ -57,9 +57,9 @@ function get_detail_shop_ext($id)
 {
     $pdo = Connection::getPDO();
 
-    $request = $pdo->query("SELECT vh.ID,vh.immatriculation,vh.modele,vh.num_contrat,vh.mva,vh.kilometrage,vh.garantie,vh.date_demande_recup,vh.date_recup,vh.agence_recup,vh.categorie_id,vh.type_vh,
+    $request = $pdo->query("SELECT vh.ID,vh.immatriculation,vh.modele,vh.num_contrat,vh.mva,vh.kilometrage,vh.garantie,vh.date_demande_recup,vh.date_recup,vh.agence_recup,vh.categorie_id,
     type_panne.type_panne_libelle,type_panne.ID as type_panne_id,
-    panne.localisation,panne.date_declaration,panne.detail_panne,
+    panne.localisation,panne.date_declaration,panne.detail_panne,panne.type_vh,
     cat.libelle
       FROM shop_ext_vehicules as vh
       LEFT JOIN shop_ext_categories as cat ON vh.categorie_id = cat.id
@@ -106,11 +106,10 @@ function ajouter_shop_exterieur($array_shop_ext)
         'garantie' => $array_shop_ext['garantie'],
         'num_contrat' => $array_shop_ext['num_contrat'],
         'archive' => 0,
-        'type_vh' => $array_shop_ext['type_vh'],
         'date_creation' => date('Y-m-d H:i')
     ];
-    $sql = "INSERT INTO shop_ext_vehicules (immatriculation,modele,mva,kilometrage,garantie,num_contrat,archive,type_vh,date_creation) 
-    VALUES (:immatriculation, :modele,:mva, :km,:garantie, :num_contrat,:archive,:type_vh,:date_creation)";
+    $sql = "INSERT INTO shop_ext_vehicules (immatriculation,modele,mva,kilometrage,garantie,num_contrat,archive,date_creation) 
+    VALUES (:immatriculation, :modele,:mva, :km,:garantie, :num_contrat,:archive,:date_creation)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data_vh);
     $lastID = $pdo->lastInsertId();
@@ -121,10 +120,12 @@ function ajouter_shop_exterieur($array_shop_ext)
         'type_panne' => $array_shop_ext['type_panne'],
         'detail_panne' => $array_shop_ext['detail_panne'],
         'localisation' => $array_shop_ext['localisation'],
-        'vehicule_id' => $lastID
+        'vehicule_id' => $lastID,
+        'type_vh' => $array_shop_ext['type_vh']
+
     ];
-    $sql = "INSERT INTO shop_ext_panne (date_declaration,type_panne_id,localisation,vehicule_id,detail_panne) 
-    VALUES (:date_declaration, :type_panne, :localisation, :vehicule_id,:detail_panne)";
+    $sql = "INSERT INTO shop_ext_panne (date_declaration,type_panne_id,localisation,vehicule_id,detail_panne,type_vh) 
+    VALUES (:date_declaration, :type_panne, :localisation, :vehicule_id,:detail_panne,:type_vh)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data_vh);
 
@@ -281,7 +282,6 @@ function update_shop_ext($data_shop_ext)
         'km' => $data_shop_ext['km'],
         'garantie' => $data_shop_ext['garantie'],
         'num_contrat' => $data_shop_ext['num_contrat'],
-        'type_vh'=> $data_shop_ext['type_vh'],
         'date_demande_recup' => $date_demande_recup,
         'date_recup' => $date_recup,
         'agence_recup' => $data_shop_ext['agence_recup'],
@@ -296,7 +296,6 @@ function update_shop_ext($data_shop_ext)
     kilometrage=:km,
     garantie=:garantie,
     num_contrat=:num_contrat,
-    type_vh=:type_vh,
     date_demande_recup=:date_demande_recup,
     date_recup=:date_recup,
     agence_recup=:agence_recup,
@@ -312,13 +311,15 @@ function update_shop_ext($data_shop_ext)
         'type_panne' => $data_shop_ext['type_panne'],
         'detail_panne' => $data_shop_ext['detail_panne'],
         'localisation' => $data_shop_ext['localisation'],
-        'vehicule_id' => $data_shop_ext['vehicule_id']
+        'vehicule_id' => $data_shop_ext['vehicule_id'],
+        'type_vh' => $data_shop_ext['type_vh'],
     ];
     $sql = "UPDATE shop_ext_panne 
     SET date_declaration=:date_declaration, 
     type_panne_id=:type_panne,
     detail_panne=:detail_panne,
-    localisation=:localisation
+    localisation=:localisation,
+    type_vh=:type_vh
     WHERE vehicule_id=:vehicule_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);
