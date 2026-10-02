@@ -150,7 +150,7 @@
                                                         d-flex align-items-center justify-content-center me-3"
                                                             style="width: 42px; height: 42px;">
 
-                                                            <?= strtoupper(substr($user['id'], 0, 1)) ?>
+                                                            <?= strtoupper(substr($user['user_id'], 0, 1)) ?>
 
                                                         </div>
 
@@ -241,7 +241,7 @@
                                                 <!-- ACTIONS -->
                                                 <td class="text-end px-4">
 
-                                                    <a href="modifier_utilisateur.php?id=<?= $user['id'] ?>"
+                                                    <a href="modifier_utilisateur.php?id=<?= $user['user_id'] ?>"
                                                         class="btn btn-sm btn-outline-primary" title="Modifier">
 
                                                         <i class="bx bx-edit"></i>
@@ -249,7 +249,7 @@
                                                     </a>
 
 
-                                                    <a href="supprimer.php?id=<?= $user['id'] ?>"
+                                                    <a href="supprimer.php?id=<?= $user['user_id'] ?>"
                                                         class="btn btn-sm btn-outline-danger" title="Supprimer"
                                                         onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
 
