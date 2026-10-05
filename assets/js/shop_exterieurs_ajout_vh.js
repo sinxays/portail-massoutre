@@ -12,8 +12,14 @@ $(document).ready(function () {
             type: "POST",
             data: $("#ajout_shop_exterieur_form").serialize(),
             success: function () {
-                $("#alert_shop_ext_added").show(300);
-                window.location.replace("/operations/shop_exterieurs/shop_exterieurs.php");
+                // $("#alert_shop_ext_added").show(300);
+                // window.location.replace("/operations/shop_exterieurs/shop_exterieurs.php");
+
+                $("#alert_shop_ext_added").show(1000, function () {
+                    setTimeout(function () {
+                        window.location.replace("/operations/shop_exterieurs/shop_exterieurs.php");
+                    }, 1000);
+                });
             },
             error: function () {
                 $("#alert_shop_ext_added_fail").show(300);

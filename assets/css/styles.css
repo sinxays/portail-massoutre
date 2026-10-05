@@ -1157,6 +1157,20 @@ img {
     justify-content: space-between;
 }
 
+.container_form_modif_lecture_shop_ext_1_gestionnaire {
+    padding: 40px;
+    display: flex;
+    flex-direction: row;
+    /* border: 2px solid #fe8f8f; */
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+}
+
+.container_form_modif_lecture_shop_ext_1_gestionnaire > label{
+   size: 5;
+}
+
 .row_box_traqueurs_modif {
     padding: 40px;
     display: flex;

@@ -59,7 +59,7 @@ function get_detail_shop_ext($id)
 
     $request = $pdo->query("SELECT vh.ID,vh.immatriculation,vh.modele,vh.num_contrat,vh.mva,vh.kilometrage,vh.garantie,vh.date_demande_recup,vh.date_recup,vh.agence_recup,vh.categorie_id,
     type_panne.type_panne_libelle,type_panne.ID as type_panne_id,
-    panne.localisation,panne.date_declaration,panne.detail_panne,panne.type_vh,
+    panne.localisation,panne.date_declaration,panne.detail_panne,panne.type_vh,panne.gestionnaire,
     cat.libelle
       FROM shop_ext_vehicules as vh
       LEFT JOIN shop_ext_categories as cat ON vh.categorie_id = cat.id
@@ -121,11 +121,12 @@ function ajouter_shop_exterieur($array_shop_ext)
         'detail_panne' => $array_shop_ext['detail_panne'],
         'localisation' => $array_shop_ext['localisation'],
         'vehicule_id' => $lastID,
-        'type_vh' => $array_shop_ext['type_vh']
+        'type_vh' => $array_shop_ext['type_vh'],
+        'gestionnaire_shop_ext' => $array_shop_ext['gestionnaire_shop_ext']
 
     ];
-    $sql = "INSERT INTO shop_ext_panne (date_declaration,type_panne_id,localisation,vehicule_id,detail_panne,type_vh) 
-    VALUES (:date_declaration, :type_panne, :localisation, :vehicule_id,:detail_panne,:type_vh)";
+    $sql = "INSERT INTO shop_ext_panne (date_declaration,type_panne_id,localisation,vehicule_id,detail_panne,type_vh,gestionnaire) 
+    VALUES (:date_declaration, :type_panne, :localisation, :vehicule_id,:detail_panne,:type_vh,:gestionnaire_shop_ext)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data_vh);
 
@@ -313,13 +314,15 @@ function update_shop_ext($data_shop_ext)
         'localisation' => $data_shop_ext['localisation'],
         'vehicule_id' => $data_shop_ext['vehicule_id'],
         'type_vh' => $data_shop_ext['type_vh'],
+        'gestionnaire_shop_ext' => $data_shop_ext['gestionnaire_shop_ext'],
     ];
     $sql = "UPDATE shop_ext_panne 
     SET date_declaration=:date_declaration, 
     type_panne_id=:type_panne,
     detail_panne=:detail_panne,
     localisation=:localisation,
-    type_vh=:type_vh
+    type_vh=:type_vh,
+    gestionnaire=:gestionnaire_shop_ext 
     WHERE vehicule_id=:vehicule_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($data);

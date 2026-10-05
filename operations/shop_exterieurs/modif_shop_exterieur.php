@@ -74,6 +74,14 @@
 
         <div class="container_form_modif_lecture_shop_ext">
             <form id="form_shop_ext">
+                <div class="container_form_modif_lecture_shop_ext_1_gestionnaire">
+                    <div class="form-group" style="text-align: center;">
+                        <label for="input_gestionnaire">Dossier géré par</label>
+                        <input type="text" class="form-control" id="input_gestionnaire" name="gestionnaire_shop_ext"
+                            style="width: 370px;" value="<?php echo $details_shop_ext['shop']['gestionnaire'] ?>">
+                    </div>
+                </div>
+
 
                 <div class="container_form_modif_lecture_shop_ext_1">
 
