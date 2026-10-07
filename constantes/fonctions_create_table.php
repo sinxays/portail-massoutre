@@ -245,7 +245,7 @@ function create_table_imprimantes($header, $liste_imprimantes)
         $table_imprimantes .= "<td class='td_n' style='width: 100px;'>" . $imprimante['prestataire'] . "</td>";
         $table_imprimantes .= "<td class='td_n' style='width: 150px;'>" . $imprimante['marque'] . "</td>";
         $table_imprimantes .= "<td class='td_n' style='width: 150px;'>" . $imprimante['modele'] . "</td>";
-        $table_imprimantes .= "<td class='td_n' style='width: 150px;'>" . $imprimante['ip_vpn'] . "</td>";
+        // $table_imprimantes .= "<td class='td_n' style='width: 150px;'>" . $imprimante['ip_vpn'] . "</td>";
         $table_imprimantes .= "<td class='td_n' style='width: 150px;'>" . $imprimante['ip_locale'] . "</td>";
         $table_imprimantes .= "<td class='td_n' style='width: 100px;'>
         <button id='btn_modif_imprimante' class='btn btn-success' onclick='modifier_imprimante(" . $imprimante["ID"] . ")'>Modifier</button> </td>";

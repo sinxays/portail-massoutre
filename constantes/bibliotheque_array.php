@@ -159,7 +159,6 @@ $imprimantes_table_header_row = array(
     "Prestataire",
     "Marque",
     "Modèle",
-    "IP VPN",
     "IP locale"
 );
 
