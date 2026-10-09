@@ -229,20 +229,20 @@ function import_fichier_excel_to_suivi_lag($type_fichier, $fichier_excel)
                                 // si on trouve le code alerte correspondant
                                 if ($type_alerte_code == (int) $type_alerte['code_alerte']) {
                                     $check = TRUE;
-                                    // on crée l'alerte lié au vh 
+                                    // on crée l'alerte lié au vh
+                                    $date_creation = date('Y-m-d H:i:s'); 
                                     $data = [
                                         'id_vehicule' => $id_vh,
+                                        'date_creation' => $date_creation,
                                         'id_code_alerte' => $type_alerte['ID'],
                                         'km_to_entretien' => $km_alerte_entretien,
                                         'date_to_entretien' => $date_alerte_entretien_format_us,
                                         'deleted' => 0,
                                     ];
-                                    $sql = "INSERT INTO suivi_lag_vehicules_alertes (id_vehicule,id_code_alerte,km_to_entretien,date_to_entretien,deleted) 
-                                        VALUES (:id_vehicule, :id_code_alerte,:km_to_entretien, :date_to_entretien,:deleted)";
+                                    $sql = "INSERT INTO suivi_lag_vehicules_alertes (date_creation,id_vehicule,id_code_alerte,km_to_entretien,date_to_entretien,deleted) 
+                                        VALUES (:date_creation,:id_vehicule, :id_code_alerte,:km_to_entretien, :date_to_entretien,:deleted)";
                                     $stmt = $pdo->prepare($sql);
                                     $stmt->execute($data);
-
-                                } else {
 
                                 }
                             }

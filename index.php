@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="assets/css/styles.css">
 
     <title>Portail Massoutre</title>
+
+    <!--========== LOGO MASSOUTRE MOBILITE ==========-->
+    <link rel="icon" type="image/png" href="/assets/img/logo_MM_transparent.png">
+    
 </head>
 
 <body>
@@ -46,7 +50,7 @@
             echo "<br/>";
 
             // echo password_hash("roseMorais",PASSWORD_DEFAULT);
-
+            
 
             ?>
 
